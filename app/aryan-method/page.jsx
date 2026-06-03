@@ -183,9 +183,11 @@ function HeroSection({ selectedItem, setSelectedItem }) {
 }
 
 function MainPackageCard({ selectedItem, setSelectedItem }) {
-  const isSelected = selectedItem.type === 'main'
+  const isSelected = selectedItem.some(i => i.type === 'main')
   const handleSelect = () => {
-    setSelectedItem({ type: 'main', id: null, price: MAIN_PACKAGE.price })
+    setSelectedItem(prev =>
+      isSelected ? prev.filter(i => i.type !== 'main') : [{ type: 'main', id: null, price: MAIN_PACKAGE.price }]
+    )
   }
 
   return (
@@ -262,9 +264,12 @@ function ProductsSection({ selectedItem, setSelectedItem }) {
 }
 
 function ProductCard({ product, selectedItem, setSelectedItem }) {
-  const isSelected = selectedItem.type === 'product' && selectedItem.id === product.id
+  const isSelected = selectedItem.some(i => i.type === 'product' && i.id === product.id)
   const handleSelect = () => {
-    setSelectedItem({ type: 'product', id: product.id, price: product.price })
+    setSelectedItem(prev => {
+      const withoutMain = prev.filter(i => i.type !== 'main')
+      return isSelected ? withoutMain.filter(i => i.id !== product.id) : [...withoutMain, { type: 'product', id: product.id, price: product.price }]
+    })
   }
 
   return (
@@ -515,12 +520,12 @@ function Footer() {
 
 function StickyBottomBar({ selectedItem, setSelectedItem }) {
   const [agreed, setAgreed] = useState(false)
-  const showBestValue = selectedItem.type === 'product'
-  
+  const total = selectedItem.reduce((sum, i) => sum + i.price, 0)
+  const showBestValue = selectedItem.some(i => i.type === 'product') && !selectedItem.some(i => i.type === 'main')
   const handleUpgrade = () => {
-    setSelectedItem({ type: 'main', id: null, price: MAIN_PACKAGE.price })
+    setSelectedItem(prev => prev.filter(i => i.type !== 'product').concat({ type: 'main', id: null, price: MAIN_PACKAGE.price }))
   }
-  
+
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50">
       {/* Best Value Banner - only shows when individual product is selected */}
@@ -532,7 +537,7 @@ function StickyBottomBar({ selectedItem, setSelectedItem }) {
                 <p className="text-xs tracking-[0.15em] text-orange-400 font-semibold">BEST VALUE</p>
                 <p className="text-sm text-white">Get the Full Bundle – Just ₹933/mo</p>
               </div>
-              <button 
+              <button
                 onClick={handleUpgrade}
                 className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-full text-sm font-semibold tracking-wide transition-colors"
               >
@@ -542,19 +547,17 @@ function StickyBottomBar({ selectedItem, setSelectedItem }) {
           </div>
         </div>
       )}
-      
       {/* Main Bottom Bar */}
       <div className="bg-background/95 backdrop-blur-lg border-t border-border">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <div className="flex-1">
               <p className="text-xs tracking-[0.15em] text-muted-foreground">TOTAL INVESTMENT</p>
-              <p className="text-3xl font-black">₹{selectedItem.price}</p>
+              <p className="text-3xl font-black">₹{total}</p>
             </div>
-            
             <div className="flex items-center gap-4">
               <label className="flex items-center gap-2 cursor-pointer">
-                <div 
+                <div
                   onClick={() => setAgreed(!agreed)}
                   className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
                     agreed ? 'border-foreground bg-foreground' : 'border-muted-foreground/50'
@@ -567,8 +570,7 @@ function StickyBottomBar({ selectedItem, setSelectedItem }) {
                 </span>
               </label>
             </div>
-            
-            <button 
+            <button
               disabled={!agreed}
               className="w-full sm:w-auto bg-muted text-muted-foreground px-8 py-4 rounded-xl font-semibold text-sm tracking-[0.1em] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted/80 transition-colors"
             >
@@ -587,7 +589,7 @@ function StickyBottomBar({ selectedItem, setSelectedItem }) {
 // ============================================
 
 export default function AryanMethodPage() {
-  const [selectedItem, setSelectedItem] = useState({ type: 'main', id: null, price: MAIN_PACKAGE.price })
+  const [selectedItem, setSelectedItem] = useState([{ type: 'main', id: null, price: MAIN_PACKAGE.price }])
 
   return (
     <div className="min-h-screen bg-background pb-32">
