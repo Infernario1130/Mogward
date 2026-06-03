@@ -15,10 +15,10 @@ const SITE_CONFIG = {
   watermarkText: "ARYAN METHOD",
   email: "ascend@aryanmethod.in",
   address: {
-    line1: "ARAVALI KUNJ, SECTOR-13,",
-    line2: "ROHINI, NEW DELHI, 110085"
+    line1: "RAPTINAGAR PHASE-IV,",
+    line2: "GORAKHPUR, 273013"
   },
-  tagline: "Forging elite physical and mental conditioning. Accept nothing less than absolute victory.",
+  tagline: "Where elite conditioning meets unwavering determination in the pursuit of victory.",
   copyright: "© 2026 ARYANHEIS // ALL RIGHTS RESERVED."
 }
 
@@ -491,8 +491,8 @@ function Footer() {
               </a>
             </div>
             <div>
-              <p className="text-xs text-neutral-500 mb-1">HQ OFFICE</p>
-              <p className="text-neutral-400 text-sm">
+              <p className="text-xs tracking-[0.2em] text-neutral-500 mb-1">HQ OFFICE</p>
+              <p className="text-xs tracking-[0.2em] text-neutral-400">
                 {SITE_CONFIG.address.line1}<br />
                 {SITE_CONFIG.address.line2}
               </p>
@@ -506,13 +506,13 @@ function Footer() {
           </p>
           
           <div className="text-center mt-8 pt-8 border-t border-neutral-800">
-            <p className="text-xs tracking-[0.2em] text-neutral-600 mb-2">HQ OPERATIONS</p>
-            <p className="text-xs text-neutral-500">
+            <p className="text-xs tracking-[0.2em] text-neutral-600 mb-1">HQ OPERATIONS</p>
+            <p className="text-xs tracking-[0.2em] text-neutral-500">
               {SITE_CONFIG.address.line1.replace(',', ', ')}<br />
-              NEW DELHI, 110085
+              GORAKHPUR, 273013
             </p>
           </div>
-        </div>
+        </div>``
       </div>
     </footer>
   )
@@ -520,65 +520,82 @@ function Footer() {
 
 function StickyBottomBar({ selectedItem, setSelectedItem }) {
   const [agreed, setAgreed] = useState(false)
+  const [isUnlocking, setIsUnlocking] = useState(false)
   const total = selectedItem.reduce((sum, i) => sum + i.price, 0)
   const showBestValue = selectedItem.some(i => i.type === 'product') && !selectedItem.some(i => i.type === 'main')
   const handleUpgrade = () => {
     setSelectedItem(prev => prev.filter(i => i.type !== 'product').concat({ type: 'main', id: null, price: MAIN_PACKAGE.price }))
   }
 
+  const handleUnlock = () => {
+    if (!agreed) return
+    setIsUnlocking(true)
+    setTimeout(() => setIsUnlocking(false), 200)
+  }
+
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50">
-      {/* Best Value Banner - only shows when individual product is selected */}
-      {showBestValue && (
-        <div className="bg-neutral-800 border-t border-neutral-700">
-          <div className="max-w-4xl mx-auto px-4 py-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs tracking-[0.15em] text-orange-400 font-semibold">BEST VALUE</p>
-                <p className="text-sm text-white">Get the Full Bundle – Just ₹933/mo</p>
-              </div>
-              <button
-                onClick={handleUpgrade}
-                className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-full text-sm font-semibold tracking-wide transition-colors"
-              >
-                UPGRADE
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-      {/* Main Bottom Bar */}
-      <div className="bg-background/95 backdrop-blur-lg border-t border-border">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex flex-col sm:flex-row items-center gap-4">
-            <div className="flex-1">
-              <p className="text-xs tracking-[0.15em] text-muted-foreground">TOTAL INVESTMENT</p>
-              <p className="text-3xl font-black">₹{total}</p>
-            </div>
-            <div className="flex items-center gap-4">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <div
-                  onClick={() => setAgreed(!agreed)}
-                  className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
-                    agreed ? 'border-foreground bg-foreground' : 'border-muted-foreground/50'
-                  }`}
-                >
-                  {agreed && <div className="w-2 h-2 rounded-full bg-background" />}
+    <div className="fixed bottom-0 left-0 right-0 z-50 bg-background">
+      <div className="max-w-[480px] mx-auto px-5 pb-4 pt-2">
+
+        {/* Best Value Banner */}
+        {showBestValue && (
+          <div className="bg-neutral-900 rounded-xl mb-3 cursor-pointer shadow-[0_2px_16px_-4px_rgba(0,0,0,0.2)] transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-[0_4px_24px_-4px_rgba(249,115,22,0.4)] hover:bg-neutral-800">
+            <div className="px-5 py-2.5">
+              <div className="flex items-center justify-between gap-4">
+                <div className="min-w-0">
+                  <p className="text-xs tracking-[0.2em] text-orange-400 font-semibold">BEST VALUE</p>
+                  <p className="text-sm text-white">Get the Full Bundle – Just ₹933/mo</p>
                 </div>
-                <span className="text-sm text-muted-foreground">
-                  I agree to <Link href="#" className="text-primary hover:underline">Terms</Link> & <Link href="#" className="text-primary hover:underline">Refunds</Link>
-                </span>
-              </label>
+                <button
+                  onClick={handleUpgrade}
+                  className="bg-[#f97316] hover:bg-[#ea580c] active:bg-[#c2410c] text-white px-4 py-1.5 rounded-full text-xs font-bold tracking-[0.15em] transition-all duration-200 hover:scale-105 active:scale-95 shrink-0"
+                >
+                  UPGRADE
+                </button>
+              </div>
             </div>
-            <button
-              disabled={!agreed}
-              className="w-full sm:w-auto bg-muted text-muted-foreground px-8 py-4 rounded-xl font-semibold text-sm tracking-[0.1em] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted/80 transition-colors"
-            >
-              UNLOCK ACCESS
-              <Lock className="w-4 h-4" />
-            </button>
           </div>
+        )}
+
+        {/* Total Investment Section */}
+        <div>
+          <div className="flex items-center justify-between gap-4 mb-3">
+            <div>
+              <p className="text-xs tracking-[0.2em] text-muted-foreground font-medium">TOTAL INVESTMENT</p>
+              <p className="text-3xl font-black leading-tight tracking-tight">₹{total}</p>
+            </div>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <div
+                onClick={() => setAgreed(!agreed)}
+                className={`w-3.5 h-3.5 rounded-full border-[1.5px] flex items-center justify-center transition-all duration-200 shrink-0 ${
+                  agreed ? 'border-foreground bg-foreground' : 'border-muted-foreground/30 hover:border-muted-foreground/50'
+                }`}
+              >
+                {agreed && <div className="w-1 h-1 rounded-full bg-background" />}
+              </div>
+              <span className="text-xs text-muted-foreground">
+                I agree to <Link href="#" className="text-foreground hover:underline">Terms</Link> & <Link href="#" className="text-foreground hover:underline">Refunds</Link>
+              </span>
+            </label>
+          </div>
+
+          {/* Unlock Button */}
+          <button
+            disabled={!agreed}
+            onClick={handleUnlock}
+            className={`w-full py-3 rounded-lg font-semibold text-xs tracking-[0.15em] flex items-center justify-center gap-2 transition-all duration-200 ${
+              agreed
+                ? isUnlocking
+                  ? 'bg-neutral-700 text-white scale-[0.98]'
+                  : 'bg-foreground text-background hover:bg-foreground/90 active:bg-foreground/80 active:scale-[0.98]'
+                : 'bg-neutral-200 dark:bg-neutral-800 text-muted-foreground/50 cursor-not-allowed'
+            }`}
+          >
+            UNLOCK ACCESS
+            <Lock className="w-3.5 h-3.5" />
+          </button>
         </div>
+
       </div>
     </div>
   )
