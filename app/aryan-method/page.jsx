@@ -304,7 +304,8 @@ function ProductCard({ product }) {
 }
 
 function BookingSection() {
-  const [currentMonth, setCurrentMonth] = useState(new Date(2026, 5, 1)) // June 2026
+  const today = new Date()
+  const [currentMonth, setCurrentMonth] = useState(new Date(today.getFullYear(), today.getMonth(), 1))
   
   const getDaysInMonth = (date) => {
     const year = date.getFullYear()
@@ -318,6 +319,29 @@ function BookingSection() {
   const monthName = currentMonth.toLocaleString('default', { month: 'long', year: 'numeric' }).toUpperCase()
   
   const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
+  
+  // Helper to check if a date is today
+  const isDateToday = (day) => {
+    return (
+      day === today.getDate() &&
+      currentMonth.getMonth() === today.getMonth() &&
+      currentMonth.getFullYear() === today.getFullYear()
+    )
+  }
+  
+  // Helper to check if a date is in the past
+  const isDatePast = (day) => {
+    const checkDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day)
+    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+    return checkDate < todayStart
+  }
+  
+  // Helper to check if a date is in the future
+  const isDateFuture = (day) => {
+    const checkDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day)
+    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+    return checkDate > todayStart
+  }
   
   return (
     <section className="relative py-20 overflow-hidden">
@@ -363,20 +387,25 @@ function BookingSection() {
             ))}
             {Array.from({ length: daysInMonth }).map((_, i) => {
               const day = i + 1
-              const isToday = day === 1
+              const isTodayDate = isDateToday(day)
+              const isPast = isDatePast(day)
+              const isFuture = isDateFuture(day)
               
               return (
                 <button
                   key={day}
+                  disabled={isPast}
                   className={`
                     relative aspect-square flex items-center justify-center text-sm rounded-full
-                    transition-colors hover:bg-white/10
-                    ${isToday ? 'bg-neutral-700' : ''}
+                    transition-colors
+                    ${isTodayDate ? 'ring-2 ring-orange-500 bg-orange-500/20 text-white font-semibold' : ''}
+                    ${isPast ? 'text-neutral-600 cursor-not-allowed' : 'hover:bg-white/10'}
+                    ${isFuture ? 'text-white' : ''}
                   `}
                 >
                   {day}
-                  {!isToday && (
-                    <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-orange-500 animate-blink-dot" />
+                  {isFuture && (
+                    <span className="absolute bottom-1 left-1/2 w-1 h-1 rounded-full bg-orange-500 animate-blink-dot" />
                   )}
                 </button>
               )
