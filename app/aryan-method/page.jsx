@@ -159,12 +159,11 @@ function WatermarkBackground() {
 
 
 
-function HeroSection() {
+function HeroSection({ selectedItem, setSelectedItem }) {
   return (
     <section className="relative min-h-screen pt-32 pb-20 overflow-hidden">
       <WatermarkBackground />
       <PulsingGlow />
-      
       <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
         <h1 className="font-black text-5xl sm:text-7xl md:text-8xl tracking-tighter leading-[0.85] mb-6">
           {SITE_CONFIG.heroTitle.map((line, i) => (
@@ -174,38 +173,43 @@ function HeroSection() {
         <p className="text-muted-foreground text-lg max-w-md mx-auto mb-12">
           {SITE_CONFIG.heroSubtitle}
         </p>
-        
         <p className="text-xs tracking-[0.2em] text-muted-foreground mb-8">
           BEST VALUE • UNLOCK EVERYTHING
         </p>
-        
-        <MainPackageCard />
+        <MainPackageCard selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
       </div>
     </section>
   )
 }
 
-function MainPackageCard() {
+function MainPackageCard({ selectedItem, setSelectedItem }) {
+  const isSelected = selectedItem.type === 'main'
+  const handleSelect = () => {
+    setSelectedItem({ type: 'main', id: null, price: MAIN_PACKAGE.price })
+  }
+
   return (
-    <div className="relative max-w-md mx-auto">
+    <div
+      className="relative max-w-md mx-auto cursor-pointer"
+      onClick={handleSelect}
+    >
       {/* Animated border glow */}
-      <div className="absolute -inset-[2px] bg-gradient-to-r from-amber-400 via-orange-500 to-amber-400 rounded-3xl animate-border-glow" />
-      
-      <div className="relative bg-gradient-to-b from-neutral-900 to-neutral-950 rounded-3xl p-8 text-white">
+      {isSelected && (
+        <div className="absolute -inset-[2px] bg-gradient-to-r from-amber-400 via-orange-500 to-amber-400 rounded-3xl animate-border-glow" />
+      )}
+      <div className={`relative bg-gradient-to-b from-neutral-900 to-neutral-950 rounded-3xl p-8 text-white ${!isSelected ? 'border border-neutral-700' : ''}`}>
         {/* Selection indicator */}
         <div className="absolute top-6 left-6">
-          <div className="w-6 h-6 rounded-full border-2 border-white/30 flex items-center justify-center">
-            <div className="w-3 h-3 rounded-full bg-white" />
+          <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-white/30' : 'border-neutral-600'}`}>
+            {isSelected && <div className="w-3 h-3 rounded-full bg-white" />}
           </div>
         </div>
-        
         {/* Badge */}
         <div className="absolute top-4 right-4">
           <span className="bg-red-500 text-white text-xs font-bold px-3 py-1.5 rounded-full tracking-wide">
             {MAIN_PACKAGE.badge}
           </span>
         </div>
-        
         <div className="pt-8">
           <p className="text-orange-400 text-xs tracking-[0.2em] mb-3">{MAIN_PACKAGE.label}</p>
           <h2 className="font-black text-3xl sm:text-4xl tracking-tight leading-tight mb-4">
@@ -214,7 +218,6 @@ function MainPackageCard() {
             ))}
           </h2>
           <p className="text-neutral-400 text-sm mb-6">{MAIN_PACKAGE.description}</p>
-          
           <ul className="space-y-2 mb-8">
             {MAIN_PACKAGE.features.map((feature, i) => (
               <li key={i} className="flex items-center gap-2 text-sm text-neutral-300">
@@ -223,7 +226,6 @@ function MainPackageCard() {
               </li>
             ))}
           </ul>
-          
           <div className="flex items-baseline gap-3 mb-2">
             <span className="text-4xl font-black">₹{MAIN_PACKAGE.price}</span>
             <span className="text-neutral-500 line-through">₹{MAIN_PACKAGE.originalPrice}</span>
@@ -236,19 +238,22 @@ function MainPackageCard() {
   )
 }
 
-function ProductsSection() {
+function ProductsSection({ selectedItem, setSelectedItem }) {
   return (
     <section className="relative py-20 overflow-hidden">
       <WatermarkBackground />
-      
       <div className="relative z-10 max-w-4xl mx-auto px-4">
         <p className="text-center text-xs tracking-[0.2em] text-muted-foreground mb-12">
           — OR — SELECT AN INDIVIDUAL EXPERIENCE
         </p>
-        
         <div className="space-y-6">
           {PRODUCTS.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard
+              key={product.id}
+              product={product}
+              selectedItem={selectedItem}
+              setSelectedItem={setSelectedItem}
+            />
           ))}
         </div>
       </div>
@@ -256,24 +261,39 @@ function ProductsSection() {
   )
 }
 
-function ProductCard({ product }) {
+function ProductCard({ product, selectedItem, setSelectedItem }) {
+  const isSelected = selectedItem.type === 'product' && selectedItem.id === product.id
+  const handleSelect = () => {
+    setSelectedItem({ type: 'product', id: product.id, price: product.price })
+  }
+
   return (
-    <div className="relative max-w-md mx-auto">
-      <div className="relative bg-gradient-to-b from-neutral-900 to-neutral-950 rounded-3xl overflow-hidden text-white">
+    <div
+      className="relative max-w-md mx-auto cursor-pointer"
+      onClick={handleSelect}
+    >
+      {/* Animated border glow */}
+      {isSelected && (
+        <div className="absolute -inset-[2px] bg-gradient-to-r from-amber-400 via-orange-500 to-amber-400 rounded-3xl animate-border-glow" />
+      )}
+      <div className={`relative bg-gradient-to-b from-neutral-900 to-neutral-950 rounded-3xl overflow-hidden text-white ${!isSelected ? 'border border-neutral-700' : ''}`}>
         {/* Background Image */}
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center opacity-40"
-          style={{ 
+          style={{
             backgroundImage: `url(${product.image})`,
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/80 to-neutral-900/60" />
-        
+        {/* Selection indicator */}
+        <div className="absolute top-6 right-6 z-10">
+          <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-white/30' : 'border-neutral-600'}`}>
+            {isSelected && <div className="w-3 h-3 rounded-full bg-white" />}
+          </div>
+        </div>
         {/* Content */}
         <div className="relative p-8">
-          {/* Category */}
           <p className="text-xs tracking-[0.2em] text-white/50 mb-6">{product.category}</p>
-          
           <h3 className="font-black text-3xl sm:text-4xl tracking-tight leading-tight mb-2">
             {product.title.map((line, i) => (
               <span key={i} className="block">{line}</span>
@@ -282,7 +302,6 @@ function ProductCard({ product }) {
           {product.subtitle && (
             <p className="text-orange-400 text-xs tracking-[0.1em] mb-4">• {product.subtitle}</p>
           )}
-          
           <ul className="space-y-2 mb-8">
             {product.features.map((feature, i) => (
               <li key={i} className="flex items-center gap-2 text-sm text-neutral-300">
@@ -291,7 +310,6 @@ function ProductCard({ product }) {
               </li>
             ))}
           </ul>
-          
           <div className="flex items-baseline gap-3 mb-2">
             <span className="text-4xl font-black">₹{product.price}</span>
             <span className="text-neutral-500 line-through">₹{product.originalPrice}</span>
@@ -495,41 +513,69 @@ function Footer() {
   )
 }
 
-function StickyBottomBar() {
+function StickyBottomBar({ selectedItem, setSelectedItem }) {
   const [agreed, setAgreed] = useState(false)
+  const showBestValue = selectedItem.type === 'product'
+  
+  const handleUpgrade = () => {
+    setSelectedItem({ type: 'main', id: null, price: MAIN_PACKAGE.price })
+  }
   
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-lg border-t border-border">
-      <div className="max-w-4xl mx-auto px-4 py-4">
-        <div className="flex flex-col sm:flex-row items-center gap-4">
-          <div className="flex-1">
-            <p className="text-xs tracking-[0.15em] text-muted-foreground">TOTAL INVESTMENT</p>
-            <p className="text-3xl font-black">₹{MAIN_PACKAGE.price}</p>
-          </div>
-          
-          <div className="flex items-center gap-4">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <div 
-                onClick={() => setAgreed(!agreed)}
-                className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
-                  agreed ? 'border-foreground bg-foreground' : 'border-muted-foreground/50'
-                }`}
-              >
-                {agreed && <div className="w-2 h-2 rounded-full bg-background" />}
+    <div className="fixed bottom-0 left-0 right-0 z-50">
+      {/* Best Value Banner - only shows when individual product is selected */}
+      {showBestValue && (
+        <div className="bg-neutral-800 border-t border-neutral-700">
+          <div className="max-w-4xl mx-auto px-4 py-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs tracking-[0.15em] text-orange-400 font-semibold">BEST VALUE</p>
+                <p className="text-sm text-white">Get the Full Bundle – Just ₹933/mo</p>
               </div>
-              <span className="text-sm text-muted-foreground">
-                I agree to <Link href="#" className="text-primary hover:underline">Terms</Link> & <Link href="#" className="text-primary hover:underline">Refunds</Link>
-              </span>
-            </label>
+              <button 
+                onClick={handleUpgrade}
+                className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-full text-sm font-semibold tracking-wide transition-colors"
+              >
+                UPGRADE
+              </button>
+            </div>
           </div>
-          
-          <button 
-            disabled={!agreed}
-            className="w-full sm:w-auto bg-muted text-muted-foreground px-8 py-4 rounded-xl font-semibold text-sm tracking-[0.1em] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted/80 transition-colors"
-          >
-            UNLOCK ACCESS
-            <Lock className="w-4 h-4" />
-          </button>
+        </div>
+      )}
+      
+      {/* Main Bottom Bar */}
+      <div className="bg-background/95 backdrop-blur-lg border-t border-border">
+        <div className="max-w-4xl mx-auto px-4 py-4">
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <div className="flex-1">
+              <p className="text-xs tracking-[0.15em] text-muted-foreground">TOTAL INVESTMENT</p>
+              <p className="text-3xl font-black">₹{selectedItem.price}</p>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <div 
+                  onClick={() => setAgreed(!agreed)}
+                  className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
+                    agreed ? 'border-foreground bg-foreground' : 'border-muted-foreground/50'
+                  }`}
+                >
+                  {agreed && <div className="w-2 h-2 rounded-full bg-background" />}
+                </div>
+                <span className="text-sm text-muted-foreground">
+                  I agree to <Link href="#" className="text-primary hover:underline">Terms</Link> & <Link href="#" className="text-primary hover:underline">Refunds</Link>
+                </span>
+              </label>
+            </div>
+            
+            <button 
+              disabled={!agreed}
+              className="w-full sm:w-auto bg-muted text-muted-foreground px-8 py-4 rounded-xl font-semibold text-sm tracking-[0.1em] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted/80 transition-colors"
+            >
+              UNLOCK ACCESS
+              <Lock className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -541,14 +587,16 @@ function StickyBottomBar() {
 // ============================================
 
 export default function AryanMethodPage() {
+  const [selectedItem, setSelectedItem] = useState({ type: 'main', id: null, price: MAIN_PACKAGE.price })
+
   return (
     <div className="min-h-screen bg-background pb-32">
       <Header />
-      <HeroSection />
-      <ProductsSection />
+      <HeroSection selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
+      <ProductsSection selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
       <BookingSection />
       <Footer />
-      <StickyBottomBar />
+      <StickyBottomBar selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
     </div>
   )
 }
