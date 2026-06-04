@@ -4,9 +4,7 @@ import { useState } from 'react'
 import { ChevronLeft, ChevronRight, Lock, Zap } from 'lucide-react'
 import Link from 'next/link'
 
-// ============================================
-// EDITABLE CONTENT - Modify these values
-// ============================================
+
 const SITE_CONFIG = {
   brandName: "ARYANHEIS",
   brandInitials: "AH",
@@ -36,7 +34,7 @@ const MAIN_PACKAGE = {
 
 const PRODUCTS = [
   {
-    id: 1,
+    id: "6a211564f27d5f7d1202a63f",
     category: "WORKOUTS",
     title: ["THE SUMMER", "SPLIT"],
     features: ["MY WORKOUT SPLIT", "WORKOUT LOGGER", "PERFORMANCE ANALYTICS"],
@@ -47,7 +45,7 @@ const PRODUCTS = [
     subtitle: "FITNESS TRANSFORMATION"
   },
   {
-    id: 2,
+    id: "6a211564f27d5f7d1202a640",
     category: "NUTRITION",
     title: ["MUSCLE", "KITCHEN"],
     subtitle: "(SUMMER EDITION)",
@@ -58,7 +56,7 @@ const PRODUCTS = [
     image: "/images/nutrition.png"
   },
   {
-    id: 3,
+    id: "6a211564f27d5f7d1202a641",
     category: "AESTHETICS",
     title: ["HAIR", "CARE"],
     features: ["GET CURLY HAIR NATURALLY", "FIX DAMAGED HAIR", "PRODUCTS GUIDE", "HAIR STYLING GUIDE"],
@@ -69,7 +67,7 @@ const PRODUCTS = [
     image: "/images/haircare.png"
   },
   {
-    id: 4,
+    id: " 6a211564f27d5f7d1202a642",
     category: "AESTHETICS",
     title: ["SKIN", "CARE"],
     features: ["SKIN TYPE DIAGNOSTICS", "PERSONALISED AM/PM ROUTINE", "PRODUCTS GUIDE", "DE-TAN", "MISTAKES TO AVOID"],
@@ -86,9 +84,7 @@ const BOOKING_CONFIG = {
   subtitle: "Secure your priority slot for a high-performance consultation."
 }
 
-// ============================================
-// COMPONENTS
-// ============================================
+
 
 function PulsingGlow() {
   return (
@@ -274,31 +270,32 @@ function ProductCard({ product, selectedItem, setSelectedItem }) {
 
   return (
     <div
-      className="relative max-w-md mx-auto cursor-pointer"
+      className={`relative max-w-md mx-auto cursor-pointer group transition-transform duration-300 ease-out ${isSelected ? 'scale-[1.02]' : 'hover:scale-[1.01]'}`}
       onClick={handleSelect}
     >
       {/* Animated border glow */}
       {isSelected && (
         <div className="absolute -inset-[2px] bg-gradient-to-r from-amber-400 via-orange-500 to-amber-400 rounded-3xl animate-border-glow" />
       )}
-      <div className={`relative bg-gradient-to-b from-neutral-900 to-neutral-950 rounded-3xl overflow-hidden text-white ${!isSelected ? 'border border-neutral-700' : ''}`}>
-        {/* Background Image */}
+      <div className={`relative bg-gradient-to-b from-neutral-900 to-neutral-950 rounded-3xl overflow-hidden text-white transition-all duration-300 ${!isSelected ? 'border border-neutral-700' : ''} ${isSelected ? 'shadow-2xl shadow-orange-500/20' : ''}`}>
+        {/* Background Image - visible by default, brighter on hover */}
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-40"
+          className={`absolute inset-0 bg-cover bg-center transition-all duration-300 ${isSelected ? 'brightness-125' : 'brightness-75 group-hover:brightness-110'}`}
           style={{
             backgroundImage: `url(${product.image})`,
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/80 to-neutral-900/60" />
+        {/* Subtle dark overlay for text readability - lightens on hover */}
+        <div className={`absolute inset-0 transition-all duration-300 bg-gradient-to-t from-neutral-950/90 via-neutral-900/50 to-transparent ${isSelected ? 'opacity-70' : 'group-hover:opacity-50'}`} />
         {/* Selection indicator */}
         <div className="absolute top-6 right-6 z-10">
-          <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-white/30' : 'border-neutral-600'}`}>
-            {isSelected && <div className="w-3 h-3 rounded-full bg-white" />}
+          <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${isSelected ? 'border-orange-400 bg-orange-500/20 scale-110' : 'border-neutral-600 group-hover:border-neutral-500'}`}>
+            {isSelected && <div className="w-3 h-3 rounded-full bg-orange-400 animate-pulse" />}
           </div>
         </div>
         {/* Content */}
         <div className="relative p-8">
-          <p className="text-xs tracking-[0.2em] text-white/50 mb-6">{product.category}</p>
+          <p className={`text-xs tracking-[0.2em] mb-6 transition-colors duration-300 ${isSelected ? 'text-orange-400/70' : 'text-white/50'}`}>{product.category}</p>
           <h3 className="font-black text-3xl sm:text-4xl tracking-tight leading-tight mb-2">
             {product.title.map((line, i) => (
               <span key={i} className="block">{line}</span>
@@ -310,13 +307,13 @@ function ProductCard({ product, selectedItem, setSelectedItem }) {
           <ul className="space-y-2 mb-8">
             {product.features.map((feature, i) => (
               <li key={i} className="flex items-center gap-2 text-sm text-neutral-300">
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+                <span className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${isSelected ? 'bg-orange-400 scale-125' : 'bg-orange-500'}`} />
                 {feature}
               </li>
             ))}
           </ul>
           <div className="flex items-baseline gap-3 mb-2">
-            <span className="text-4xl font-black">₹{product.price}</span>
+            <span className={`text-4xl font-black transition-colors duration-300 ${isSelected ? 'text-orange-50' : 'text-white'}`}>₹{product.price}</span>
             <span className="text-neutral-500 line-through">₹{product.originalPrice}</span>
           </div>
           <p className="text-orange-400 text-xs tracking-[0.15em]">{product.duration}</p>
@@ -343,7 +340,7 @@ function BookingSection() {
   
   const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
   
-  // Helper to check if a date is today
+  
   const isDateToday = (day) => {
     return (
       day === today.getDate() &&
@@ -352,14 +349,13 @@ function BookingSection() {
     )
   }
   
-  // Helper to check if a date is in the past
+
   const isDatePast = (day) => {
     const checkDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day)
     const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate())
     return checkDate < todayStart
   }
-  
-  // Helper to check if a date is in the future
+
   const isDateFuture = (day) => {
     const checkDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day)
     const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate())
@@ -378,7 +374,7 @@ function BookingSection() {
           {BOOKING_CONFIG.subtitle}
         </p>
         
-        {/* Calendar */}
+       
         <div className="max-w-md mx-auto bg-neutral-900 rounded-3xl p-6 text-white">
           <div className="flex items-center justify-between mb-6">
             <span className="text-sm tracking-[0.1em]">{monthName}</span>
@@ -445,7 +441,7 @@ function Footer() {
     <footer className="bg-neutral-900 text-white py-16">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-          {/* Brand */}
+  
           <div>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center">
@@ -462,7 +458,7 @@ function Footer() {
             </p>
           </div>
           
-          {/* Company */}
+
           <div>
             <h4 className="text-xs tracking-[0.2em] text-neutral-500 mb-4">COMPANY</h4>
             <ul className="space-y-3">
@@ -471,7 +467,7 @@ function Footer() {
             </ul>
           </div>
           
-          {/* Legal */}
+
           <div>
             <h4 className="text-xs tracking-[0.2em] text-neutral-500 mb-4">LEGAL</h4>
             <ul className="space-y-3">
@@ -481,7 +477,7 @@ function Footer() {
             </ul>
           </div>
           
-          {/* Support */}
+
           <div>
             <h4 className="text-xs tracking-[0.2em] text-neutral-500 mb-4">SUPPORT</h4>
             <div className="mb-4">
@@ -537,7 +533,7 @@ function StickyBottomBar({ selectedItem, setSelectedItem }) {
     <div className="fixed bottom-0 left-0 right-0 z-50 bg-background">
       <div className="max-w-[480px] mx-auto px-5 pb-4 pt-2">
 
-        {/* Best Value Banner */}
+
         {showBestValue && (
           <div className="bg-neutral-900 rounded-xl mb-3 cursor-pointer shadow-[0_2px_16px_-4px_rgba(0,0,0,0.2)] transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-[0_4px_24px_-4px_rgba(249,115,22,0.4)] hover:bg-neutral-800">
             <div className="px-5 py-2.5">
@@ -557,7 +553,7 @@ function StickyBottomBar({ selectedItem, setSelectedItem }) {
           </div>
         )}
 
-        {/* Total Investment Section */}
+ 
         <div>
           <div className="flex items-center justify-between gap-4 mb-3">
             <div>
@@ -579,7 +575,7 @@ function StickyBottomBar({ selectedItem, setSelectedItem }) {
             </label>
           </div>
 
-          {/* Unlock Button */}
+
           <button
             disabled={!agreed}
             onClick={handleUnlock}
@@ -601,9 +597,6 @@ function StickyBottomBar({ selectedItem, setSelectedItem }) {
   )
 }
 
-// ============================================
-// MAIN PAGE
-// ============================================
 
 export default function AryanMethodPage() {
   const [selectedItem, setSelectedItem] = useState([{ type: 'main', id: null, price: MAIN_PACKAGE.price }])
