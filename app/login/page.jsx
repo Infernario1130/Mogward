@@ -1,15 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { ArrowLeft, Mail, Lock, ShieldCheck, ChevronRight, User, Phone } from 'lucide-react'
+import { ArrowLeft, Mail, Lock, ShieldCheck, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
-export default function RegisterPage() {
-  const [fullName, setFullName] = useState('')
+export default function AuthenticatePage() {
   const [email, setEmail] = useState('')
-  const [phone, setPhone] = useState('')
-  const [password, setPassword] = useState('')
+  const [clearanceCode, setClearanceCode] = useState('')
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
@@ -22,16 +20,14 @@ export default function RegisterPage() {
     setLoading(true)
 
     try {
-      const response = await fetch('/api/auth/register', {
+      const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: fullName,
           email: email,
-          phone: phone,
-          password: password,
+          password: clearanceCode,
         }),
       })
 
@@ -42,8 +38,8 @@ export default function RegisterPage() {
         return
       }
 
-      setSuccess('Registered successfully. Redirecting...')
-      
+      setSuccess('Access granted. Redirecting...')
+
       setTimeout(() => {
         const redirectTo = localStorage.getItem('redirectAfterAuth')
         if (redirectTo) {
@@ -64,7 +60,7 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen bg-background flex flex-col relative">
       {/* Back Button */}
-      <Link 
+      <Link
         href="/"
         className="absolute top-8 left-8 p-2 text-muted-foreground hover:text-foreground transition-colors"
         aria-label="Go back"
@@ -85,19 +81,24 @@ export default function RegisterPage() {
 
             {/* Title */}
             <h1 className="text-center font-[var(--font-playfair)] text-3xl sm:text-4xl font-black italic text-foreground tracking-tight mb-2">
-              REGISTER
+              AUTHENTICATE
             </h1>
 
+            {/* Subtitle */}
+            <p className="text-center text-xs text-muted-foreground tracking-[0.2em] uppercase mb-8">
+              Protocol ID: Operative
+            </p>
+
             {/* Form Header */}
-            <div className="flex items-center justify-between mb-4 mt-8">
+            <div className="flex items-center justify-between mb-4">
               <span className="text-xs text-muted-foreground tracking-[0.15em] uppercase font-medium">
                 Personnel Details
               </span>
-              <Link 
-                href="/login"
+              <Link
+                href="/register"
                 className="text-xs text-primary hover:text-primary/80 tracking-[0.05em] uppercase font-semibold transition-colors"
               >
-                Already Registered?
+                Not Registered?
               </Link>
             </div>
 
@@ -119,19 +120,6 @@ export default function RegisterPage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
-                  <User className="w-5 h-5" strokeWidth={1.5} />
-                </div>
-                <input
-                  type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Full Name"
-                  className="w-full h-14 pl-12 pr-4 bg-input rounded-xl text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
-                />
-              </div>
-
-              <div className="relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
                   <Mail className="w-5 h-5" strokeWidth={1.5} />
                 </div>
                 <input
@@ -145,26 +133,13 @@ export default function RegisterPage() {
 
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
-                  <Phone className="w-5 h-5" strokeWidth={1.5} />
-                </div>
-                <input
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="Phone Number"
-                  className="w-full h-14 pl-12 pr-4 bg-input rounded-xl text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
-                />
-              </div>
-
-              <div className="relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
                   <Lock className="w-5 h-5" strokeWidth={1.5} />
                 </div>
                 <input
                   type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Password"
+                  value={clearanceCode}
+                  onChange={(e) => setClearanceCode(e.target.value)}
+                  placeholder="Clearance Code"
                   className="w-full h-14 pl-12 pr-4 bg-input rounded-xl text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
                 />
               </div>
@@ -174,15 +149,19 @@ export default function RegisterPage() {
                 disabled={loading}
                 className="w-full h-14 mt-2 bg-gradient-to-r from-primary/90 to-primary rounded-xl text-primary-foreground text-xs tracking-[0.15em] uppercase font-semibold flex items-center justify-center gap-2 hover:from-primary hover:to-primary/90 transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'Registering...' : 'Register Now'}
+                {loading ? 'Authenticating...' : 'Request Secure Clearance'}
                 {!loading && <ChevronRight className="w-4 h-4" strokeWidth={2} />}
               </button>
             </form>
 
+            {/* Footer Link */}
             <div className="mt-6 text-center">
-              <p className="text-xs text-muted-foreground/70 tracking-[0.1em] uppercase">
-                Initial Registration Request
-              </p>
+              <Link
+                href="/register"
+                className="text-xs text-muted-foreground/70 hover:text-muted-foreground tracking-[0.1em] uppercase transition-colors"
+              >
+                Existing Operative: <span className="font-medium">Resume Protocol</span>
+              </Link>
             </div>
           </div>
         </div>

@@ -1,20 +1,164 @@
 'use client'
 
 import { ArrowLeft, Target, Zap } from 'lucide-react'
-import { useSearchParams } from 'next/navigation'
+import { useEffect, useState, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import { Suspense } from 'react'
 
+const PRODUCTS_MAP = {
+  "6a2160af38cf5aec331a473f": "THE ARYAN METHOD",
+  "6a2160af38cf5aec331a473b": "THE SUMMER SPLIT",
+  "6a2160af38cf5aec331a473c": "MUSCLE KITCHEN",
+  "6a2160af38cf5aec331a473d": "HAIR CARE",
+  "6a2160af38cf5aec331a473e": "SKIN CARE",
+}
+
 function CheckoutContent() {
-  const searchParams = useSearchParams()
-  
-  // Dynamic values from URL params (e.g., ?id=ALOK&protocol=HAIR%20CARE)
-  const userId = searchParams.get('id') || 'ALOK'
-  const selectedProtocol = searchParams.get('protocol') || 'HAIR CARE'
+  const router = useRouter()
+  const [selectedItems, setSelectedItems] = useState([])
+  const [userName, setUserName] = useState('')
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    // Read selected items from localStorage
+    const stored = localStorage.getItem('selectedItems')
+    if (!stored) {
+      router.replace('/')
+      return
+    }
+    const parsed = JSON.parse(stored)
+    if (!parsed || parsed.length === 0) {
+      router.replace('/')
+      return
+    }
+    setSelectedItems(parsed)
+
+    // Get user name from /api/auth/me
+    fetch('/api/auth/me')
+      .then(r => r.json())
+      .then(data => {
+        if (!data.success) {
+          router.replace('/login')
+        } else {
+          setUserName(data.user?.name?.toUpperCase() || 'USER')
+        }
+      })
+      .catch(() => router.replace('/login'))
+  }, [router])
+
+  const loadRazorpay = useCallback(() => {
+    return new Promise((resolve) => {
+      if (window.Razorpay) return resolve(true)
+      const script = document.createElement('script')
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js'
+      script.onload = () => resolve(true)
+      script.onerror = () => resolve(false)
+      document.body.appendChild(script)
+    })
+  }, [])
+
+  const handleCheckout = useCallback(async () => {
+    setError('')
+    setIsProcessing(true)
+
+    try {
+      const loaded = await loadRazorpay()
+      if (!loaded) {
+        setError('Failed to load payment gateway. Please check your connection.')
+        setIsProcessing(false)
+        return
+      }
+
+      const productIds = selectedItems.map(i => i.id)
+
+      // Step 1: Create Razorpay order
+      const orderRes = await fetch('/api/payment/create-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productIds }),
+      })
+      const orderData = await orderRes.json()
+
+      if (!orderData.success) {
+        setError(orderData.message || 'Failed to create order. Please try again.')
+        setIsProcessing(false)
+        return
+      }
+
+      // Step 2: Open Razorpay popup
+      const options = {
+        key: orderData.keyId,
+        amount: orderData.order.amount,
+        currency: orderData.order.currency,
+        name: 'ARYANHEIS',
+        description: orderData.products.map(p => p.title.join(' ')).join(', '),
+        order_id: orderData.order.id,
+        prefill: {
+          name: orderData.user.name,
+          email: orderData.user.email,
+          contact: orderData.user.phone,
+        },
+        theme: { color: '#f97316' },
+        modal: {
+          ondismiss: () => {
+            setIsProcessing(false)
+          },
+        },
+        handler: async (response) => {
+          // Step 3: Verify payment
+          try {
+            const verifyRes = await fetch('/api/payment/verify', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpayOrderId: response.razorpay_order_id,
+                razorpayPaymentId: response.razorpay_payment_id,
+                razorpaySignature: response.razorpay_signature,
+                productIds,
+              }),
+            })
+            const verifyData = await verifyRes.json()
+
+            if (verifyData.success) {
+              localStorage.removeItem('selectedItems')
+              localStorage.removeItem('redirectAfterAuth')
+              router.push('/payment-success')
+            } else {
+              setError(verifyData.message || 'Payment verification failed. Contact support.')
+              setIsProcessing(false)
+            }
+          } catch {
+            setError('Something went wrong during verification. Contact support.')
+            setIsProcessing(false)
+          }
+        },
+      }
+
+      const razorpay = new window.Razorpay(options)
+      razorpay.on('payment.failed', (response) => {
+        setError(response.error?.description || 'Payment failed. Please try again.')
+        setIsProcessing(false)
+      })
+      razorpay.open()
+
+    } catch {
+      setError('Something went wrong. Please try again.')
+      setIsProcessing(false)
+    }
+  }, [selectedItems, loadRazorpay, router])
+
+  // Derive display values
+  const selectedProtocol = selectedItems.length === 1
+    ? PRODUCTS_MAP[selectedItems[0].id] || 'SELECTED PROTOCOL'
+    : `${selectedItems.length} PROTOCOLS`
+
+  const total = selectedItems.reduce((sum, i) => sum + i.price, 0)
 
   return (
     <div className="min-h-screen bg-background flex flex-col relative">
       {/* Back Button */}
-      <button 
+      <button
         className="absolute top-8 left-8 p-2 text-muted-foreground hover:text-foreground transition-colors"
         aria-label="Go back"
         onClick={() => window.history.back()}
@@ -39,14 +183,14 @@ function CheckoutContent() {
               REGISTERED
             </h1>
 
-            {/* Subtitle - Dynamic ID */}
+            {/* Subtitle - Dynamic user name */}
             <p className="text-center text-xs text-muted-foreground tracking-[0.2em] uppercase font-bold mb-8">
-              ID: {userId}
+              ID: {userName}
             </p>
 
             {/* Protocol Card */}
             <div className="bg-secondary/50 dark:bg-secondary rounded-2xl p-6 mb-6 border border-border/50 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.06)] dark:shadow-[0_2px_12px_-4px_rgba(0,0,0,0.2)]">
-              {/* Protocol Header - Dynamic Protocol */}
+              {/* Protocol Header */}
               <div className="flex items-center justify-between mb-4 pb-4 border-b border-border/50">
                 <span className="text-xs text-muted-foreground tracking-[0.15em] uppercase font-bold">
                   Selected Protocol
@@ -61,18 +205,31 @@ function CheckoutContent() {
                 Your secure connection is established. Complete the checkout to get immediate access to the protocol.
               </p>
 
-              {/* Urgency Message */}
+              {/* Total */}
               <p className="text-xs text-primary text-center tracking-[0.1em] uppercase font-bold">
-                Only limited seats are available. Join quick.
+                Total: ₹{total} — Only limited seats available. Join quick.
               </p>
             </div>
+
+            {/* Error message */}
+            {error && (
+              <p className="text-xs text-red-500 text-center mb-4 tracking-[0.05em]">
+                {error}
+              </p>
+            )}
 
             {/* Checkout Button */}
             <button
               type="button"
-              className="w-full h-16 bg-foreground dark:bg-zinc-900 rounded-full text-background dark:text-foreground text-sm tracking-[0.2em] uppercase font-bold flex items-center justify-center gap-3 hover:scale-[1.02] hover:shadow-2xl active:scale-[0.98] transition-all duration-200 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.25)] dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.5)]"
+              onClick={handleCheckout}
+              disabled={isProcessing || selectedItems.length === 0}
+              className={`w-full h-16 bg-foreground dark:bg-zinc-900 rounded-full text-background dark:text-foreground text-sm tracking-[0.2em] uppercase font-bold flex items-center justify-center gap-3 transition-all duration-200 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.25)] dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.5)] ${
+                isProcessing || selectedItems.length === 0
+                  ? 'opacity-60 cursor-not-allowed'
+                  : 'hover:scale-[1.02] hover:shadow-2xl active:scale-[0.98]'
+              }`}
             >
-              Complete Checkout
+              {isProcessing ? 'PROCESSING...' : 'Complete Checkout'}
               <Zap className="w-5 h-5 text-primary fill-primary" strokeWidth={0} />
             </button>
           </div>

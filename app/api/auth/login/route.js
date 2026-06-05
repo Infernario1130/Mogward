@@ -21,7 +21,8 @@ export async function POST(request) {
     await connectDB();
 
     // Find user by email
-    const user = await User.findOne({ email });
+    const normalizedEmail = email.toLowerCase().trim();
+    const user = await User.findOne({ email: normalizedEmail })
     if (!user) {
       return NextResponse.json(
         { success: false, message: 'Invalid email or password' },
@@ -32,6 +33,7 @@ export async function POST(request) {
     // Compare password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
+      await new Promise(resolve => setTimeout(resolve, 1000))
       return NextResponse.json(
         { success: false, message: 'Invalid email or password' },
         { status: 401 }

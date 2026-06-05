@@ -25,7 +25,7 @@ function Header() {
               <span className="font-black text-foreground tracking-tight text-lg">{SITE_CONFIG.brandName}</span>
             </Link>
             <Link 
-              href="/"
+              href="/login"
               className="flex items-center gap-2 bg-foreground text-background px-4 py-2 rounded-full text-sm font-semibold hover:bg-foreground/90 transition-colors"
             >
               LOGIN
@@ -56,20 +56,22 @@ function Footer() {
               <p className="text-neutral-400 text-sm leading-relaxed">{SITE_CONFIG.tagline}</p>
             </div>
             
+             {/* Company */}
             <div>
               <h4 className="text-xs tracking-[0.2em] text-neutral-500 mb-4">COMPANY</h4>
               <ul className="space-y-3">
-                <li><Link href="#" className="text-neutral-300 hover:text-white transition-colors">About Us</Link></li>
-                <li><Link href="#" className="text-neutral-300 hover:text-white transition-colors">Contact Us</Link></li>
+                <li><Link href="/about" className="text-neutral-300 hover:text-white transition-colors">About Us</Link></li>
+                <li><Link href="/contact" className="text-neutral-300 hover:text-white transition-colors">Contact Us</Link></li>
               </ul>
             </div>
             
+            {/* Legal */}
             <div>
               <h4 className="text-xs tracking-[0.2em] text-neutral-500 mb-4">LEGAL</h4>
               <ul className="space-y-3">
-                <li><Link href="#" className="text-neutral-300 hover:text-white transition-colors">Terms & Conditions</Link></li>
-                <li><Link href="#" className="text-neutral-300 hover:text-white transition-colors">Privacy Policy</Link></li>
-                <li><Link href="#" className="text-neutral-300 hover:text-white transition-colors">Refund & Policy</Link></li>
+                <li><Link href="/terms" className="text-neutral-300 hover:text-white transition-colors">Terms & Conditions</Link></li>
+                <li><Link href="/privacy" className="text-neutral-300 hover:text-white transition-colors">Privacy Policy</Link></li>
+                <li><Link href="/refund" className="text-neutral-300 hover:text-white transition-colors">Refund & Policy</Link></li>
               </ul>
             </div>
             

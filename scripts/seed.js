@@ -39,7 +39,12 @@ const products = [
     price: 599,
     active: true,
   },
-];
+  {
+    title: ["THE ARYAN", "METHOD"],
+    price: 2799,
+    active: true,
+  },
+]
 
 async function seed() {
   try {

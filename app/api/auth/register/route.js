@@ -38,8 +38,12 @@ export async function POST(request) {
       );
     }
 
+    // Sanitize inputs
+    const trimmedName = name.trim()
+    const normalizedEmail = email.toLowerCase().trim()
+
     // Validate name length
-    if (name.length < 2) {
+    if (trimmedName.length < 2) {
       return NextResponse.json(
         { success: false, message: 'Name must be at least 2 characters' },
         { status: 400 }
@@ -48,7 +52,7 @@ export async function POST(request) {
 
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(normalizedEmail)) {
       return NextResponse.json(
         { success: false, message: 'Please enter a valid email address' },
         { status: 400 }
@@ -76,7 +80,7 @@ export async function POST(request) {
     await connectDB();
 
     // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser) {
       return NextResponse.json(
         { success: false, message: 'An account with this email already exists' },
@@ -89,8 +93,8 @@ export async function POST(request) {
 
     // Create new user
     const user = new User({
-      name,
-      email,
+      name: trimmedName,
+      email: normalizedEmail,
       phone,
       password: hashedPassword,
     });
@@ -110,11 +114,10 @@ export async function POST(request) {
       httpOnly: true,
       secure: isProduction,
       sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60, // 7 days in seconds
+      maxAge: 7 * 24 * 60 * 60,
       path: '/',
     };
 
-    // Create response with cookie
     const response = NextResponse.json(
       {
         success: true,

@@ -25,7 +25,7 @@ function Header() {
               <span className="font-black text-foreground tracking-tight text-lg">{SITE_CONFIG.brandName}</span>
             </Link>
             <Link 
-              href="/"
+              href="/login"
               className="flex items-center gap-2 bg-foreground text-background px-4 py-2 rounded-full text-sm font-semibold hover:bg-foreground/90 transition-colors"
             >
               LOGIN
@@ -143,7 +143,7 @@ export default function RefundPage() {
               Due to the immediate, digital nature of the products sold, and the fact that access to the proprietary Course content is granted instantly upon successful payment, all sales are strictly final.
               </p>
               <ul className="space-y-2 sm:space-y-3 list-disc list-outside ml-5">
-                <li><span className="font-bold text-white">No Returns or Exchanges::</span> We do not offer refunds, partial refunds, exchanges, or credits for any reason once a transaction is successfully processed and access to the Digital Content is delivered.</li>
+                <li><span className="font-bold text-white">No Returns or Exchanges:</span> We do not offer refunds, partial refunds, exchanges, or credits for any reason once a transaction is successfully processed and access to the Digital Content is delivered.</li>
                 <li><span className="font-bold text-white">No Result-Based Refunds:</span> As outlined in our Terms & Conditions, individual results regarding fitness, skincare, and diet vary greatly. We do not issue refunds based on a user's subjective dissatisfaction with the content, personal inability to adhere to the programs, or failure to achieve specific physical results.
                 </li>
               </ul>
