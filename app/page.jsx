@@ -190,9 +190,8 @@ function HeroSection({ selectedItem, setSelectedItem }) {
 function MainPackageCard({ selectedItem, setSelectedItem }) {
   const isSelected = selectedItem.some(i => i.type === 'main')
   const handleSelect = () => {
-    setSelectedItem(prev =>
-      isSelected ? prev.filter(i => i.type !== 'main') : [{ type: 'main', id: MAIN_PACKAGE.id, price: MAIN_PACKAGE.price }]
-    )
+    if (isSelected) return
+    setSelectedItem([{ type: 'main', id: MAIN_PACKAGE.id, price: MAIN_PACKAGE.price }])
   }
 
   return (
@@ -267,7 +266,12 @@ function ProductCard({ product, selectedItem, setSelectedItem }) {
   const handleSelect = () => {
     setSelectedItem(prev => {
       const withoutMain = prev.filter(i => i.type !== 'main')
-      return isSelected ? withoutMain.filter(i => i.id !== product.id) : [...withoutMain, { type: 'product', id: product.id, price: product.price }]
+      const newItems = isSelected
+        ? withoutMain.filter(i => i.id !== product.id)
+        : [...withoutMain, { type: 'product', id: product.id, price: product.price }]
+      return newItems.length === 0
+        ? [{ type: 'main', id: MAIN_PACKAGE.id, price: MAIN_PACKAGE.price }]
+        : newItems
     })
   }
 
