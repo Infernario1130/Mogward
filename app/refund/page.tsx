@@ -1,3 +1,5 @@
+'use client'
+
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, Lock, Zap, X, Mail, Phone, User, Menu } from 'lucide-react'
 import { useState, useEffect } from 'react'
