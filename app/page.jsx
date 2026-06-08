@@ -325,6 +325,9 @@ function BookingModal({ selectedDate, onClose }) {
   const [selectedSlot, setSelectedSlot] = useState(null)
   const [agreed, setAgreed] = useState(false)
   const [focusedField, setFocusedField] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [authMode, setAuthMode] = useState('register') // 'register' or 'login'
   const [registerData, setRegisterData] = useState({
     fullName: '',
     email: '',
@@ -335,6 +338,7 @@ function BookingModal({ selectedDate, onClose }) {
     email: '',
     password: '',
   })
+  const router = useRouter()
 
   if (!selectedDate) return null
 
@@ -344,13 +348,172 @@ function BookingModal({ selectedDate, onClose }) {
     day: 'numeric'
   }).toUpperCase()
 
+  const dateForBackend = selectedDate.toLocaleDateString('en-IN', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })
+
   const slots = [
     { id: 'slot1', name: 'SLOT 1' },
     { id: 'slot2', name: 'SLOT 2' },
   ]
 
+  const handleProceedFromRegister = async () => {
+    setError('')
+    setLoading(true)
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: registerData.fullName,
+          email: registerData.email,
+          phone: registerData.phone,
+          password: registerData.password,
+        }),
+      })
+      const data = await res.json()
+      if (!data.success) {
+        setError(data.message)
+        return
+      }
+      setAuthMode('register')
+      setStep(4)
+    } catch (err) {
+      setError('Something went wrong please try again')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleProceedFromLogin = async () => {
+    setError('')
+    setLoading(true)
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: loginData.email,
+          password: loginData.password,
+        }),
+      })
+      const data = await res.json()
+      if (!data.success) {
+        setError(data.message)
+        return
+      }
+      setAuthMode('login')
+      setStep(4)
+    } catch (err) {
+      setError('Something went wrong please try again')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleUnlockAccess = async () => {
+    if (!agreed) return
+    setError('')
+    setLoading(true)
+
+    try {
+      // Step 1 — Create booking order
+      const orderRes = await fetch('/api/booking/create-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId: selectedSession.id,
+          date: dateForBackend,
+          slot: selectedSlot,
+        }),
+      })
+
+      const orderData = await orderRes.json()
+
+      if (!orderData.success) {
+        setError(orderData.message)
+        setLoading(false)
+        return
+      }
+
+      // Step 2 — Open Razorpay popup
+      const razorpayOptions = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: orderData.order.amount,
+        currency: orderData.order.currency,
+        name: 'ARYANHEIS',
+        description: `1:1 Call — ${selectedSession.duration}`,
+        order_id: orderData.order.id,
+        prefill: {
+          name: orderData.user.name,
+          email: orderData.user.email,
+          contact: orderData.user.phone,
+        },
+        theme: {
+          color: '#000000',
+        },
+        handler: async (response) => {
+          // Step 3 — Verify payment
+          try {
+            const verifyRes = await fetch('/api/booking/verify', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpayOrderId: response.razorpay_order_id,
+                razorpayPaymentId: response.razorpay_payment_id,
+                razorpaySignature: response.razorpay_signature,
+                sessionId: selectedSession.id,
+                date: dateForBackend,
+                slot: selectedSlot,
+              }),
+            })
+
+            const verifyData = await verifyRes.json()
+
+            if (!verifyData.success) {
+              setError(verifyData.message)
+              return
+            }
+
+            // Step 4 — Save booking details and redirect
+            localStorage.setItem('bookingDetails', JSON.stringify({
+              date: dateForBackend,
+              slot: selectedSlot,
+              duration: selectedSession.duration,
+              price: selectedSession.price,
+              bookingId: verifyData.booking.id,
+              razorpayPaymentId: verifyData.booking.razorpayPaymentId,
+            }))
+
+            onClose()
+            router.push('/booking-success')
+
+          } catch (err) {
+            setError('Payment verification failed please contact support')
+          }
+        },
+      }
+
+      const razorpay = new window.Razorpay(razorpayOptions)
+
+      razorpay.on('payment.failed', () => {
+        setError('Payment failed please try again')
+        setLoading(false)
+      })
+
+      razorpay.open()
+
+    } catch (err) {
+      setError('Something went wrong please try again')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const totalSteps = 4
-  const progressSteps = [0, 1, 2, 4] // steps where progress bar shows
+  const progressSteps = [0, 1, 2, 4]
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-md">
@@ -470,7 +633,7 @@ function BookingModal({ selectedDate, onClose }) {
                   BACK TO SLOTS
                 </button>
                 <button
-                  onClick={() => setStep(3)}
+                  onClick={() => { setError(''); setStep(3) }}
                   className="text-xs font-bold text-orange-600 hover:text-orange-700 tracking-[0.1em] transition-colors"
                 >
                   ALREADY REGISTERED?
@@ -505,44 +668,37 @@ function BookingModal({ selectedDate, onClose }) {
                   />
                 </div>
               ))}
+              {error && (
+                <p className="text-red-500 text-xs text-center tracking-wide">{error}</p>
+              )}
             </div>
             <div className="px-6 pb-6">
-  <button
-    onClick={() => {
-      if (
-        !registerData.fullName ||
-        registerData.fullName.length < 2 ||
-        !registerData.email ||
-        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registerData.email) ||
-        !registerData.phone ||
-        !/^\d{10}$/.test(registerData.phone) ||
-        !registerData.password ||
-        registerData.password.length < 8
-      ) return
-      setStep(4)
-    }}
-    disabled={
-      !registerData.fullName ||
-      registerData.fullName.length < 2 ||
-      !registerData.email ||
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registerData.email) ||
-      !registerData.phone ||
-      !/^\d{10}$/.test(registerData.phone) ||
-      !registerData.password ||
-      registerData.password.length < 8
-    }
-    className={`w-full py-3 rounded-lg font-bold text-xs tracking-[0.15em] transition-all duration-200 ${
-      registerData.fullName?.length >= 2 &&
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registerData.email) &&
-      /^\d{10}$/.test(registerData.phone) &&
-      registerData.password?.length >= 8
-        ? 'bg-neutral-900 text-white hover:bg-neutral-800 hover:shadow-lg hover:scale-105 active:scale-95'
-        : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
-    }`}
-  >
-    PROCEED
-  </button>
-</div>
+              <button
+                onClick={handleProceedFromRegister}
+                disabled={
+                  loading ||
+                  !registerData.fullName ||
+                  registerData.fullName.length < 2 ||
+                  !registerData.email ||
+                  !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registerData.email) ||
+                  !registerData.phone ||
+                  !/^\d{10}$/.test(registerData.phone) ||
+                  !registerData.password ||
+                  registerData.password.length < 8
+                }
+                className={`w-full py-3 rounded-lg font-bold text-xs tracking-[0.15em] transition-all duration-200 ${
+                  !loading &&
+                  registerData.fullName?.length >= 2 &&
+                  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registerData.email) &&
+                  /^\d{10}$/.test(registerData.phone) &&
+                  registerData.password?.length >= 8
+                    ? 'bg-neutral-900 text-white hover:bg-neutral-800 hover:shadow-lg hover:scale-105 active:scale-95'
+                    : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
+                }`}
+              >
+                {loading ? 'REGISTERING...' : 'PROCEED'}
+              </button>
+            </div>
           </>
         )}
 
@@ -552,14 +708,14 @@ function BookingModal({ selectedDate, onClose }) {
             <div className="p-6 space-y-4">
               <div className="flex items-center justify-between">
                 <button
-                  onClick={() => setStep(2)}
+                  onClick={() => { setError(''); setStep(2) }}
                   className="flex items-center gap-2 text-xs font-bold text-neutral-600 hover:text-neutral-900 transition-colors tracking-[0.1em]"
                 >
                   <ChevronLeft className="w-4 h-4" />
                   BACK
                 </button>
                 <button
-                  onClick={() => setStep(2)}
+                  onClick={() => { setError(''); setStep(2) }}
                   className="text-xs font-bold text-orange-600 hover:text-orange-700 tracking-[0.1em] transition-colors"
                 >
                   NOT REGISTERED?
@@ -592,41 +748,37 @@ function BookingModal({ selectedDate, onClose }) {
                   />
                 </div>
               ))}
+              {error && (
+                <p className="text-red-500 text-xs text-center tracking-wide">{error}</p>
+              )}
             </div>
             <div className="px-6 pb-6">
-  <button
-    onClick={() => {
-      if (
-        !loginData.email ||
-        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginData.email) ||
-        !loginData.password ||
-        loginData.password.length < 8
-      ) return
-      setStep(4)
-    }}
-    disabled={
-      !loginData.email ||
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginData.email) ||
-      !loginData.password ||
-      loginData.password.length < 8
-    }
-    className={`w-full py-3 rounded-lg font-bold text-xs tracking-[0.15em] transition-all duration-200 ${
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginData.email) &&
-      loginData.password?.length >= 8
-        ? 'bg-neutral-900 text-white hover:bg-neutral-800 hover:shadow-lg hover:scale-105 active:scale-95'
-        : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
-    }`}
-  >
-    AUTHENTICATE & START
-  </button>
-</div>
+              <button
+                onClick={handleProceedFromLogin}
+                disabled={
+                  loading ||
+                  !loginData.email ||
+                  !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginData.email) ||
+                  !loginData.password ||
+                  loginData.password.length < 8
+                }
+                className={`w-full py-3 rounded-lg font-bold text-xs tracking-[0.15em] transition-all duration-200 ${
+                  !loading &&
+                  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginData.email) &&
+                  loginData.password?.length >= 8
+                    ? 'bg-neutral-900 text-white hover:bg-neutral-800 hover:shadow-lg hover:scale-105 active:scale-95'
+                    : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
+                }`}
+              >
+                {loading ? 'AUTHENTICATING...' : 'AUTHENTICATE & START'}
+              </button>
+            </div>
           </>
         )}
 
         {/* Step 4: Authorization */}
         {step === 4 && (
           <>
-            {/* Progress bar */}
             <div className="px-6 pt-6 pb-2">
               <div className="flex gap-1.5">
                 {[0, 1, 2, 3].map((i) => (
@@ -647,7 +799,6 @@ function BookingModal({ selectedDate, onClose }) {
             </div>
 
             <div className="px-6 pb-6 space-y-4">
-              {/* Checkbox */}
               <div className="border-2 border-neutral-200 rounded-2xl p-4 flex items-center gap-3">
                 <div
                   onClick={() => setAgreed(!agreed)}
@@ -670,7 +821,6 @@ function BookingModal({ selectedDate, onClose }) {
                 </p>
               </div>
 
-              {/* Investment Summary */}
               <div className="border-2 border-neutral-100 bg-neutral-50 rounded-2xl p-4 flex items-center justify-between">
                 <div>
                   <p className="text-xs tracking-[0.15em] text-neutral-500 font-medium mb-1">INVESTMENT</p>
@@ -683,20 +833,24 @@ function BookingModal({ selectedDate, onClose }) {
                   <p className="text-2xl font-black text-neutral-900 tracking-tight">{selectedSession.durationLabel.split(' ')[0]} <span className="text-sm font-bold">MIN</span></p>
                 </div>
               </div>
+
+              {error && (
+                <p className="text-red-500 text-xs text-center tracking-wide">{error}</p>
+              )}
             </div>
 
-            {/* Unlock Access Button */}
             <div className="px-6 pb-6">
               <button
-                disabled={!agreed}
+                disabled={!agreed || loading}
+                onClick={handleUnlockAccess}
                 className={`w-full py-3 rounded-xl font-bold text-sm tracking-[0.15em] flex items-center justify-center gap-2 transition-all duration-200 ${
-                  agreed
+                  agreed && !loading
                     ? 'bg-neutral-900 text-white hover:bg-neutral-800 hover:shadow-lg hover:scale-105 active:scale-95'
                     : 'bg-neutral-200 text-neutral-400 cursor-not-allowed'
                 }`}
               >
-                UNLOCK ACCESS
-                <ChevronRight className="w-4 h-4" />
+                {loading ? 'PROCESSING...' : 'UNLOCK ACCESS'}
+                {!loading && <ChevronRight className="w-4 h-4" />}
               </button>
             </div>
           </>
