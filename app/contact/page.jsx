@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Zap } from "lucide-react";
+import { ChevronLeft, ChevronRight, Lock, Zap, X, Mail, Phone, User, Menu } from 'lucide-react'
+import { useState, useEffect } from 'react'
 
 const SITE_CONFIG = {
     brandName: "ARYANHEIS",
@@ -13,7 +14,16 @@ const SITE_CONFIG = {
     copyright: "© 2026 ARYANHEIS // ALL RIGHTS RESERVED."
   }
 
-function Header() {
+  function Header() {
+    const [isLoggedIn, setIsLoggedIn] = useState(false)
+  
+    useEffect(() => {
+      fetch('/api/auth/me')
+        .then(res => res.json())
+        .then(data => { if (data.success) setIsLoggedIn(true) })
+        .catch(() => {})
+    }, [])
+  
     return (
       <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -24,13 +34,22 @@ function Header() {
               </div>
               <span className="font-black text-foreground tracking-tight text-lg">{SITE_CONFIG.brandName}</span>
             </Link>
-            <Link 
-              href="/login"
-              className="flex items-center gap-2 bg-foreground text-background px-4 py-2 rounded-full text-sm font-semibold hover:bg-foreground/90 transition-colors"
-            >
-              LOGIN
-              <Zap className="w-4 h-4" />
-            </Link>
+            {isLoggedIn ? (
+              <Link
+                href="/dashboard"
+                className="flex items-center justify-center w-10 h-10 rounded-full border border-border hover:bg-muted transition-colors"
+              >
+                <Menu className="w-5 h-5" />
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                className="flex items-center gap-2 bg-foreground text-background px-4 py-2 rounded-full text-sm font-semibold hover:bg-foreground/90 transition-colors"
+              >
+                LOGIN
+                <Zap className="w-4 h-4" />
+              </Link>
+            )}
           </div>
         </div>
       </header>
