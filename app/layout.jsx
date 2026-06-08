@@ -1,5 +1,6 @@
 import { Playfair_Display, Inter } from 'next/font/google'
 import './globals.css'
+import Script from 'next/script'
 
 const playfair = Playfair_Display({ 
   subsets: ['latin'],
@@ -23,6 +24,7 @@ export default function RootLayout({ children }) {
     <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
       <body className="font-sans antialiased bg-background">
         {children}
+        <Script src="https://checkout.razorpay.com/v1/checkout.js" />
       </body>
     </html>
   )
