@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ChevronLeft, ChevronRight, Lock, Zap, X, Mail, Phone, User, Menu } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Lock, Zap, X, Mail, Phone, User, Menu, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
@@ -124,7 +124,10 @@ function PulsingGlow() {
 }
 
 function Header() {
+  const router = useRouter()
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [loggingOut, setLoggingOut] = useState(false)
 
   useEffect(() => {
     fetch('/api/auth/me')
@@ -132,6 +135,31 @@ function Header() {
       .then(data => { if (data.success) setIsLoggedIn(true) })
       .catch(() => {})
   }, [])
+
+  // Close popup on Escape
+  useEffect(() => {
+    if (!menuOpen) return
+    const onKey = (e) => { if (e.key === 'Escape') setMenuOpen(false) }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [menuOpen])
+
+  const handleLogout = async () => {
+    if (loggingOut) return
+    setLoggingOut(true)
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' })
+    } catch {}
+    setLoggingOut(false)
+    setMenuOpen(false)
+    setIsLoggedIn(false)
+    router.push('/')
+  }
+
+  const handleMyPurchases = () => {
+    setMenuOpen(false)
+    router.push('/dashboard')
+  }
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
@@ -144,12 +172,63 @@ function Header() {
             <span className="font-black text-foreground tracking-tight text-lg">{SITE_CONFIG.brandName}</span>
           </Link>
           {isLoggedIn ? (
-            <Link
-              href="/dashboard"
-              className="flex items-center justify-center w-10 h-10 rounded-full border border-border hover:bg-muted transition-colors"
-            >
-              <Menu className="w-5 h-5" />
-            </Link>
+            <div className="relative">
+              <button
+                type="button"
+                aria-label="Open menu"
+                aria-expanded={menuOpen}
+                onClick={() => setMenuOpen(v => !v)}
+                className="flex items-center justify-center w-10 h-10 rounded-full border border-border hover:bg-muted transition-colors"
+              >
+                {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
+
+              {menuOpen && (
+                <>
+                  {/* Backdrop (mobile-first tap-to-close) */}
+                  <div
+                    className="fixed inset-0 z-40 bg-black/20 sm:bg-transparent"
+                    onClick={() => setMenuOpen(false)}
+                    aria-hidden="true"
+                  />
+                  {/* Popup menu */}
+                  <div
+                    role="menu"
+                    className="
+                      fixed sm:absolute
+                      z-50
+                      left-3 right-3 top-[68px]
+                      sm:left-auto sm:right-0 sm:top-12
+                      sm:w-60
+                      rounded-2xl border border-border bg-background shadow-2xl
+                      overflow-hidden
+                      animate-in fade-in slide-in-from-top-2 duration-150
+                    "
+                  >
+                    <button
+                      type="button"
+                      role="menuitem"
+                      onClick={handleMyPurchases}
+                      className="w-full flex items-center gap-3 px-4 py-3.5 text-left text-sm font-semibold text-foreground hover:bg-muted transition-colors"
+                    >
+                      <User className="w-4 h-4" />
+                      MY PURCHASES
+                    </button>
+                    <div className="h-px bg-border" />
+                    <button
+                      type="button"
+                      role="menuitem"
+                      onClick={handleLogout}
+                      disabled={loggingOut}
+                      className="w-full flex items-center gap-3 px-4 py-3.5 text-left text-sm font-semibold text-foreground hover:bg-muted transition-colors disabled:opacity-60"
+                    >
+                      <Lock className="w-4 h-4" />
+                      {loggingOut ? 'LOGGING OUT…' : 'LOGOUT'}
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           ) : (
             <Link
               href="/login"
@@ -281,7 +360,10 @@ function ProductsSection({ selectedItem, setSelectedItem }) {
 
 function ProductCard({ product, selectedItem, setSelectedItem }) {
   const isSelected = selectedItem.some(i => i.type === 'product' && i.id === product.id)
-  const handleSelect = () => {
+  const [detailsOpen, setDetailsOpen] = useState(false)
+
+  const handleSelect = (e) => {
+    e.stopPropagation()
     setSelectedItem(prev => {
       const withoutMain = prev.filter(i => i.type !== 'main')
       const newItems = isSelected
@@ -293,51 +375,136 @@ function ProductCard({ product, selectedItem, setSelectedItem }) {
     })
   }
 
+  const handleOpenDetails = () => setDetailsOpen(true)
+  const handleCloseDetails = () => setDetailsOpen(false)
+
+  useEffect(() => {
+    if (!detailsOpen) return
+    const onKey = (e) => { if (e.key === 'Escape') setDetailsOpen(false) }
+    window.addEventListener('keydown', onKey)
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = prevOverflow
+    }
+  }, [detailsOpen])
+
   return (
-    <div
-      className={`relative max-w-md mx-auto cursor-pointer group transition-transform duration-300 ease-out ${isSelected ? 'scale-[1.02]' : 'hover:scale-[1.01]'}`}
-      onClick={handleSelect}
-    >
-      {isSelected && (
-        <div className="absolute -inset-[2px] bg-gradient-to-r from-amber-400 via-orange-500 to-amber-400 rounded-3xl animate-border-glow" />
-      )}
-      <div className={`relative bg-gradient-to-b from-neutral-900 to-neutral-950 rounded-3xl overflow-hidden text-white transition-all duration-300 ${!isSelected ? 'border border-neutral-700' : ''} ${isSelected ? 'shadow-2xl shadow-orange-500/20' : ''}`}>
-        <div
-          className={`absolute inset-0 bg-cover bg-center transition-all duration-300 ${isSelected ? 'brightness-125' : 'brightness-75 group-hover:brightness-110'}`}
-          style={{ backgroundImage: `url(${product.image})` }}
-        />
-        <div className={`absolute inset-0 transition-all duration-300 bg-gradient-to-t from-neutral-950/90 via-neutral-900/50 to-transparent ${isSelected ? 'opacity-70' : 'group-hover:opacity-50'}`} />
-        <div className="absolute top-6 right-6 z-10">
-          <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${isSelected ? 'border-orange-400 bg-orange-500/20 scale-110' : 'border-neutral-600 group-hover:border-neutral-500'}`}>
-            {isSelected && <div className="w-3 h-3 rounded-full bg-orange-400 animate-pulse" />}
+    <>
+      <div
+        className={`relative max-w-md mx-auto cursor-pointer group transition-transform duration-300 ease-out ${isSelected ? 'scale-[1.02]' : 'hover:scale-[1.01]'}`}
+        onClick={handleOpenDetails}
+      >
+        {isSelected && (
+          <div className="absolute -inset-[2px] bg-gradient-to-r from-amber-400 via-orange-500 to-amber-400 rounded-3xl animate-border-glow" />
+        )}
+        <div className={`relative bg-gradient-to-b from-neutral-900 to-neutral-950 rounded-3xl overflow-hidden text-white transition-all duration-300 ${!isSelected ? 'border border-neutral-700' : ''} ${isSelected ? 'shadow-2xl shadow-orange-500/20' : ''}`}>
+          <div
+            className={`absolute inset-0 bg-cover bg-center transition-all duration-300 ${isSelected ? 'brightness-125' : 'brightness-75 group-hover:brightness-110'}`}
+            style={{ backgroundImage: `url(${product.image})` }}
+          />
+          <div className={`absolute inset-0 transition-all duration-300 bg-gradient-to-t from-neutral-950/90 via-neutral-900/50 to-transparent ${isSelected ? 'opacity-70' : 'group-hover:opacity-50'}`} />
+          <button
+            type="button"
+            onClick={handleSelect}
+            aria-label={isSelected ? 'Deselect product' : 'Select product'}
+            aria-pressed={isSelected}
+            className="absolute top-6 right-6 z-20 p-1 rounded-full cursor-pointer"
+          >
+            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${isSelected ? 'border-orange-400 bg-orange-500/20 scale-110' : 'border-neutral-600 group-hover:border-neutral-500 bg-neutral-950/40'}`}>
+              {isSelected && <div className="w-3 h-3 rounded-full bg-orange-400 animate-pulse" />}
+            </div>
+          </button>
+          <div className="relative p-8">
+            <p className={`text-xs tracking-[0.2em] mb-6 transition-colors duration-300 ${isSelected ? 'text-orange-400/70' : 'text-white/50'}`}>{product.category}</p>
+            <h3 className="font-black text-3xl sm:text-4xl tracking-tight leading-tight mb-2">
+              {product.title.map((line, i) => (
+                <span key={i} className="block">{line}</span>
+              ))}
+            </h3>
+            {product.subtitle && (
+              <p className="text-orange-400 text-xs tracking-[0.1em] mb-4">• {product.subtitle}</p>
+            )}
+            <ul className="space-y-2 mb-8">
+              {product.features.map((feature, i) => (
+                <li key={i} className="flex items-center gap-2 text-sm text-neutral-300">
+                  <span className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${isSelected ? 'bg-orange-400 scale-125' : 'bg-orange-500'}`} />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            <div className="flex items-baseline gap-3 mb-2">
+              <span className={`text-4xl font-black transition-colors duration-300 ${isSelected ? 'text-orange-50' : 'text-white'}`}>₹{product.price}</span>
+              <span className="text-neutral-500 line-through">₹{product.originalPrice}</span>
+            </div>
+            <p className="text-orange-400 text-xs tracking-[0.15em]">{product.duration}</p>
           </div>
-        </div>
-        <div className="relative p-8">
-          <p className={`text-xs tracking-[0.2em] mb-6 transition-colors duration-300 ${isSelected ? 'text-orange-400/70' : 'text-white/50'}`}>{product.category}</p>
-          <h3 className="font-black text-3xl sm:text-4xl tracking-tight leading-tight mb-2">
-            {product.title.map((line, i) => (
-              <span key={i} className="block">{line}</span>
-            ))}
-          </h3>
-          {product.subtitle && (
-            <p className="text-orange-400 text-xs tracking-[0.1em] mb-4">• {product.subtitle}</p>
-          )}
-          <ul className="space-y-2 mb-8">
-            {product.features.map((feature, i) => (
-              <li key={i} className="flex items-center gap-2 text-sm text-neutral-300">
-                <span className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${isSelected ? 'bg-orange-400 scale-125' : 'bg-orange-500'}`} />
-                {feature}
-              </li>
-            ))}
-          </ul>
-          <div className="flex items-baseline gap-3 mb-2">
-            <span className={`text-4xl font-black transition-colors duration-300 ${isSelected ? 'text-orange-50' : 'text-white'}`}>₹{product.price}</span>
-            <span className="text-neutral-500 line-through">₹{product.originalPrice}</span>
-          </div>
-          <p className="text-orange-400 text-xs tracking-[0.15em]">{product.duration}</p>
         </div>
       </div>
-    </div>
+
+      {detailsOpen && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8 bg-black/70 backdrop-blur-md animate-in fade-in duration-200"
+          onClick={handleCloseDetails}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${product.title.join(' ')} details`}
+        >
+          <div
+            className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-gradient-to-b from-neutral-900 to-neutral-950 border border-neutral-700 rounded-3xl text-white shadow-2xl shadow-orange-500/10"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-6 sm:px-8 pt-6">
+              <button
+                type="button"
+                onClick={handleCloseDetails}
+                className="flex items-center gap-2 text-xs tracking-[0.2em] text-white/60 hover:text-orange-400 transition-colors cursor-pointer"
+                aria-label="Back"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                BACK
+              </button>
+              <p className="text-xs tracking-[0.2em] text-orange-400/70">{product.category}</p>
+            </div>
+
+            <div className="px-6 sm:px-8 pb-8 pt-6">
+              <h3 className="font-black text-3xl sm:text-4xl tracking-tight leading-tight mb-2">
+                {product.title.map((line, i) => (
+                  <span key={i} className="block">{line}</span>
+                ))}
+              </h3>
+              {product.subtitle && (
+                <p className="text-orange-400 text-xs tracking-[0.1em] mb-6">• {product.subtitle}</p>
+              )}
+
+              <div
+                className="relative w-full h-48 sm:h-56 rounded-2xl overflow-hidden mb-6 bg-cover bg-center border border-neutral-800"
+                style={{ backgroundImage: `url(${product.image})` }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-transparent" />
+              </div>
+
+              <p className="text-xs tracking-[0.2em] text-white/50 mb-3">WHAT'S INCLUDED</p>
+              <ul className="space-y-2 mb-8">
+                {product.features.map((feature, i) => (
+                  <li key={i} className="flex items-center gap-2 text-sm text-neutral-300">
+                    <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+
+              <div className="flex items-baseline gap-3 mb-1">
+                <span className="text-4xl font-black text-white">₹{product.price}</span>
+                <span className="text-neutral-500 line-through">₹{product.originalPrice}</span>
+              </div>
+              <p className="text-orange-400 text-xs tracking-[0.15em]">{product.duration}</p>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   )
 }
 
