@@ -1,4 +1,4 @@
-import { Playfair_Display, Inter } from 'next/font/google'
+import { Playfair_Display, Inter, League_Spartan } from 'next/font/google'
 import './globals.css'
 import Script from 'next/script'
 
@@ -14,6 +14,12 @@ const inter = Inter({
   variable: '--font-inter',
 })
 
+const leagueSpartan = League_Spartan({ 
+  subsets: ['latin'],
+  variable: '--font-league-spartan',
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+})
+
 export const metadata = {
   title: 'Authenticate | Protocol ID',
   description: 'Secure authentication portal',
@@ -21,7 +27,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
+    <html lang="en" className={`${playfair.variable} ${inter.variable} ${leagueSpartan.variable}`}>
       <body className="font-sans antialiased bg-background">
         {children}
         <Script src="https://checkout.razorpay.com/v1/checkout.js" />

@@ -5,8 +5,8 @@ import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Lock, Zap, X, Mail, Phone, User, Menu } from 'lucide-react'
 
 const SITE_CONFIG = {
-    brandName: "ARYANHEIS",
-    brandInitials: "AH",
+    brandName: "MOGWARD",
+    brandInitials: "M",
     email: "ascend@aryanmethod.in",
     address: {
       line1: "RAPTINAGAR PHASE-IV,",

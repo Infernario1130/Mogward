@@ -5,8 +5,8 @@ import { ChevronLeft, ChevronRight, Lock, Zap, X, Mail, Phone, User, Menu } from
 import { useState, useEffect } from 'react'
 
 const SITE_CONFIG = {
-    brandName: "ARYANHEIS",
-    brandInitials: "AH",
+    brandName: "MOGWARD",
+    brandInitials: "M",
     heroTitle: ["THE", "ARYAN", "METHOD"],
     heroSubtitle: "The only 4 systems you need to ascend and grow.",
     watermarkText: "ARYAN METHOD",

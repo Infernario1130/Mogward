@@ -4,14 +4,17 @@ import { useState, useEffect } from 'react'
 import { ChevronLeft, ChevronRight, Lock, Zap, X, Mail, Phone, User, Menu, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { League_Spartan } from 'next/font/google'
+
+const leagueSpartan = League_Spartan({ subsets: ['latin'], weight: ['400','500','600','700','800','900'] })
 
 
 const SITE_CONFIG = {
-  brandName: "ARYANHEIS",
-  brandInitials: "AH",
-  heroTitle: ["THE", "ARYAN", "METHOD"],
-  heroSubtitle: "The only 4 systems you need to ascend and grow.",
-  watermarkText: "ARYAN METHOD",
+  brandName: "MOGWARD",
+  brandInitials: "M",
+  heroTitle: ["THE", "MOGWARD", "PROGRAM"],
+  heroSubtitle: "The only 4 systems you need to ascend & max out your true potential.",
+  watermarkText: "MOGWARD PROGRAM",
   email: "ascend@aryanmethod.in",
   address: {
     line1: "RAPTINAGAR PHASE-IV,",
@@ -25,59 +28,60 @@ const MAIN_PACKAGE = {
   id: "6a2160af38cf5aec331a473f",
   badge: "LIMITED OFFER",
   label: "LEVEL UP",
-  title: ["THE ARYAN", "METHOD"],
+  title: ["THE MOGWARD", "PROTOCOL"],
   description: "Full access to everything. Peak performance guaranteed.",
   features: ["THE SUMMER SPLIT", "MUSCLE KITCHEN", "SKIN CARE", "HAIR CARE"],
   price: 2799,
   originalPrice: 4999,
-  duration: "3 MONTHS FULL ACCESS",
-  perMonth: "₹933 PER MONTH"
+  duration: "LIFETIME ACCESS",
+  perMonth: "FREE",
+  image: "/images/combo.png"
 }
 
 const PRODUCTS = [
   {
     id: "6a2160af38cf5aec331a473b",
     category: "WORKOUTS",
-    title: ["THE SUMMER", "SPLIT"],
+    title: ["THE TRAINING", "PROTOCOL"],
     features: ["MY WORKOUT SPLIT", "WORKOUT LOGGER", "PERFORMANCE ANALYTICS"],
     price: 1199,
     originalPrice: 1800,
-    duration: "1 MONTH ACCESS",
-    image: "/images/workouts.png",
+    duration: "LIFETIME ACCESS",
+    image: "/images/training.png",
     subtitle: "FITNESS TRANSFORMATION"
   },
   {
     id: "6a2160af38cf5aec331a473c",
     category: "NUTRITION",
-    title: ["MUSCLE", "KITCHEN"],
+    title: ["DIET", "PROTOCOL"],
     subtitle: "(SUMMER EDITION)",
     features: ["6 NEW MEALS EVERYDAY", "VEG/NON-VEG", "EASY TO FOLLOW RECIPES", "MACROS BREAKDOWN"],
     price: 999,
     originalPrice: 1799,
-    duration: "1 MONTH ACCESS",
-    image: "/images/nutrition.png"
+    duration: "LIFETIME ACCESS",
+    image: "/images/diet.png"
   },
   {
     id: "6a2160af38cf5aec331a473d",
     category: "AESTHETICS",
-    title: ["HAIR", "CARE"],
-    features: ["GET CURLY HAIR NATURALLY", "FIX DAMAGED HAIR", "PRODUCTS GUIDE", "HAIR STYLING GUIDE"],
+    title: ["SKIN", "PROTOCOL"],
+    features: ["SKIN TYPE DIAGNOSTICS", "AM/PM ROUTINE", "PRODUCTS GUIDE", "MISTAKES TO AVOID"],
     price: 799,
     originalPrice: 1299,
-    duration: "1 MONTH ACCESS",
-    subtitle: "HAIR OPTIMISATION",
-    image: "/images/haircare.png"
+    duration: "LIFETIME ACCESS",
+    subtitle: "SKIN CARE MASTERY",
+    image: "/images/skin.png"
   },
   {
     id: "6a2160af38cf5aec331a473e",
     category: "AESTHETICS",
-    title: ["SKIN", "CARE"],
-    features: ["SKIN TYPE DIAGNOSTICS", "PERSONALISED AM/PM ROUTINE", "PRODUCTS GUIDE", "DE-TAN", "MISTAKES TO AVOID"],
+    title: ["FRAME", "PROTOCOL"],
+    features: ["SKIN TYPE DIAGNOSTICS", "PRODUCTS GUIDE",  "MISTAKES TO AVOID"],
     price: 599,
     originalPrice: 999,
-    duration: "1 MONTH ACCESS",
+    duration: "LIFETIME ACCESS",
     subtitle: "SKIN CARE MASTERY",
-    image: "/images/skincare.png"
+    image: "/images/frame.png"
   }
 ]
 
@@ -105,7 +109,7 @@ function PulsingGlow() {
         style={{
           width: '120%',
           height: '600px',
-          background: 'radial-gradient(ellipse 70% 60% at 50% 20%, rgba(249,115,22,0.95) 0%, rgba(249,115,22,0.55) 35%, rgba(249,115,22,0.15) 65%, transparent 85%)',
+          background: 'radial-gradient(ellipse 70% 60% at 50% 20%, rgba(148,0,211,0.95) 0%, rgba(148,0,211,0.55) 35%, rgba(148,0,211,0.15) 65%, transparent 85%)',
           filter: 'blur(30px)',
         }}
       />
@@ -114,7 +118,7 @@ function PulsingGlow() {
         style={{
           width: '80%',
           height: '500px',
-          background: 'radial-gradient(ellipse 60% 55% at 50% 15%, rgba(220,50,30,0.8) 0%, rgba(220,50,30,0.4) 40%, transparent 75%)',
+          background: 'radial-gradient(ellipse 60% 55% at 50% 15%, rgba(244, 8, 165, 0.8) 0%, rgba(216, 60, 185, 0.4) 40%, transparent 75%)',
           filter: 'blur(20px)',
           animationDelay: '0.3s',
         }}
@@ -169,7 +173,7 @@ function Header() {
             <div className="w-8 h-8 bg-foreground rounded-lg flex items-center justify-center">
               <span className="text-background text-xs font-bold">{SITE_CONFIG.brandInitials}</span>
             </div>
-            <span className="font-black text-foreground tracking-tight text-lg">{SITE_CONFIG.brandName}</span>
+            <span className={`font-black text-foreground tracking-tight text-lg ${leagueSpartan.className}`}>{SITE_CONFIG.brandName}</span>
           </Link>
           {isLoggedIn ? (
             <div className="relative">
@@ -244,14 +248,19 @@ function Header() {
   )
 }
 
-function WatermarkBackground() {
+function WatermarkBackground({ anchor = 'center' }) {
+  // `anchor='title'` positions the watermark at the top so it sits behind the
+  // hero title on every screen size (including small screens where the section
+  // is taller than the viewport and a vertically-centered watermark would drop
+  // far below the title).
+  const justify = anchor === 'title' ? 'justify-start' : 'justify-center'
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
-      <div className="absolute inset-0 flex flex-col justify-center opacity-[0.06] dark:opacity-[0.09]">
+    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-screen pointer-events-none select-none">
+      <div className={`flex flex-col ${justify} opacity-[0.06] dark:opacity-[0.09]`}>
         {SITE_CONFIG.watermarkText.split(' ').map((word, i) => (
           <span
             key={i}
-            className="text-[25vw] font-black tracking-tighter leading-[0.8] text-foreground whitespace-nowrap"
+            className={`text-[25vw] font-black tracking-tighter leading-[0.8] text-foreground whitespace-nowrap ${leagueSpartan.className}`}
           >
             {word}
           </span>
@@ -264,19 +273,46 @@ function WatermarkBackground() {
 function HeroSection({ selectedItem, setSelectedItem }) {
   return (
     <section className="relative min-h-screen pt-32 pb-20 overflow-hidden">
-      <WatermarkBackground />
       <PulsingGlow />
       <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
-        <h1 className="font-black text-5xl sm:text-7xl md:text-8xl tracking-tighter leading-[0.85] mb-6">
-          {SITE_CONFIG.heroTitle.map((line, i) => (
-            <span key={i} className="block">{line}</span>
-          ))}
-        </h1>
-        <p className="text-muted-foreground text-lg max-w-md mx-auto mb-12">
+        <div className="relative">
+          <WatermarkBackground anchor="title" />
+          <h1 className={`relative z-10 font-black text-7xl sm:text-9xl md:text-10xl tracking-tighter leading-[0.85] mb-6 ${leagueSpartan.className}`}>
+            {SITE_CONFIG.heroTitle.map((line, i) => (
+              <span key={i} className="block">{line}</span>
+            ))}
+          </h1>
+        </div>
+        <p className="text-muted-foreground font-medium text-sm max-w-3xs mx-auto mb-12">
           {SITE_CONFIG.heroSubtitle}
         </p>
-        <p className="text-xs tracking-[0.2em] text-muted-foreground mb-8">
-          BEST VALUE • UNLOCK EVERYTHING
+
+            {/* Stats row — mobile-first */}
+
+            <div className={`max-w-3xl mx-auto mb-12 py-4 pl-12 sm:pl-16 pr-4 ${leagueSpartan.className}`}>
+  <div className="grid grid-cols-3 divide-x divide-foreground/15">
+    {[
+      { idx: "01", value: "04", label: "SYSTEMS" },
+      { idx: "02", value: "01", label: "FRAMEWORK" },
+      { idx: "03", value: "∞",  label: "LEVERAGE" },
+    ].map((s) => (
+      <div key={s.idx} className="flex flex-col items-start px-6 sm:px-8">
+        <span className="text-[10px] sm:text-xs tracking-[0.25em] text-muted-foreground/70 mb-2 sm:mb-3">
+          {s.idx}
+        </span>
+        <span className="font-black leading-none text-4xl sm:text-6xl md:text-7xl text-foreground mb-2 sm:mb-3">
+          {s.value}
+        </span>
+        <span className="text-[10px] sm:text-xs tracking-[0.25em] text-muted-foreground">
+          {s.label}
+        </span>
+      </div>
+    ))}
+  </div>
+</div>
+
+        <p className="text-xs font-bold tracking-[0.2em] text-muted-foreground mb-8">
+          COMPLETE BUNDLE • BEST VALUE
         </p>
         <MainPackageCard selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
       </div>
@@ -290,45 +326,49 @@ function MainPackageCard({ selectedItem, setSelectedItem }) {
     if (isSelected) return
     setSelectedItem([{ type: 'main', id: MAIN_PACKAGE.id, price: MAIN_PACKAGE.price }])
   }
-
   return (
-    <div className="relative max-w-md mx-auto cursor-pointer" onClick={handleSelect}>
+    <div className="relative max-w-md mx-auto cursor-pointer group" onClick={handleSelect}>
       {isSelected && (
-        <div className="absolute -inset-[2px] bg-gradient-to-r from-amber-400 via-orange-500 to-amber-400 rounded-3xl animate-border-glow" />
+        <div className="absolute -inset-[2px] bg-gradient-to-r from-[#9400D3] via-[#9400D3] to-[#9400D3] rounded-3xl animate-border-glow" />
       )}
-      <div className={`relative bg-gradient-to-b from-neutral-900 to-neutral-950 rounded-3xl p-8 text-white ${!isSelected ? 'border border-neutral-700' : ''}`}>
-        <div className="absolute top-6 left-6">
+      <div className={`relative bg-gradient-to-b from-neutral-900 to-neutral-950 rounded-3xl overflow-hidden text-white aspect-[3/4] flex flex-col ${!isSelected ? 'border border-neutral-700' : ''}`}>
+        <div
+          className="absolute inset-0 bg-cover bg-center brightness-75 group-hover:brightness-140 transition-all duration-300"
+          style={{ backgroundImage: `url(${MAIN_PACKAGE.image})` }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-neutral-900/50 to-transparent" />
+        <div className="absolute top-6 left-6 z-20">
           <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-white/30' : 'border-neutral-600'}`}>
             {isSelected && <div className="w-3 h-3 rounded-full bg-white" />}
           </div>
         </div>
-        <div className="absolute top-4 right-4">
-          <span className="bg-red-500 text-white text-xs font-bold px-3 py-1.5 rounded-full tracking-wide">
+        <div className="absolute top-4 right-4 z-20">
+          <span className="bg-[#9400D3] text-white text-xs font-bold px-3 py-1.5 rounded-full tracking-wide">
             {MAIN_PACKAGE.badge}
           </span>
         </div>
-        <div className="pt-8">
-          <p className="text-orange-400 text-xs tracking-[0.2em] mb-3">{MAIN_PACKAGE.label}</p>
-          <h2 className="font-black text-3xl sm:text-4xl tracking-tight leading-tight mb-4">
+        <div className="relative mt-auto p-8">
+          <p className="text-[#9400D3] font-extrabold text-xs tracking-[0.2em] mb-6">{MAIN_PACKAGE.label}</p>
+          <h2 className={`font-black text-3xl sm:text-4xl tracking-[0.01em] leading-[0.9] mb-20 ${leagueSpartan.className}`}>
             {MAIN_PACKAGE.title.map((line, i) => (
               <span key={i} className="block">{line}</span>
             ))}
           </h2>
-          <p className="text-neutral-400 text-sm mb-6">{MAIN_PACKAGE.description}</p>
+          <p className="text-neutral-400 text-sm mb-6 font-semibold">{MAIN_PACKAGE.description}</p>
           <ul className="space-y-2 mb-8">
             {MAIN_PACKAGE.features.map((feature, i) => (
               <li key={i} className="flex items-center gap-2 text-sm text-neutral-300">
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#9400D3]" />
                 {feature}
               </li>
             ))}
           </ul>
           <div className="flex items-baseline gap-3 mb-2">
-            <span className="text-4xl font-black">₹{MAIN_PACKAGE.price}</span>
+            <span className={`text-4xl font-black ${leagueSpartan.className}`}>₹{MAIN_PACKAGE.price}</span>
             <span className="text-neutral-500 line-through">₹{MAIN_PACKAGE.originalPrice}</span>
           </div>
-          <p className="text-orange-400 text-xs tracking-[0.15em] mb-1">{MAIN_PACKAGE.duration}</p>
-          <p className="text-neutral-500 text-xs tracking-[0.1em]">{MAIN_PACKAGE.perMonth}</p>
+          <p className="text-[#9400D3] text-xs tracking-[0.15em] font-extrabold mb-1">{MAIN_PACKAGE.duration}</p>
+          <p className="text-neutral-500 text-xs font-extrabold tracking-[0.1em]">{MAIN_PACKAGE.perMonth}</p>
         </div>
       </div>
     </div>
@@ -340,7 +380,7 @@ function ProductsSection({ selectedItem, setSelectedItem }) {
     <section className="relative py-20 overflow-hidden">
       <WatermarkBackground />
       <div className="relative z-10 max-w-4xl mx-auto px-4">
-        <p className="text-center text-xs tracking-[0.2em] text-muted-foreground mb-12">
+        <p className="text-center text-xs tracking-[0.2em] font-bold text-muted-foreground mb-12">
           — OR — SELECT AN INDIVIDUAL EXPERIENCE
         </p>
         <div className="space-y-6">
@@ -397,14 +437,16 @@ function ProductCard({ product, selectedItem, setSelectedItem }) {
         onClick={handleOpenDetails}
       >
         {isSelected && (
-          <div className="absolute -inset-[2px] bg-gradient-to-r from-amber-400 via-orange-500 to-amber-400 rounded-3xl animate-border-glow" />
+          <div className="absolute -inset-[2px] bg-gradient-to-r from-[#9400D3] via-[#9400D3] to-[#9400D3] rounded-3xl animate-border-glow" />
         )}
-        <div className={`relative bg-gradient-to-b from-neutral-900 to-neutral-950 rounded-3xl overflow-hidden text-white transition-all duration-300 ${!isSelected ? 'border border-neutral-700' : ''} ${isSelected ? 'shadow-2xl shadow-orange-500/20' : ''}`}>
+        <div className={`relative bg-gradient-to-b from-neutral-900 to-neutral-950 rounded-3xl overflow-hidden text-white aspect-[3/4] flex flex-col transition-all duration-300 ${!isSelected ? 'border border-neutral-700' : ''} ${isSelected ? 'shadow-2xl shadow-[#9400D3]/20' : ''}`}>
           <div
             className={`absolute inset-0 bg-cover bg-center transition-all duration-300 ${isSelected ? 'brightness-125' : 'brightness-75 group-hover:brightness-110'}`}
             style={{ backgroundImage: `url(${product.image})` }}
           />
           <div className={`absolute inset-0 transition-all duration-300 bg-gradient-to-t from-neutral-950/90 via-neutral-900/50 to-transparent ${isSelected ? 'opacity-70' : 'group-hover:opacity-50'}`} />
+
+          {/* Select button - top right */}
           <button
             type="button"
             onClick={handleSelect}
@@ -412,33 +454,48 @@ function ProductCard({ product, selectedItem, setSelectedItem }) {
             aria-pressed={isSelected}
             className="absolute top-6 right-6 z-20 p-1 rounded-full cursor-pointer"
           >
-            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${isSelected ? 'border-orange-400 bg-orange-500/20 scale-110' : 'border-neutral-600 group-hover:border-neutral-500 bg-neutral-950/40'}`}>
-              {isSelected && <div className="w-3 h-3 rounded-full bg-orange-400 animate-pulse" />}
+            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${isSelected ? 'border-[#9400D3] bg-[#9400D3]/20 scale-110' : 'border-neutral-600 group-hover:border-neutral-500 bg-neutral-950/40'}`}>
+              {isSelected && <div className="w-3 h-3 rounded-full bg-[#9400D3] animate-pulse" />}
             </div>
           </button>
-          <div className="relative p-8">
-            <p className={`text-xs tracking-[0.2em] mb-6 transition-colors duration-300 ${isSelected ? 'text-orange-400/70' : 'text-white/50'}`}>{product.category}</p>
-            <h3 className="font-black text-3xl sm:text-4xl tracking-tight leading-tight mb-2">
+
+          {/* Category - top left */}
+          <div className="relative z-10 px-8 pt-6">
+            <p className={`text-xs tracking-[0.2em] font-extrabold transition-colors duration-300 ${isSelected ? 'text-[#9400D3]/70' : 'text-white/50'}`}>
+              {product.category}
+            </p>
+          </div>
+
+          {/* Title - middle */}
+          <div className="relative z-10 px-8 mt-auto">
+            {product.subtitle && (
+              <p className="text-[#9400D3] font-bold text-xs tracking-[0.1em] mb-2">• {product.subtitle}</p>
+            )}
+            <h3 className={`font-black text-3xl sm:text-4xl tracking-tight leading-[0.9] mb-6 ${leagueSpartan.className}`}>
               {product.title.map((line, i) => (
                 <span key={i} className="block">{line}</span>
               ))}
             </h3>
-            {product.subtitle && (
-              <p className="text-orange-400 text-xs tracking-[0.1em] mb-4">• {product.subtitle}</p>
-            )}
-            <ul className="space-y-2 mb-8">
+          </div>
+
+          {/* Bottom row - features left, price right */}
+          <div className="relative z-10 px-8 pb-8 flex items-end justify-between gap-4">
+            <ul className="space-y-2">
               {product.features.map((feature, i) => (
                 <li key={i} className="flex items-center gap-2 text-sm text-neutral-300">
-                  <span className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${isSelected ? 'bg-orange-400 scale-125' : 'bg-orange-500'}`} />
+                  <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 transition-all duration-300 ${isSelected ? 'bg-[#9400D3] scale-125' : 'bg-[#9400D3]'}`} />
                   {feature}
                 </li>
               ))}
             </ul>
-            <div className="flex items-baseline gap-3 mb-2">
-              <span className={`text-4xl font-black transition-colors duration-300 ${isSelected ? 'text-orange-50' : 'text-white'}`}>₹{product.price}</span>
-              <span className="text-neutral-500 line-through">₹{product.originalPrice}</span>
+
+            <div className="text-right flex-shrink-0">
+              <span className="text-neutral-500 line-through text-sm block">₹{product.originalPrice}</span>
+              <span className={`text-4xl font-black transition-colors duration-300 ${isSelected ? 'text-[#9400D3]' : 'text-white'} ${leagueSpartan.className}`}>
+                ₹{product.price}
+              </span>
+              <p className="text-[#9400D3] text-xs font-bold tracking-[0.15em] mt-1">{product.duration}</p>
             </div>
-            <p className="text-orange-400 text-xs tracking-[0.15em]">{product.duration}</p>
           </div>
         </div>
       </div>
@@ -452,30 +509,30 @@ function ProductCard({ product, selectedItem, setSelectedItem }) {
           aria-label={`${product.title.join(' ')} details`}
         >
           <div
-            className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-gradient-to-b from-neutral-900 to-neutral-950 border border-neutral-700 rounded-3xl text-white shadow-2xl shadow-orange-500/10"
+            className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-gradient-to-b from-neutral-900 to-neutral-950 border border-neutral-700 rounded-3xl text-white shadow-2xl shadow-[#9400D3]/10"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between px-6 sm:px-8 pt-6">
               <button
                 type="button"
                 onClick={handleCloseDetails}
-                className="flex items-center gap-2 text-xs tracking-[0.2em] text-white/60 hover:text-orange-400 transition-colors cursor-pointer"
+                className="flex items-center gap-2 text-xs tracking-[0.2em] text-white/60 hover:text-[#9400D3] transition-colors cursor-pointer"
                 aria-label="Back"
               >
                 <ArrowLeft className="w-4 h-4" />
                 BACK
               </button>
-              <p className="text-xs tracking-[0.2em] text-orange-400/70">{product.category}</p>
+              <p className="text-xs tracking-[0.2em] text-[#9400D3]/70">{product.category}</p>
             </div>
 
             <div className="px-6 sm:px-8 pb-8 pt-6">
-              <h3 className="font-black text-3xl sm:text-4xl tracking-tight leading-tight mb-2">
+              <h3 className={`font-black text-3xl sm:text-4xl tracking-tight leading-[0.9] mb-2 ${leagueSpartan.className}`}>
                 {product.title.map((line, i) => (
                   <span key={i} className="block">{line}</span>
                 ))}
               </h3>
               {product.subtitle && (
-                <p className="text-orange-400 text-xs tracking-[0.1em] mb-6">• {product.subtitle}</p>
+                <p className="text-[#9400D3] text-xs tracking-[0.1em] mb-6">• {product.subtitle}</p>
               )}
 
               <div
@@ -489,17 +546,17 @@ function ProductCard({ product, selectedItem, setSelectedItem }) {
               <ul className="space-y-2 mb-8">
                 {product.features.map((feature, i) => (
                   <li key={i} className="flex items-center gap-2 text-sm text-neutral-300">
-                    <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#9400D3]" />
                     {feature}
                   </li>
                 ))}
               </ul>
 
               <div className="flex items-baseline gap-3 mb-1">
-                <span className="text-4xl font-black text-white">₹{product.price}</span>
+                <span className={`text-4xl font-black text-white ${leagueSpartan.className}`}>₹{product.price}</span>
                 <span className="text-neutral-500 line-through">₹{product.originalPrice}</span>
               </div>
-              <p className="text-orange-400 text-xs tracking-[0.15em]">{product.duration}</p>
+              <p className="text-[#9400D3] text-xs tracking-[0.15em]">{product.duration}</p>
             </div>
           </div>
         </div>
@@ -736,10 +793,10 @@ function BookingModal({ selectedDate, onClose }) {
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <span className={`font-black text-sm tracking-tight ${selectedSession.id === session.id ? 'text-neutral-900' : 'text-neutral-800'}`}>
+                    <span className={`font-black text-sm tracking-tight ${selectedSession.id === session.id ? 'text-neutral-900' : 'text-neutral-800'} ${leagueSpartan.className}`}>
                       {session.duration}
                     </span>
-                    <span className="font-black text-lg tracking-tight text-neutral-900">₹{session.price}</span>
+                    <span className={`font-black text-lg tracking-tight text-neutral-900 ${leagueSpartan.className}`}>₹{session.price}</span>
                   </div>
                   <p className="text-xs text-neutral-500 tracking-[0.05em]">{session.durationLabel}</p>
                   {session.badge && selectedSession.id === session.id && (
@@ -783,11 +840,11 @@ function BookingModal({ selectedDate, onClose }) {
                   onClick={() => setSelectedSlot(slot.id)}
                   className={`w-full text-left p-4 rounded-2xl transition-all duration-300 ${
                     selectedSlot === slot.id
-                      ? 'border-2 border-orange-500 bg-orange-50 shadow-[0_0_25px_rgba(249,115,22,0.4)] scale-105'
-                      : 'border-2 border-neutral-200 bg-white hover:border-orange-500 hover:shadow-[0_0_20px_rgba(249,115,22,0.2)]'
+                      ? 'border-2 border-[#9400D3] bg-[#9400D3] shadow-[0_0_25px_rgba(148,0,211,0.4)] scale-105'
+                      : 'border-2 border-neutral-200 bg-white hover:border-[#9400D3] hover:shadow-[0_0_20px_rgba(148,0,211,0.2)]'
                   }`}
                 >
-                  <p className={`font-black text-sm italic tracking-tight ${selectedSlot === slot.id ? 'text-orange-600' : 'text-neutral-800'}`}>
+                  <p className={`font-black text-sm italic tracking-tight ${selectedSlot === slot.id ? 'text-[#9400D3]' : 'text-neutral-800'} ${leagueSpartan.className}`}>
                     {slot.name}
                   </p>
                 </button>
@@ -823,7 +880,7 @@ function BookingModal({ selectedDate, onClose }) {
                 </button>
                 <button
                   onClick={() => { setError(''); setStep(3) }}
-                  className="text-xs font-bold text-orange-600 hover:text-orange-700 tracking-[0.1em] transition-colors"
+                  className="text-xs font-bold text-[#9400D3] hover:text-[#9400D3] tracking-[0.1em] transition-colors"
                 >
                   ALREADY REGISTERED?
                 </button>
@@ -841,7 +898,7 @@ function BookingModal({ selectedDate, onClose }) {
                   key={field}
                   className={`flex items-center gap-3 p-4 rounded-xl transition-all duration-300 ${
                     focusedField === field
-                      ? 'border-2 border-orange-500 bg-orange-50 shadow-[0_0_20px_rgba(249,115,22,0.3)]'
+                      ? 'border-2 border-[#9400D3] bg-[#9400D3] shadow-[0_0_20px_rgba(148,0,211,0.3)]'
                       : 'border-2 border-neutral-200 bg-white'
                   }`}
                 >
@@ -905,7 +962,7 @@ function BookingModal({ selectedDate, onClose }) {
                 </button>
                 <button
                   onClick={() => { setError(''); setStep(2) }}
-                  className="text-xs font-bold text-orange-600 hover:text-orange-700 tracking-[0.1em] transition-colors"
+                  className="text-xs font-bold text-[#9400D3] hover:text-[#9400D3] tracking-[0.1em] transition-colors"
                 >
                   NOT REGISTERED?
                 </button>
@@ -921,7 +978,7 @@ function BookingModal({ selectedDate, onClose }) {
                   key={field}
                   className={`flex items-center gap-3 p-4 rounded-xl transition-all duration-300 ${
                     focusedField === field
-                      ? 'border-2 border-orange-500 bg-orange-50 shadow-[0_0_20px_rgba(249,115,22,0.3)]'
+                      ? 'border-2 border-[#9400D3] bg-[#9400D3] shadow-[0_0_20px_rgba(148,0,211,0.3)]'
                       : 'border-2 border-neutral-200 bg-white'
                   }`}
                 >
@@ -1013,13 +1070,13 @@ function BookingModal({ selectedDate, onClose }) {
               <div className="border-2 border-neutral-100 bg-neutral-50 rounded-2xl p-4 flex items-center justify-between">
                 <div>
                   <p className="text-xs tracking-[0.15em] text-neutral-500 font-medium mb-1">INVESTMENT</p>
-                  <p className="text-2xl font-black text-neutral-900 tracking-tight">
+                  <p className={`text-2xl font-black text-neutral-900 tracking-tight ${leagueSpartan.className}`}>
                     ₹{selectedSession.price.toLocaleString('en-IN')}
                   </p>
                 </div>
                 <div className="text-right">
                   <p className="text-xs tracking-[0.15em] text-neutral-500 font-medium mb-1">DURATION</p>
-                  <p className="text-2xl font-black text-neutral-900 tracking-tight">{selectedSession.durationLabel.split(' ')[0]} <span className="text-sm font-bold">MIN</span></p>
+                  <p className={`text-2xl font-black text-neutral-900 tracking-tight ${leagueSpartan.className}`}>{selectedSession.durationLabel.split(' ')[0]} <span className="text-sm font-bold">MIN</span></p>
                 </div>
               </div>
 
@@ -1096,12 +1153,12 @@ function BookingSection({ selectedDate, setSelectedDate }) {
     <>
       <section className="relative py-20 overflow-hidden">
         <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
-          <h2 className="font-black text-5xl sm:text-7xl tracking-tighter leading-[0.85] mb-4">
+          <h2 className={`font-black text-5xl sm:text-7xl tracking-tighter leading-[0.85] mb-4 ${leagueSpartan.className}`}>
             {BOOKING_CONFIG.title.map((line, i) => (
               <span key={i} className="block">{line}</span>
             ))}
           </h2>
-          <p className="text-muted-foreground max-w-sm mx-auto mb-12">
+          <p className="text-muted-foreground font-semibold max-w-sm mx-auto mb-12">
             {BOOKING_CONFIG.subtitle}
           </p>
 
@@ -1148,14 +1205,14 @@ function BookingSection({ selectedDate, setSelectedDate }) {
                     className={`
                       relative aspect-square flex items-center justify-center text-sm rounded-full
                       transition-colors
-                      ${isTodayDate ? 'ring-2 ring-orange-500 bg-orange-500/20 text-white font-semibold' : ''}
+                      ${isTodayDate ? 'ring-2 ring-[#9400D3] bg-[#9400D3]/20 text-white font-semibold' : ''}
                       ${isPast ? 'text-neutral-600 cursor-not-allowed' : 'hover:bg-white/10 cursor-pointer'}
                       ${isFuture ? 'text-white' : ''}
                     `}
                   >
                     {day}
                     {isFuture && (
-                      <span className="absolute bottom-1 left-1/2 w-1 h-1 rounded-full bg-orange-500 animate-blink-dot" />
+                      <span className="absolute bottom-1 left-1/2 w-1 h-1 rounded-full bg-[#9400D3] animate-blink-dot" />
                     )}
                   </button>
                 )
@@ -1179,7 +1236,7 @@ function Footer() {
               <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center">
                 <span className="text-neutral-900 text-sm font-bold">{SITE_CONFIG.brandInitials}</span>
               </div>
-              <div className="font-black text-lg tracking-tight">
+              <div className={`font-black text-lg tracking-tight ${leagueSpartan.className}`}>
                 {SITE_CONFIG.brandName.split(' ').map((word, i) => (
                   <span key={i} className="block leading-tight">{word}</span>
                 ))}
@@ -1281,16 +1338,16 @@ function StickyBottomBar({ selectedItem, setSelectedItem, selectedDate }) {
       <div className="max-w-[480px] mx-auto px-5 pb-4 pt-2">
 
         {showBestValue && (
-          <div className="bg-neutral-900 rounded-xl mb-3 cursor-pointer shadow-[0_2px_16px_-4px_rgba(0,0,0,0.2)] transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-[0_4px_24px_-4px_rgba(249,115,22,0.4)] hover:bg-neutral-800">
+          <div className="bg-neutral-900 rounded-xl mb-3 cursor-pointer shadow-[0_2px_16px_-4px_rgba(0,0,0,0.2)] transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-[0_4px_24px_-4px_rgba(148,0,211,0.4)] hover:bg-neutral-800">
             <div className="px-5 py-2.5">
               <div className="flex items-center justify-between gap-4">
                 <div className="min-w-0">
-                  <p className="text-xs tracking-[0.2em] text-orange-400 font-semibold">BEST VALUE</p>
+                  <p className="text-xs tracking-[0.2em] text-[#9400D3] font-semibold">BEST VALUE</p>
                   <p className="text-sm text-white">Get the Full Bundle – Just ₹933/mo</p>
                 </div>
                 <button
                   onClick={handleUpgrade}
-                  className="bg-[#f97316] hover:bg-[#ea580c] active:bg-[#c2410c] text-white px-4 py-1.5 rounded-full text-xs font-bold tracking-[0.15em] transition-all duration-200 hover:scale-105 active:scale-95 shrink-0"
+                  className="bg-[#9400D3] hover:bg-[#9400D3] active:bg-[#9400D3] text-white px-4 py-1.5 rounded-full text-xs font-bold tracking-[0.15em] transition-all duration-200 hover:scale-105 active:scale-95 shrink-0"
                 >
                   UPGRADE
                 </button>
@@ -1303,7 +1360,7 @@ function StickyBottomBar({ selectedItem, setSelectedItem, selectedDate }) {
           <div className="flex items-center justify-between gap-4 mb-3">
             <div>
               <p className="text-xs tracking-[0.2em] text-muted-foreground font-medium">TOTAL INVESTMENT</p>
-              <p className="text-3xl font-black leading-tight tracking-tight">₹{total}</p>
+              <p className={`text-3xl font-black leading-tight tracking-tight ${leagueSpartan.className}`}>₹{total}</p>
             </div>
             <label className="flex items-center gap-2 cursor-pointer">
               <div
