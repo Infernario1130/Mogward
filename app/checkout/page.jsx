@@ -4,13 +4,16 @@ import { ArrowLeft, Target, Zap } from 'lucide-react'
 import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { Suspense } from 'react'
+import { League_Spartan } from 'next/font/google'
+
+const leagueSpartan = League_Spartan({ subsets: ['latin'], weight: ['400','500','600','700','800','900'] })
 
 const PRODUCTS_MAP = {
-  "6a2160af38cf5aec331a473f": "THE ARYAN METHOD",
-  "6a2160af38cf5aec331a473b": "THE SUMMER SPLIT",
-  "6a2160af38cf5aec331a473c": "MUSCLE KITCHEN",
-  "6a2160af38cf5aec331a473d": "HAIR CARE",
-  "6a2160af38cf5aec331a473e": "SKIN CARE",
+  "6a2160af38cf5aec331a473f": "THE MOGWARD PROTOCOL",
+  "6a2160af38cf5aec331a473b": "TRAINING PROTOCOL",
+  "6a2160af38cf5aec331a473c": "DIET PROTOCOL",
+  "6a2160af38cf5aec331a473d": "SKIN PROTOCOL",
+  "6a2160af38cf5aec331a473e": "FRAME PROTOCOL",
 }
 
 function CheckoutContent() {
@@ -21,7 +24,6 @@ function CheckoutContent() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    // Read selected items from localStorage
     const stored = localStorage.getItem('selectedItems')
     if (!stored) {
       router.replace('/')
@@ -34,7 +36,6 @@ function CheckoutContent() {
     }
     setSelectedItems(parsed)
 
-    // Get user name from /api/auth/me
     fetch('/api/auth/me')
       .then(r => r.json())
       .then(data => {
@@ -72,7 +73,6 @@ function CheckoutContent() {
 
       const productIds = selectedItems.map(i => i.id)
 
-      // Step 1: Create Razorpay order
       const orderRes = await fetch('/api/payment/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -86,7 +86,6 @@ function CheckoutContent() {
         return
       }
 
-      // Step 2: Open Razorpay popup
       const options = {
         key: orderData.keyId,
         amount: orderData.order.amount,
@@ -99,14 +98,13 @@ function CheckoutContent() {
           email: orderData.user.email,
           contact: orderData.user.phone,
         },
-        theme: { color: '#f97316' },
+        theme: { color: '#9400D3' },
         modal: {
           ondismiss: () => {
             setIsProcessing(false)
           },
         },
         handler: async (response) => {
-          // Step 3: Verify payment
           try {
             const verifyRes = await fetch('/api/payment/verify', {
               method: 'POST',
@@ -148,7 +146,6 @@ function CheckoutContent() {
     }
   }, [selectedItems, loadRazorpay, router])
 
-  // Derive display values
   const selectedProtocol = selectedItems.length === 1
     ? PRODUCTS_MAP[selectedItems[0].id] || 'SELECTED PROTOCOL'
     : `${selectedItems.length} PROTOCOLS`
@@ -156,7 +153,7 @@ function CheckoutContent() {
   const total = selectedItems.reduce((sum, i) => sum + i.price, 0)
 
   return (
-    <div className="min-h-screen bg-background flex flex-col relative">
+    <div className={`min-h-screen bg-background flex flex-col relative ${leagueSpartan.className}`}>
       {/* Back Button */}
       <button
         className="absolute top-8 left-8 p-2 text-muted-foreground hover:text-foreground transition-colors"
@@ -169,49 +166,47 @@ function CheckoutContent() {
       {/* Main Content */}
       <main className="flex-1 flex items-center justify-center px-4 py-16">
         <div className="w-full max-w-md">
-          {/* Main Card */}
           <div className="bg-card rounded-[24px] shadow-[0_4px_60px_-12px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_60px_-12px_rgba(0,0,0,0.3)] p-8 sm:p-12">
+
             {/* Icon */}
             <div className="flex justify-center mb-6">
               <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-[20px] bg-foreground dark:bg-zinc-900 flex items-center justify-center">
-                <Target className="w-10 h-10 sm:w-12 sm:h-12 text-primary" strokeWidth={2} />
+                <Target className="w-10 h-10 sm:w-12 sm:h-12 text-[#9400D3]" strokeWidth={2} />
               </div>
             </div>
 
             {/* Title */}
-            <h1 className="text-center font-[var(--font-playfair)] text-3xl sm:text-4xl font-black italic text-foreground tracking-tight mb-2">
+            <h1 className="text-center text-3xl sm:text-4xl font-black italic text-foreground tracking-tight mb-2">
               REGISTERED
             </h1>
 
-            {/* Subtitle - Dynamic user name */}
-            <p className="text-center text-xs text-muted-foreground tracking-[0.2em] uppercase font-bold mb-8">
+            {/* Subtitle */}
+            <p className="text-center text-xs text-muted-foreground tracking-[0.2em] font-bold mb-8">
               ID: {userName}
             </p>
 
             {/* Protocol Card */}
             <div className="bg-secondary/50 dark:bg-secondary rounded-2xl p-6 mb-6 border border-border/50 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.06)] dark:shadow-[0_2px_12px_-4px_rgba(0,0,0,0.2)]">
-              {/* Protocol Header */}
+
               <div className="flex items-center justify-between mb-4 pb-4 border-b border-border/50">
-                <span className="text-xs text-muted-foreground tracking-[0.15em] uppercase font-bold">
-                  Selected Protocol
+                <span className="text-xs text-muted-foreground tracking-[0.15em] font-bold">
+                  SELECTED PROTOCOL
                 </span>
-                <span className="text-xs text-primary tracking-[0.05em] uppercase font-bold">
+                <span className="text-xs text-[#9400D3] tracking-[0.05em] font-bold">
                   {selectedProtocol}
                 </span>
               </div>
 
-              {/* Protocol Message */}
               <p className="text-sm text-muted-foreground text-center leading-relaxed mb-4 font-medium">
                 Your secure connection is established. Complete the checkout to get immediate access to the protocol.
               </p>
 
-              {/* Total */}
-              <p className="text-xs text-primary text-center tracking-[0.1em] uppercase font-bold">
-                Total: ₹{total} — Only limited seats available. Join quick.
+              <p className="text-xs text-[#9400D3] text-center tracking-[0.1em] font-bold">
+                TOTAL: ₹{total} — ONLY LIMITED SEATS AVAILABLE. JOIN QUICK.
               </p>
             </div>
 
-            {/* Error message */}
+            {/* Error */}
             {error && (
               <p className="text-xs text-red-500 text-center mb-4 tracking-[0.05em]">
                 {error}
@@ -223,14 +218,14 @@ function CheckoutContent() {
               type="button"
               onClick={handleCheckout}
               disabled={isProcessing || selectedItems.length === 0}
-              className={`w-full h-16 bg-foreground dark:bg-zinc-900 rounded-full text-background dark:text-foreground text-sm tracking-[0.2em] uppercase font-bold flex items-center justify-center gap-3 transition-all duration-200 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.25)] dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.5)] ${
+              className={`w-full h-16 bg-foreground dark:bg-zinc-900 rounded-full text-background dark:text-foreground text-sm tracking-[0.2em] font-bold flex items-center justify-center gap-3 transition-all duration-200 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.25)] dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.5)] ${
                 isProcessing || selectedItems.length === 0
                   ? 'opacity-60 cursor-not-allowed'
                   : 'hover:scale-[1.02] hover:shadow-2xl active:scale-[0.98]'
               }`}
             >
-              {isProcessing ? 'PROCESSING...' : 'Complete Checkout'}
-              <Zap className="w-5 h-5 text-primary fill-primary" strokeWidth={0} />
+              {isProcessing ? 'PROCESSING...' : 'COMPLETE CHECKOUT'}
+              <Zap className="w-5 h-5 text-[#9400D3] fill-[#9400D3]" strokeWidth={0} />
             </button>
           </div>
         </div>
@@ -238,11 +233,11 @@ function CheckoutContent() {
 
       {/* Footer */}
       <footer className="pb-8 text-center">
-        <p className="text-[11px] text-muted-foreground/50 tracking-[0.2em] uppercase mb-1">
-          Encrypted Session Active
+        <p className="text-[11px] text-muted-foreground/50 tracking-[0.2em]">
+          ENCRYPTED SESSION ACTIVE
         </p>
-        <p className="text-[11px] text-muted-foreground/40 tracking-[0.15em] uppercase">
-          // Access Level: Priority
+        <p className="text-[11px] text-muted-foreground/40 tracking-[0.15em]">
+          // ACCESS LEVEL: PRIORITY
         </p>
       </footer>
     </div>
