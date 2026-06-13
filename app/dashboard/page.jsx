@@ -195,7 +195,7 @@ export default function DashboardPage() {
           return
         }
 
-        // If bundle is purchased, expand it to show all 4 individual products
+        // If bundle is purchased, expand it to show all 4 individual product
         const hasBundle = data.purchases.some(p => p.id === MAIN_PACKAGE.id)
 
         if (hasBundle) {
