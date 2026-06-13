@@ -137,13 +137,13 @@ function PurchaseCard({ purchase }) {
             <p className={`text-[10px] tracking-[0.18em] font-semibold text-neutral-500 ${leagueSpartan.className}`}>
               PURCHASED<br />{purchase.purchasedOn}
             </p>
-            <button
-              type="button"
-              className={`flex items-center justify-center gap-2 bg-white text-neutral-950 font-bold tracking-[0.18em] text-xs px-4 py-2.5 rounded-full hover:bg-[#9400D3] hover:text-white transition-colors ${leagueSpartan.className}`}
-            >
-              <Play className="w-3.5 h-3.5 fill-current" />
-              VIEW
-            </button>
+                <Link
+                  href={`/dashboard/products/${purchase.id}`}
+                  className={`flex items-center justify-center gap-2 bg-white text-neutral-950 font-bold tracking-[0.18em] text-xs px-4 py-2.5 rounded-full hover:bg-[#9400D3] hover:text-white transition-colors ${leagueSpartan.className}`}
+                >
+                  <Play className="w-3.5 h-3.5 fill-current" />
+                  VIEW
+                </Link>
           </div>
         </div>
 
