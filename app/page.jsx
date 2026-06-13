@@ -333,7 +333,7 @@ function MainPackageCard({ selectedItem, setSelectedItem }) {
       )}
       <div className={`relative bg-gradient-to-b from-neutral-900 to-neutral-950 rounded-3xl overflow-hidden text-white aspect-[3/4] flex flex-col ${!isSelected ? 'border border-neutral-700' : ''}`}>
         <div
-          className="absolute inset-0 bg-cover bg-center brightness-75 group-hover:brightness-140 transition-all duration-300"
+          className={`absolute inset-0 bg-cover bg-center transition-all duration-300 ${isSelected ? 'brightness-125' : 'brightness-75 group-hover:brightness-110'}`}
           style={{ backgroundImage: `url(${MAIN_PACKAGE.image})` }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-neutral-900/50 to-transparent" />
