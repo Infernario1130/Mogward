@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, Lock, Zap, X, Mail, Phone, User, Menu, Arrow
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { League_Spartan } from 'next/font/google'
+import { PRODUCTS, MAIN_PACKAGE } from '@/lib/products'
 
 const leagueSpartan = League_Spartan({ subsets: ['latin'], weight: ['400','500','600','700','800','900'] })
 
@@ -23,67 +24,6 @@ const SITE_CONFIG = {
   tagline: "Where elite conditioning meets unwavering determination in the pursuit of victory.",
   copyright: "© 2026 ARYANHEIS // ALL RIGHTS RESERVED."
 }
-
-const MAIN_PACKAGE = {
-  id: "6a2160af38cf5aec331a473f",
-  badge: "LIMITED OFFER",
-  label: "LEVEL UP",
-  title: ["THE MOGWARD", "PROTOCOL"],
-  description: "Full access to everything. Peak performance guaranteed.",
-  features: ["THE SUMMER SPLIT", "MUSCLE KITCHEN", "SKIN CARE", "HAIR CARE"],
-  price: 2799,
-  originalPrice: 4999,
-  duration: "LIFETIME ACCESS",
-  perMonth: "FREE",
-  image: "/images/combo.png"
-}
-
-const PRODUCTS = [
-  {
-    id: "6a2160af38cf5aec331a473b",
-    category: "WORKOUTS",
-    title: ["THE TRAINING", "PROTOCOL"],
-    features: ["MY WORKOUT SPLIT", "WORKOUT LOGGER", "PERFORMANCE ANALYTICS"],
-    price: 1199,
-    originalPrice: 1800,
-    duration: "LIFETIME ACCESS",
-    image: "/images/training.png",
-    subtitle: "FITNESS TRANSFORMATION"
-  },
-  {
-    id: "6a2160af38cf5aec331a473c",
-    category: "NUTRITION",
-    title: ["DIET", "PROTOCOL"],
-    subtitle: "SUMMER EDITION",
-    features: ["6 NEW MEALS EVERYDAY", "VEG/NON-VEG", "EASY TO FOLLOW RECIPES", "MACROS BREAKDOWN"],
-    price: 999,
-    originalPrice: 1799,
-    duration: "LIFETIME ACCESS",
-    image: "/images/diet.png"
-  },
-  {
-    id: "6a2160af38cf5aec331a473d",
-    category: "AESTHETICS",
-    title: ["SKIN", "PROTOCOL"],
-    features: ["SKIN TYPE DIAGNOSTICS", "AM/PM ROUTINE", "PRODUCTS GUIDE", "MISTAKES TO AVOID"],
-    price: 799,
-    originalPrice: 1299,
-    duration: "LIFETIME ACCESS",
-    subtitle: "SKIN CARE MASTERY",
-    image: "/images/skin.png"
-  },
-  {
-    id: "6a2160af38cf5aec331a473e",
-    category: "AESTHETICS",
-    title: ["FRAME", "PROTOCOL"],
-    features: ["SKIN TYPE DIAGNOSTICS", "PRODUCTS GUIDE",  "MISTAKES TO AVOID"],
-    price: 599,
-    originalPrice: 999,
-    duration: "LIFETIME ACCESS",
-    subtitle: "SKIN CARE MASTERY",
-    image: "/images/frame.png"
-  }
-]
 
 const BOOKING_CONFIG = {
   title: ["BOOK A", "1:1 CALL"],

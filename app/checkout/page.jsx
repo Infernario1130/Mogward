@@ -9,11 +9,11 @@ import { League_Spartan } from 'next/font/google'
 const leagueSpartan = League_Spartan({ subsets: ['latin'], weight: ['400','500','600','700','800','900'] })
 
 const PRODUCTS_MAP = {
-  "6a2160af38cf5aec331a473f": "THE MOGWARD PROTOCOL",
-  "6a2160af38cf5aec331a473b": "TRAINING PROTOCOL",
-  "6a2160af38cf5aec331a473c": "DIET PROTOCOL",
-  "6a2160af38cf5aec331a473d": "SKIN PROTOCOL",
-  "6a2160af38cf5aec331a473e": "FRAME PROTOCOL",
+  "6a2d29efa993b7307f224528": "THE MOGWARD PROTOCOL",
+  "6a2d29efa993b7307f224524": "TRAINING PROTOCOL",
+  "6a2d29efa993b7307f224525": "DIET PROTOCOL",
+  "6a2d29efa993b7307f224526": "SKIN PROTOCOL",
+  "6a2d29efa993b7307f224527": "FRAME PROTOCOL",
 }
 
 function CheckoutContent() {

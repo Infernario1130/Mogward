@@ -20,28 +20,28 @@ const Product = mongoose.models.Product || mongoose.model('Product', ProductSche
 
 const products = [
   {
-    title: ["THE SUMMER", "SPLIT"],
-    price: 1199,
-    active: true,
-  },
-  {
-    title: ["MUSCLE", "KITCHEN"],
+    title: ["THE TRAINING", "PROTOCOL"],
     price: 999,
     active: true,
   },
   {
-    title: ["HAIR", "CARE"],
-    price: 799,
+    title: ["DIET", "PROTOCOL"],
+    price: 699,
     active: true,
   },
   {
-    title: ["SKIN", "CARE"],
-    price: 599,
+    title: ["SKIN", "PROTOCOL"],
+    price: 499,
     active: true,
   },
   {
-    title: ["THE ARYAN", "METHOD"],
-    price: 2799,
+    title: ["FRAME", "PROTOCOL"],
+    price: 399,
+    active: true,
+  },
+  {
+    title: ["THE MOGWARD", "PROTOCOL"],
+    price: 1999,
     active: true,
   },
 ]

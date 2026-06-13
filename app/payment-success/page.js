@@ -37,7 +37,7 @@ export default function PaymentSuccessPage() {
               </span>
             </div>
             <p className="text-sm text-muted-foreground text-center leading-relaxed mb-4 font-medium">
-              Your product will be delivered within a short duration. Check your registered email for access details.
+              Your have successfully completed the payment. You can access the product from your dashboard within a few minutes.
             </p>
             <p className="text-xs text-[#9400D3] text-center tracking-[0.1em] uppercase font-bold">
               // Session Authenticated

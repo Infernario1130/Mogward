@@ -1,13 +1,13 @@
+'use client'
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowLeft, Play, Zap } from "lucide-react";
 import { League_Spartan } from "next/font/google";
+import { PRODUCTS } from "@/lib/products";
 
 const leagueSpartan = League_Spartan({ subsets: ["latin"], weight: ["400","500","600","700","800","900"] });
-
-export const metadata = {
-  title: "My Purchases — ARYANHEIS",
-  description: "Access your purchased ARYAN METHOD systems.",
-};
 
 const SITE = {
   brandName: "MOGWARD",
@@ -15,27 +15,6 @@ const SITE = {
   watermarkText: "MY ARSENAL",
 };
 
-// TODO: replace with backend fetch
-const PURCHASES = [
-  {
-    id: "p-001",
-    category: "WORKOUTS",
-    title: ["THE SUMMER", "SPLIT"],
-    subtitle: "FITNESS TRANSFORMATION",
-    features: ["MY WORKOUT SPLIT", "WORKOUT LOGGER", "PERFORMANCE ANALYTICS"],
-    purchasedOn: "12 MAY 2026",
-    status: "ACTIVE",
-  },
-  {
-    id: "p-002",
-    category: "NUTRITION",
-    title: ["MUSCLE", "KITCHEN"],
-    subtitle: "(SUMMER EDITION)",
-    features: ["6 NEW MEALS EVERYDAY", "VEG/NON-VEG", "MACROS BREAKDOWN"],
-    purchasedOn: "12 MAY 2026",
-    status: "ACTIVE",
-  },
-];
 
 function WatermarkBackground() {
   return (
@@ -109,60 +88,133 @@ function Header() {
 }
 
 function PurchaseCard({ purchase }) {
+
+    const meta = PRODUCTS.find(p => p.id === purchase.id) || 
+    (MAIN_PACKAGE.id === purchase.id ? MAIN_PACKAGE : {})
+
   return (
     <div className="relative group transition-transform duration-300 ease-out hover:scale-[1.01]">
       <div className="absolute -inset-[2px] bg-gradient-to-r from-[#9400D3] via-[#9400D3] to-[#9400D3] rounded-3xl animate-border-glow opacity-60" />
-      <div className="relative bg-gradient-to-b from-neutral-900 to-neutral-950 rounded-3xl overflow-hidden text-white">
-        <div className="relative p-8">
-          <div className="flex items-start justify-between mb-6">
-            <p className={`text-xs tracking-[0.2em] text-[#9400D3]/80 ${leagueSpartan.className}`}>
-              {purchase.category}
-            </p>
-            <span className={`text-[10px] font-bold tracking-[0.18em] px-2.5 py-1 rounded-full bg-[#9400D3]/15 text-[#9400D3] border border-[#9400D3]/30 ${leagueSpartan.className}`}>
-              {purchase.status}
-            </span>
-          </div>
+      <div className="relative bg-gradient-to-b from-neutral-900 to-neutral-950 rounded-3xl overflow-hidden text-white aspect-[3/4] flex flex-col border border-neutral-700">
 
-          <h3 className={`font-black text-3xl sm:text-4xl tracking-tight leading-tight mb-2 ${leagueSpartan.className}`}>
-            {purchase.title.map((line, i) => (
-              <span key={i} className="block">{line}</span>
-            ))}
-          </h3>
+        {/* Background image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center brightness-75 group-hover:brightness-110 transition-all duration-300"
+          style={{ backgroundImage: meta.image ? `url(${meta.image})` : 'none' }}
+        />
 
-          {purchase.subtitle && (
-            <p className={`text-[#9400D3] text-xs tracking-[0.1em] mb-5 ${leagueSpartan.className}`}>
-              • {purchase.subtitle}
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-neutral-900/50 to-transparent group-hover:opacity-80 transition-all duration-300" />
+
+        {/* Category top left */}
+        <div className="relative z-10 px-8 pt-6">
+          <p className="text-xs tracking-[0.2em] font-extrabold text-white/50">
+            {meta.category || 'PROTOCOL'}
+          </p>
+        </div>
+
+        {/* Title middle */}
+        <div className="relative z-10 px-8 mt-auto">
+          {meta.subtitle && (
+            <p className="text-[#9400D3] font-bold text-xs tracking-[0.1em] mb-2">
+              {meta.subtitle}
             </p>
           )}
+          <h3 className={`font-black text-3xl sm:text-4xl tracking-tight leading-[0.9] mb-6 ${leagueSpartan.className}`}>
+            {Array.isArray(purchase.title)
+              ? purchase.title.map((line, i) => (
+                  <span key={i} className="block">{line}</span>
+                ))
+              : <span>{purchase.title}</span>
+            }
+          </h3>
+        </div>
 
-          <ul className="space-y-2 mb-8">
-            {purchase.features.map((f, i) => (
+        {/* Bottom row — features left, date+button right */}
+        <div className="relative z-10 px-8 pb-8 flex items-end justify-between gap-4">
+          <ul className="space-y-2">
+            {meta.features && meta.features.map((feature, i) => (
               <li key={i} className="flex items-center gap-2 text-sm text-neutral-300">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#9400D3]" />
-                {f}
+                <span className="w-1.5 h-1.5 rounded-full bg-[#9400D3] flex-shrink-0" />
+                {feature}
               </li>
             ))}
           </ul>
 
-          <div className={`text-[10px] tracking-[0.18em] font-semibold text-neutral-500 mb-6 ${leagueSpartan.className}`}>
-            <span>PURCHASED {purchase.purchasedOn}</span>
+          <div className="text-right flex-shrink-0 flex flex-col items-end gap-3">
+            <p className={`text-[10px] tracking-[0.18em] font-semibold text-neutral-500 ${leagueSpartan.className}`}>
+              PURCHASED<br />{purchase.purchasedOn}
+            </p>
+            <button
+              type="button"
+              className={`flex items-center justify-center gap-2 bg-white text-neutral-950 font-bold tracking-[0.18em] text-xs px-4 py-2.5 rounded-full hover:bg-[#9400D3] hover:text-white transition-colors ${leagueSpartan.className}`}
+            >
+              <Play className="w-3.5 h-3.5 fill-current" />
+              VIEW
+            </button>
           </div>
-
-          <button
-            type="button"
-            className={`w-full flex items-center justify-center gap-2 bg-white text-neutral-950 font-bold tracking-[0.18em] text-sm py-4 rounded-full hover:bg-[#9400D3] hover:text-white transition-colors ${leagueSpartan.className}`}
-          >
-            <Play className="w-4 h-4 fill-current" />
-            VIEW
-          </button>
         </div>
+
       </div>
     </div>
   );
 }
 
+function LoadingSkeleton() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {[1, 2].map((i) => (
+        <div key={i} className="relative">
+          <div className="absolute -inset-[2px] bg-neutral-800 rounded-3xl" />
+          <div className="relative bg-gradient-to-b from-neutral-900 to-neutral-950 rounded-3xl overflow-hidden aspect-[3/4]">
+            <div className="p-8 space-y-4">
+              <div className="h-3 w-20 bg-neutral-800 rounded-full animate-pulse" />
+              <div className="h-8 w-48 bg-neutral-800 rounded-full animate-pulse" />
+              <div className="h-8 w-32 bg-neutral-800 rounded-full animate-pulse" />
+              <div className="h-3 w-28 bg-neutral-800 rounded-full animate-pulse mt-6" />
+              <div className="h-12 w-full bg-neutral-800 rounded-full animate-pulse mt-4" />
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function DashboardPage() {
-  const active = PURCHASES.filter((p) => p.status === "ACTIVE").length;
+  const router = useRouter()
+  const [purchases, setPurchases] = useState([])
+  const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    const fetchPurchases = async () => {
+      try {
+        const res = await fetch('/api/dashboard/purchases')
+        const data = await res.json()
+
+        if (!data.success) {
+          if (res.status === 401) {
+            router.push('/login')
+            return
+          }
+          setError(data.message)
+          return
+        }
+
+        setPurchases(data.purchases)
+        setUser(data.user)
+      } catch (err) {
+        setError('Something went wrong please try again')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchPurchases()
+  }, [])
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
@@ -178,13 +230,18 @@ export default function DashboardPage() {
             <span className="block">MY</span>
             <span className="block">ARSENAL</span>
           </h1>
+          {user && (
+            <p className={`text-muted-foreground text-sm max-w-md mx-auto mb-4 tracking-[0.15em] ${leagueSpartan.className}`}>
+              {user.name.toUpperCase()}
+            </p>
+          )}
           <p className="text-muted-foreground text-sm text-lg max-w-md mx-auto mb-10">
             Your unlocked systems. Train, eat, refine — every day.
           </p>
           <div className="flex items-center justify-center gap-3 flex-wrap mb-2">
             <div className={`flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-card/40 backdrop-blur-sm text-xs tracking-[0.18em] ${leagueSpartan.className}`}>
               <Zap className="w-3.5 h-3.5 text-[#9400D3]" />
-              {active} ACTIVE {active === 1 ? "PROTOCOL" : "PROTOCOLS"}
+              {purchases.length} ACTIVE {purchases.length === 1 ? "PROTOCOL" : "PROTOCOLS"}
             </div>
           </div>
         </div>
@@ -198,14 +255,39 @@ export default function DashboardPage() {
               YOUR PRODUCTS
             </h2>
             <span className={`text-xs tracking-[0.2em] font-semibold text-muted-foreground ${leagueSpartan.className}`}>
-              {PURCHASES.length} ITEMS
+              {loading ? '...' : `${purchases.length} ITEMS`}
             </span>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {PURCHASES.map((p) => (
-              <PurchaseCard key={p.id} purchase={p} />
-            ))}
-          </div>
+
+          {loading && <LoadingSkeleton />}
+
+          {!loading && error && (
+            <div className="text-center py-20">
+              <p className={`text-sm text-muted-foreground tracking-[0.15em] ${leagueSpartan.className}`}>
+                {error.toUpperCase()}
+              </p>
+            </div>
+          )}
+
+          {!loading && !error && purchases.length === 0 && (
+            <div className="text-center py-20">
+              <p className={`text-sm text-muted-foreground tracking-[0.15em] mb-2 ${leagueSpartan.className}`}>
+                NO PURCHASES YET
+              </p>
+              <p className={`text-xs text-muted-foreground/60 tracking-[0.1em] ${leagueSpartan.className}`}>
+                UNLOCK YOUR FIRST PROTOCOL BELOW
+              </p>
+            </div>
+          )}
+
+          {!loading && !error && purchases.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {purchases.map((p) => (
+                <PurchaseCard key={p.id} purchase={p} />
+              ))}
+            </div>
+          )}
+
           <div className="mt-16 text-center">
             <p className={`text-xs tracking-[0.2em] text-muted-foreground mb-4 ${leagueSpartan.className}`}>
               — WANT MORE? UNLOCK THE FULL METHOD
