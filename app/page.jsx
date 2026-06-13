@@ -67,7 +67,7 @@ function PulsingGlow() {
   )
 }
 
-function Header() {
+function Header({ isDetailOpen }) {
   const router = useRouter()
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -106,7 +106,11 @@ function Header() {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50 transition-transform duration-300 ${
+        isDetailOpen ? '-translate-y-full' : 'translate-y-0'
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-3">
@@ -189,10 +193,6 @@ function Header() {
 }
 
 function WatermarkBackground({ anchor = 'center' }) {
-  // `anchor='title'` positions the watermark at the top so it sits behind the
-  // hero title on every screen size (including small screens where the section
-  // is taller than the viewport and a vertically-centered watermark would drop
-  // far below the title).
   const justify = anchor === 'title' ? 'justify-start' : 'justify-center'
   return (
     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-screen pointer-events-none select-none">
@@ -227,29 +227,27 @@ function HeroSection({ selectedItem, setSelectedItem }) {
           {SITE_CONFIG.heroSubtitle}
         </p>
 
-            {/* Stats row — mobile-first */}
-
-            <div className={`max-w-3xl mx-auto mb-12 py-4 pl-12 sm:pl-16 pr-4 ${leagueSpartan.className}`}>
-  <div className="grid grid-cols-3 divide-x divide-foreground/15">
-    {[
-      { idx: "01", value: "04", label: "SYSTEMS" },
-      { idx: "02", value: "01", label: "FRAMEWORK" },
-      { idx: "03", value: "∞",  label: "LEVERAGE" },
-    ].map((s) => (
-      <div key={s.idx} className="flex flex-col items-start px-6 sm:px-8">
-        <span className="text-[10px] sm:text-xs tracking-[0.25em] text-muted-foreground/70 mb-2 sm:mb-3">
-          {s.idx}
-        </span>
-        <span className="font-black leading-none text-4xl sm:text-6xl md:text-7xl text-foreground mb-2 sm:mb-3">
-          {s.value}
-        </span>
-        <span className="text-[10px] sm:text-xs tracking-[0.25em] text-muted-foreground">
-          {s.label}
-        </span>
-      </div>
-    ))}
-  </div>
-</div>
+        <div className={`max-w-3xl mx-auto mb-12 py-4 pl-12 sm:pl-16 pr-4 ${leagueSpartan.className}`}>
+          <div className="grid grid-cols-3 divide-x divide-foreground/15">
+            {[
+              { idx: "01", value: "04", label: "SYSTEMS" },
+              { idx: "02", value: "01", label: "FRAMEWORK" },
+              { idx: "03", value: "∞",  label: "LEVERAGE" },
+            ].map((s) => (
+              <div key={s.idx} className="flex flex-col items-start px-6 sm:px-8">
+                <span className="text-[10px] sm:text-xs tracking-[0.25em] text-muted-foreground/70 mb-2 sm:mb-3">
+                  {s.idx}
+                </span>
+                <span className="font-black leading-none text-4xl sm:text-6xl md:text-7xl text-foreground mb-2 sm:mb-3">
+                  {s.value}
+                </span>
+                <span className="text-[10px] sm:text-xs tracking-[0.25em] text-muted-foreground">
+                  {s.label}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
 
         <p className="text-xs font-bold tracking-[0.2em] text-muted-foreground mb-8">
           COMPLETE BUNDLE • BEST VALUE
@@ -315,7 +313,7 @@ function MainPackageCard({ selectedItem, setSelectedItem }) {
   )
 }
 
-function ProductsSection({ selectedItem, setSelectedItem }) {
+function ProductsSection({ selectedItem, setSelectedItem, setIsDetailOpen }) {
   return (
     <section className="relative py-20 overflow-hidden">
       <WatermarkBackground />
@@ -330,6 +328,7 @@ function ProductsSection({ selectedItem, setSelectedItem }) {
               product={product}
               selectedItem={selectedItem}
               setSelectedItem={setSelectedItem}
+              setIsDetailOpen={setIsDetailOpen}
             />
           ))}
         </div>
@@ -338,7 +337,7 @@ function ProductsSection({ selectedItem, setSelectedItem }) {
   )
 }
 
-function ProductCard({ product, selectedItem, setSelectedItem }) {
+function ProductCard({ product, selectedItem, setSelectedItem, setIsDetailOpen }) {
   const isSelected = selectedItem.some(i => i.type === 'product' && i.id === product.id)
   const [detailsOpen, setDetailsOpen] = useState(false)
 
@@ -350,7 +349,6 @@ function ProductCard({ product, selectedItem, setSelectedItem }) {
         ? withoutMain.filter(i => i.id !== product.id)
         : [...withoutMain, { type: 'product', id: product.id, price: product.price }]
   
-      // Auto-upgrade to bundle if all 4 products are selected
       const allProductIds = PRODUCTS.map(p => p.id)
       const selectedProductIds = newItems.filter(i => i.type === 'product').map(i => i.id)
       const allSelected = allProductIds.every(id => selectedProductIds.includes(id))
@@ -365,12 +363,19 @@ function ProductCard({ product, selectedItem, setSelectedItem }) {
     })
   }
 
-  const handleOpenDetails = () => setDetailsOpen(true)
-  const handleCloseDetails = () => setDetailsOpen(false)
+  const handleOpenDetails = () => {
+    setDetailsOpen(true)
+    setIsDetailOpen(true)
+  }
+
+  const handleCloseDetails = () => {
+    setDetailsOpen(false)
+    setIsDetailOpen(false)
+  }
 
   useEffect(() => {
     if (!detailsOpen) return
-    const onKey = (e) => { if (e.key === 'Escape') setDetailsOpen(false) }
+    const onKey = (e) => { if (e.key === 'Escape') handleCloseDetails() }
     window.addEventListener('keydown', onKey)
     const prevOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
@@ -428,7 +433,6 @@ function ProductCard({ product, selectedItem, setSelectedItem }) {
             </h3>
           </div>
 
-          
           <div className="relative z-10 px-8 pb-8 flex items-end justify-between gap-4">
             <ul className="space-y-2">
               {product.features.map((feature, i) => (
@@ -523,7 +527,7 @@ function BookingModal({ selectedDate, onClose }) {
   const [focusedField, setFocusedField] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [authMode, setAuthMode] = useState('register') // 'register' or 'login'
+  const [authMode, setAuthMode] = useState('register')
   const [registerData, setRegisterData] = useState({
     fullName: '',
     email: '',
@@ -615,7 +619,6 @@ function BookingModal({ selectedDate, onClose }) {
     setLoading(true)
 
     try {
-      // Step 1 — Create booking order
       const orderRes = await fetch('/api/booking/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -634,7 +637,6 @@ function BookingModal({ selectedDate, onClose }) {
         return
       }
 
-      // Step 2 — Open Razorpay popup
       const razorpayOptions = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: orderData.order.amount,
@@ -651,7 +653,6 @@ function BookingModal({ selectedDate, onClose }) {
           color: '#000000',
         },
         handler: async (response) => {
-          // Step 3 — Verify payment
           try {
             const verifyRes = await fetch('/api/booking/verify', {
               method: 'POST',
@@ -673,7 +674,6 @@ function BookingModal({ selectedDate, onClose }) {
               return
             }
 
-            // Step 4 — Save booking details and redirect
             localStorage.setItem('bookingDetails', JSON.stringify({
               date: dateForBackend,
               slot: selectedSlot,
@@ -707,9 +707,6 @@ function BookingModal({ selectedDate, onClose }) {
       setLoading(false)
     }
   }
-
-  const totalSteps = 4
-  const progressSteps = [0, 1, 2, 4]
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-md">
@@ -1245,7 +1242,7 @@ function Footer() {
   )
 }
 
-function StickyBottomBar({ selectedItem, setSelectedItem, selectedDate }) {
+function StickyBottomBar({ selectedItem, setSelectedItem, selectedDate, isDetailOpen }) {
   const [agreed, setAgreed] = useState(false)
   const [isUnlocking, setIsUnlocking] = useState(false)
   const total = selectedItem.reduce((sum, i) => sum + i.price, 0)
@@ -1284,7 +1281,7 @@ function StickyBottomBar({ selectedItem, setSelectedItem, selectedDate }) {
   }
 
   return (
-    <div className={`fixed bottom-0 left-0 right-0 z-50 bg-background transition-all duration-200 ${selectedDate ? 'hidden' : ''}`}>
+    <div className={`fixed bottom-0 left-0 right-0 z-50 bg-background transition-all duration-300 ${selectedDate || isDetailOpen ? 'hidden' : ''}`}>
       <div className="max-w-[480px] mx-auto px-5 pb-4 pt-2">
 
         {showBestValue && (
@@ -1351,18 +1348,16 @@ function StickyBottomBar({ selectedItem, setSelectedItem, selectedDate }) {
 export default function AryanMethodPage() {
   const [selectedItem, setSelectedItem] = useState([{ type: 'main', id: MAIN_PACKAGE.id, price: MAIN_PACKAGE.price }])
   const [selectedDate, setSelectedDate] = useState(null)
+  const [isDetailOpen, setIsDetailOpen] = useState(false)
 
   return (
     <div className="min-h-screen bg-background pb-32">
-      <Header />
+      <Header isDetailOpen={isDetailOpen} />
       <HeroSection selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
-      <ProductsSection selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
+      <ProductsSection selectedItem={selectedItem} setSelectedItem={setSelectedItem} setIsDetailOpen={setIsDetailOpen} />
       <BookingSection selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
       <Footer />
-      <StickyBottomBar selectedItem={selectedItem} setSelectedItem={setSelectedItem} selectedDate={selectedDate} />
+      <StickyBottomBar selectedItem={selectedItem} setSelectedItem={setSelectedItem} selectedDate={selectedDate} isDetailOpen={isDetailOpen} />
     </div>
   )
 }
-
-
-// done
