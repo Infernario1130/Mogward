@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Play, Zap } from "lucide-react";
 import { League_Spartan } from "next/font/google";
-import { PRODUCTS } from "@/lib/products";
+import { PRODUCTS, MAIN_PACKAGE } from "@/lib/products";
 
 const leagueSpartan = League_Spartan({ subsets: ["latin"], weight: ["400","500","600","700","800","900"] });
 
@@ -14,7 +14,6 @@ const SITE = {
   brandInitials: "M",
   watermarkText: "MY ARSENAL",
 };
-
 
 function WatermarkBackground() {
   return (
@@ -88,32 +87,26 @@ function Header() {
 }
 
 function PurchaseCard({ purchase }) {
-
-    const meta = PRODUCTS.find(p => p.id === purchase.id) || 
-    (MAIN_PACKAGE.id === purchase.id ? MAIN_PACKAGE : {})
+  const meta = PRODUCTS.find(p => p.id === purchase.id) || {}
 
   return (
     <div className="relative group transition-transform duration-300 ease-out hover:scale-[1.01]">
       <div className="absolute -inset-[2px] bg-gradient-to-r from-[#9400D3] via-[#9400D3] to-[#9400D3] rounded-3xl animate-border-glow opacity-60" />
       <div className="relative bg-gradient-to-b from-neutral-900 to-neutral-950 rounded-3xl overflow-hidden text-white aspect-[3/4] flex flex-col border border-neutral-700">
 
-        {/* Background image */}
         <div
           className="absolute inset-0 bg-cover bg-center brightness-75 group-hover:brightness-110 transition-all duration-300"
           style={{ backgroundImage: meta.image ? `url(${meta.image})` : 'none' }}
         />
 
-        {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-neutral-900/50 to-transparent group-hover:opacity-80 transition-all duration-300" />
 
-        {/* Category top left */}
         <div className="relative z-10 px-8 pt-6">
           <p className="text-xs tracking-[0.2em] font-extrabold text-white/50">
             {meta.category || 'PROTOCOL'}
           </p>
         </div>
 
-        {/* Title middle */}
         <div className="relative z-10 px-8 mt-auto">
           {meta.subtitle && (
             <p className="text-[#9400D3] font-bold text-xs tracking-[0.1em] mb-2">
@@ -130,7 +123,6 @@ function PurchaseCard({ purchase }) {
           </h3>
         </div>
 
-        {/* Bottom row — features left, date+button right */}
         <div className="relative z-10 px-8 pb-8 flex items-end justify-between gap-4">
           <ul className="space-y-2">
             {meta.features && meta.features.map((feature, i) => (
@@ -203,7 +195,24 @@ export default function DashboardPage() {
           return
         }
 
-        setPurchases(data.purchases)
+        // If bundle is purchased, expand it to show all 4 individual products
+        const hasBundle = data.purchases.some(p => p.id === MAIN_PACKAGE.id)
+
+        if (hasBundle) {
+          const bundlePurchase = data.purchases.find(p => p.id === MAIN_PACKAGE.id)
+          const individualProducts = PRODUCTS.map(p => ({
+            id: p.id,
+            title: p.title,
+            price: p.price,
+            purchasedOn: bundlePurchase.purchasedOn,
+            orderId: bundlePurchase.orderId,
+            razorpayPaymentId: bundlePurchase.razorpayPaymentId,
+          }))
+          setPurchases(individualProducts)
+        } else {
+          setPurchases(data.purchases)
+        }
+
         setUser(data.user)
       } catch (err) {
         setError('Something went wrong please try again')
