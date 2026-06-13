@@ -54,7 +54,7 @@ const PRODUCTS = [
     id: "6a2160af38cf5aec331a473c",
     category: "NUTRITION",
     title: ["DIET", "PROTOCOL"],
-    subtitle: "(SUMMER EDITION)",
+    subtitle: "SUMMER EDITION",
     features: ["6 NEW MEALS EVERYDAY", "VEG/NON-VEG", "EASY TO FOLLOW RECIPES", "MACROS BREAKDOWN"],
     price: 999,
     originalPrice: 1799,
@@ -348,7 +348,7 @@ function MainPackageCard({ selectedItem, setSelectedItem }) {
           </span>
         </div>
         <div className="relative mt-auto p-8">
-          <p className="text-[#9400D3] font-extrabold text-xs tracking-[0.2em] mb-6">{MAIN_PACKAGE.label}</p>
+          <p className="text-[#9400D3] font-extrabold text-xs tracking-[0.2em] mb-4">{MAIN_PACKAGE.label}</p>
           <h2 className={`font-black text-3xl sm:text-4xl tracking-[0.01em] leading-[0.9] mb-20 ${leagueSpartan.className}`}>
             {MAIN_PACKAGE.title.map((line, i) => (
               <span key={i} className="block">{line}</span>
@@ -409,6 +409,16 @@ function ProductCard({ product, selectedItem, setSelectedItem }) {
       const newItems = isSelected
         ? withoutMain.filter(i => i.id !== product.id)
         : [...withoutMain, { type: 'product', id: product.id, price: product.price }]
+  
+      // Auto-upgrade to bundle if all 4 products are selected
+      const allProductIds = PRODUCTS.map(p => p.id)
+      const selectedProductIds = newItems.filter(i => i.type === 'product').map(i => i.id)
+      const allSelected = allProductIds.every(id => selectedProductIds.includes(id))
+  
+      if (allSelected) {
+        return [{ type: 'main', id: MAIN_PACKAGE.id, price: MAIN_PACKAGE.price }]
+      }
+  
       return newItems.length === 0
         ? [{ type: 'main', id: MAIN_PACKAGE.id, price: MAIN_PACKAGE.price }]
         : newItems
@@ -469,7 +479,7 @@ function ProductCard({ product, selectedItem, setSelectedItem }) {
           {/* Title - middle */}
           <div className="relative z-10 px-8 mt-auto">
             {product.subtitle && (
-              <p className="text-[#9400D3] font-bold text-xs tracking-[0.1em] mb-2">• {product.subtitle}</p>
+              <p className="text-[#9400D3] font-bold text-xs tracking-[0.1em] mb-2"> {product.subtitle}</p>
             )}
             <h3 className={`font-black text-3xl sm:text-4xl tracking-tight leading-[0.9] mb-6 ${leagueSpartan.className}`}>
               {product.title.map((line, i) => (
@@ -478,7 +488,7 @@ function ProductCard({ product, selectedItem, setSelectedItem }) {
             </h3>
           </div>
 
-          {/* Bottom row - features left, price right */}
+          
           <div className="relative z-10 px-8 pb-8 flex items-end justify-between gap-4">
             <ul className="space-y-2">
               {product.features.map((feature, i) => (
@@ -1343,7 +1353,7 @@ function StickyBottomBar({ selectedItem, setSelectedItem, selectedDate }) {
               <div className="flex items-center justify-between gap-4">
                 <div className="min-w-0">
                   <p className="text-xs tracking-[0.2em] text-[#9400D3] font-semibold">BEST VALUE</p>
-                  <p className="text-sm text-white">Get the Full Bundle – Just ₹933/mo</p>
+                  <p className="text-sm text-white">Get the Full Bundle – Lifetime Access</p>
                 </div>
                 <button
                   onClick={handleUpgrade}
