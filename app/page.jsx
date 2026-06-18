@@ -1357,9 +1357,9 @@ export default function AryanMethodPage() {
       <HeroSection selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
       <ProductsSection selectedItem={selectedItem} setSelectedItem={setSelectedItem} setIsDetailOpen={setIsDetailOpen} />
       <CoachingCard/>
-      <BookingSection selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
       <Footer />
       <StickyBottomBar selectedItem={selectedItem} setSelectedItem={setSelectedItem} selectedDate={selectedDate} isDetailOpen={isDetailOpen} />
     </div>
   )
 }
+ //<BookingSection selectedDate={selectedDate} setSelectedDate={setSelectedDate} />

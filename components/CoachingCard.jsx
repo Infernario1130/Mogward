@@ -306,15 +306,19 @@ function RefundBadge({ style = {} }) {
   );
 }
 
+import { useRouter } from 'next/navigation'
+
 function BookButton({ compact = false }) {
+  const router = useRouter()
   return (
     <button
       className="mogward-book-btn"
       style={{ padding: compact ? "12px 0" : "16px 0", fontSize: compact ? "13px" : "15px" }}
+      onClick={() => router.push('/book')}
     >
       BOOK A FREE CALL
     </button>
-  );
+  )
 }
 
 //
