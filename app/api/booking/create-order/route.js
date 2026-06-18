@@ -5,10 +5,10 @@ import jwt from 'jsonwebtoken'
 import Razorpay from 'razorpay'
 
 const SESSION_CONFIG = {
-  '40min': {
-    price: 1999,
-    duration: '40 MIN SESSION',
-    label: '40-MINUTE SESSION',
+  '30min': {
+    price: 999,
+    duration: '30 MIN SESSION',
+    label: '30-MINUTE SESSION',
   },
 }
 
@@ -56,7 +56,7 @@ export async function POST(request) {
         { status: 400 }
       )
     }
-    if (!['slot1', 'slot2'].includes(slot)) {
+    if (!['slot1', 'slot2', 'slot3', 'slot4', 'slot5', 'slot6'].includes(slot)) {
       return NextResponse.json(
         { success: false, message: 'Invalid time slot' },
         { status: 400 }

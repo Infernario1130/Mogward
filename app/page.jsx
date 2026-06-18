@@ -766,6 +766,9 @@ function BookingModal({ selectedDate, onClose }) {
         {step === 0 && (
           <>
             <div className="p-6 space-y-4">
+            <p className="text-xs text-green-600 text-center px-6 py-2">
+  This price will get adjusted in your monthly plan if you hop onto the program.
+</p>
               {SESSION_OPTIONS.map(session => (
                 <button
                   key={session.id}

@@ -11,6 +11,16 @@ const FEATURES = [
   "LOOKSMAX & PERSONALITY GUIDANCE",
 ];
 
+// Pricing config: only India gets a special price, everyone else (including
+// USA/UK and unresolved/failed lookups) gets the USD default.
+const PRICING = {
+  IN: { symbol: "₹", amount: "9999" },
+};
+const DEFAULT_PRICING = { symbol: "$", amount: "99" };
+
+const LOCATION_CACHE_KEY = "mogward_country_code";
+const LOCATION_CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+
 const mogwardStyles = `
   .mogward-root {
     --radius: 0.625rem;
@@ -128,6 +138,71 @@ function useIsDesktop() {
   return isDesktop;
 }
 
+// Resolves the visitor's country code silently via IP-based lookup
+// (no browser permission prompt). Falls back to null on any failure,
+// which the caller treats as "use default USD pricing".
+function useLocalizedPrice() {
+  const [pricing, setPricing] = useState(DEFAULT_PRICING);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    function applyCountry(countryCode) {
+      if (!isMounted) return;
+      if (countryCode && PRICING[countryCode]) {
+        setPricing(PRICING[countryCode]);
+      } else {
+        setPricing(DEFAULT_PRICING);
+      }
+    }
+
+    async function resolveCountry() {
+      // 1. Check cache first to avoid hitting the API on every page load.
+      try {
+        const cachedRaw = localStorage.getItem(LOCATION_CACHE_KEY);
+        if (cachedRaw) {
+          const cached = JSON.parse(cachedRaw);
+          if (cached && Date.now() - cached.timestamp < LOCATION_CACHE_TTL_MS) {
+            applyCountry(cached.countryCode);
+            return;
+          }
+        }
+      } catch {
+        // Corrupted cache or localStorage unavailable (e.g. private mode) — ignore and fetch fresh.
+      }
+
+      // 2. Fetch fresh from IP geolocation API.
+      try {
+        const res = await fetch("https://ipapi.co/json/");
+        if (!res.ok) throw new Error("geo lookup failed");
+        const data = await res.json();
+        const countryCode = data && data.country_code ? data.country_code : null;
+
+        applyCountry(countryCode);
+
+        try {
+          localStorage.setItem(
+            LOCATION_CACHE_KEY,
+            JSON.stringify({ countryCode, timestamp: Date.now() })
+          );
+        } catch {
+          // localStorage write failed — non-critical, just skip caching.
+        }
+      } catch {
+        // Network/API failure — silently keep default USD pricing.
+        applyCountry(null);
+      }
+    }
+
+    resolveCountry();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  return pricing;
+}
+
 function BookButton({ compact = false, onBookCall }) {
   return (
     <button
@@ -182,7 +257,7 @@ function RefundBadge({ style = {} }) {
   );
 }
 
-function MobileLayout({ onBookCall }) {
+function MobileLayout({ onBookCall, pricing }) {
   return (
     <div style={{ padding: "1.75rem 1.5rem 1.5rem" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.25rem" }}>
@@ -213,7 +288,7 @@ function MobileLayout({ onBookCall }) {
       <div style={{ textAlign: "right", marginBottom: "1.25rem" }}>
         <p style={{ fontSize: "12px", letterSpacing: "0.18em", color: "rgba(255,255,255,0.7)", fontWeight: 500, margin: 0 }}>STARTING FROM</p>
         <p style={{ color: "white", margin: 0 }}>
-          <span style={{ fontSize: "clamp(40px, 10vw, 52px)", fontWeight: 900, lineHeight: 1, letterSpacing: "-0.02em" }}>$99</span>
+          <span style={{ fontSize: "clamp(40px, 10vw, 52px)", fontWeight: 900, lineHeight: 1, letterSpacing: "-0.02em" }}>{pricing.symbol}{pricing.amount}</span>
           <span style={{ fontSize: "14px", letterSpacing: "0.1em", color: "rgba(255,255,255,0.8)" }}>/MONTH</span>
         </p>
       </div>
@@ -222,7 +297,7 @@ function MobileLayout({ onBookCall }) {
   );
 }
 
-function DesktopLayout({ onBookCall }) {
+function DesktopLayout({ onBookCall, pricing }) {
   return (
     <div style={{
       display: "grid",
@@ -263,7 +338,7 @@ function DesktopLayout({ onBookCall }) {
             }}>
               <p style={{ fontSize: "11px", letterSpacing: "0.18em", color: "rgba(255,255,255,0.7)", fontWeight: 500, textAlign: "right", margin: "0 0 4px" }}>STARTING FROM</p>
               <p style={{ color: "white", textAlign: "right", margin: "0 0 12px" }}>
-                <span style={{ fontSize: "clamp(32px, 3vw, 44px)", fontWeight: 900, lineHeight: 1, letterSpacing: "-0.02em" }}>$99</span>
+                <span style={{ fontSize: "clamp(32px, 3vw, 44px)", fontWeight: 900, lineHeight: 1, letterSpacing: "-0.02em" }}>{pricing.symbol}{pricing.amount}</span>
                 <span style={{ fontSize: "13px", letterSpacing: "0.1em", color: "rgba(255,255,255,0.8)" }}> /MONTH</span>
               </p>
               <BookButton compact onBookCall={onBookCall} />
@@ -277,6 +352,7 @@ function DesktopLayout({ onBookCall }) {
 
 export default function CoachingCard({ onBookCall }) {
   const isDesktop = useIsDesktop();
+  const pricing = useLocalizedPrice();
 
   return (
     <>
@@ -297,7 +373,7 @@ export default function CoachingCard({ onBookCall }) {
                 "0 0 0 1px rgba(168,85,247,0.15), 0 30px 80px -20px rgba(120,30,160,0.45)",
             }}
           >
-            {isDesktop ? <DesktopLayout onBookCall={onBookCall} /> : <MobileLayout onBookCall={onBookCall} />}
+            {isDesktop ? <DesktopLayout onBookCall={onBookCall} pricing={pricing} /> : <MobileLayout onBookCall={onBookCall} pricing={pricing} />}
           </article>
         </main>
       </div>

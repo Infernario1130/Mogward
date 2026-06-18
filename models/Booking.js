@@ -24,7 +24,7 @@ const BookingSchema = new mongoose.Schema({
   },
   slot: {
     type: String,
-    enum: ['slot1', 'slot2'],
+    enum: ['slot1', 'slot2' , 'slot3', 'slot4', 'slot5', 'slot6'],
     required: true,
   },
   sessionId: {
