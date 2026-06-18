@@ -103,7 +103,7 @@ const mogwardStyles = `
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background: radial-gradient(ellipse at center, transparent 40%, #0a060d 80%);
+    background: radial-gradient(ellipse at center, transparent 20%, #0a060d 80%);
     pointer-events: none;
   }
 
