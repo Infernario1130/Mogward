@@ -103,7 +103,7 @@ const mogwardStyles = `
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background: radial-gradient(ellipse at center, transparent 20%, #0a060d 80%);
+    background: radial-gradient(ellipse at center, transparent 100%, #0a060d 20%);
     pointer-events: none;
   }
 
@@ -113,7 +113,7 @@ const mogwardStyles = `
     object-fit: contain;
     mix-blend-mode: screen;
     display: block;
-    filter: brightness(1.4) contrast(1.15);
+    filter: brightness(1.8) contrast(1.1);
   }
 `;
 
