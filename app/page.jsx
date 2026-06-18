@@ -10,7 +10,6 @@ import CoachingCard from "../components/CoachingCard.jsx"
 
 const leagueSpartan = League_Spartan({ subsets: ['latin'], weight: ['400','500','600','700','800','900'] })
 
-
 const SITE_CONFIG = {
   brandName: "MOGWARD",
   brandInitials: "M",
@@ -34,9 +33,9 @@ const BOOKING_CONFIG = {
 const SESSION_OPTIONS = [
   {
     id: '40min',
-    duration: '40-MINUTE SESSION',
-    durationLabel: '40 MIN SESSION',
-    price: 1999,
+    duration: '30-MINUTE SESSION',
+    durationLabel: '30 MIN SESSION',
+    price: 999,
     isPriority: true,
     badge: 'PRIORITY COMMS',
   },
@@ -81,7 +80,6 @@ function Header({ isDetailOpen }) {
       .catch(() => {})
   }, [])
 
-  // Close popup on Escape
   useEffect(() => {
     if (!menuOpen) return
     const onKey = (e) => { if (e.key === 'Escape') setMenuOpen(false) }
@@ -131,28 +129,16 @@ function Header({ isDetailOpen }) {
               >
                 {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
-
               {menuOpen && (
                 <>
-                  {/* Backdrop (mobile-first tap-to-close) */}
                   <div
                     className="fixed inset-0 z-40 bg-black/20 sm:bg-transparent"
                     onClick={() => setMenuOpen(false)}
                     aria-hidden="true"
                   />
-                  {/* Popup menu */}
                   <div
                     role="menu"
-                    className="
-                      fixed sm:absolute
-                      z-50
-                      left-3 right-3 top-[68px]
-                      sm:left-auto sm:right-0 sm:top-12
-                      sm:w-60
-                      rounded-2xl border border-border bg-background shadow-2xl
-                      overflow-hidden
-                      animate-in fade-in slide-in-from-top-2 duration-150
-                    "
+                    className="fixed sm:absolute z-50 left-3 right-3 top-[68px] sm:left-auto sm:right-0 sm:top-12 sm:w-60 rounded-2xl border border-border bg-background shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150"
                   >
                     <button
                       type="button"
@@ -227,7 +213,6 @@ function HeroSection({ selectedItem, setSelectedItem }) {
         <p className="text-muted-foreground font-medium text-sm max-w-3xs mx-auto mb-12">
           {SITE_CONFIG.heroSubtitle}
         </p>
-
         <div className={`max-w-3xl mx-auto mb-12 py-4 pl-12 sm:pl-16 pr-4 ${leagueSpartan.className}`}>
           <div className="grid grid-cols-3 divide-x divide-foreground/15">
             {[
@@ -235,21 +220,14 @@ function HeroSection({ selectedItem, setSelectedItem }) {
               { idx: "02", value: "01", label: "FRAMEWORK" },
               { idx: "03", value: "∞",  label: "LEVERAGE" },
             ].map((s) => (
-              <div key={s.idx} className="flex flex-col items-start px-6 sm:px-8">
-                <span className="text-[10px] sm:text-xs tracking-[0.25em] text-muted-foreground/70 mb-2 sm:mb-3">
-                  {s.idx}
-                </span>
-                <span className="font-black leading-none text-4xl sm:text-6xl md:text-7xl text-foreground mb-2 sm:mb-3">
-                  {s.value}
-                </span>
-                <span className="text-[10px] sm:text-xs tracking-[0.25em] text-muted-foreground">
-                  {s.label}
-                </span>
+              <div key={s.idx} className="flex flex-col px-6 sm:px-8">
+                <span className="text-[10px] sm:text-xs tracking-[0.25em] text-muted-foreground/70 mb-2 sm:mb-3">{s.idx}</span>
+                <span className="font-black leading-none text-6xl sm:text-10xl md:text-7xl text-foreground mb-2 sm:mb-3">{s.value}</span>
+                <span className="text-[10px] sm:text-xs tracking-[0.25em] text-muted-foreground">{s.label}</span>
               </div>
             ))}
           </div>
         </div>
-
         <p className="text-xs font-bold tracking-[0.2em] text-muted-foreground mb-8">
           COMPLETE BUNDLE • BEST VALUE
         </p>
@@ -349,15 +327,12 @@ function ProductCard({ product, selectedItem, setSelectedItem, setIsDetailOpen }
       const newItems = isSelected
         ? withoutMain.filter(i => i.id !== product.id)
         : [...withoutMain, { type: 'product', id: product.id, price: product.price }]
-  
       const allProductIds = PRODUCTS.map(p => p.id)
       const selectedProductIds = newItems.filter(i => i.type === 'product').map(i => i.id)
       const allSelected = allProductIds.every(id => selectedProductIds.includes(id))
-  
       if (allSelected) {
         return [{ type: 'main', id: MAIN_PACKAGE.id, price: MAIN_PACKAGE.price }]
       }
-  
       return newItems.length === 0
         ? [{ type: 'main', id: MAIN_PACKAGE.id, price: MAIN_PACKAGE.price }]
         : newItems
@@ -401,8 +376,6 @@ function ProductCard({ product, selectedItem, setSelectedItem, setIsDetailOpen }
             style={{ backgroundImage: `url(${product.image})` }}
           />
           <div className={`absolute inset-0 transition-all duration-300 bg-gradient-to-t from-neutral-950/90 via-neutral-900/50 to-transparent ${isSelected ? 'opacity-70' : 'group-hover:opacity-50'}`} />
-
-          {/* Select button - top right */}
           <button
             type="button"
             onClick={handleSelect}
@@ -414,18 +387,14 @@ function ProductCard({ product, selectedItem, setSelectedItem, setIsDetailOpen }
               {isSelected && <div className="w-3 h-3 rounded-full bg-[#9400D3] animate-pulse" />}
             </div>
           </button>
-
-          {/* Category - top left */}
           <div className="relative z-10 px-8 pt-6">
             <p className={`text-xs tracking-[0.2em] font-extrabold transition-colors duration-300 ${isSelected ? 'text-[#9400D3]/70' : 'text-white/50'}`}>
               {product.category}
             </p>
           </div>
-
-          {/* Title - middle */}
           <div className="relative z-10 px-8 mt-auto">
             {product.subtitle && (
-              <p className="text-[#9400D3] font-bold text-xs tracking-[0.1em] mb-2"> {product.subtitle}</p>
+              <p className="text-[#9400D3] font-bold text-xs tracking-[0.1em] mb-2">{product.subtitle}</p>
             )}
             <h3 className={`font-black text-3xl sm:text-4xl tracking-tight leading-[0.9] mb-6 ${leagueSpartan.className}`}>
               {product.title.map((line, i) => (
@@ -433,7 +402,6 @@ function ProductCard({ product, selectedItem, setSelectedItem, setIsDetailOpen }
               ))}
             </h3>
           </div>
-
           <div className="relative z-10 px-8 pb-8 flex items-end justify-between gap-4">
             <ul className="space-y-2">
               {product.features.map((feature, i) => (
@@ -443,7 +411,6 @@ function ProductCard({ product, selectedItem, setSelectedItem, setIsDetailOpen }
                 </li>
               ))}
             </ul>
-
             <div className="text-right flex-shrink-0">
               <span className="text-neutral-500 line-through text-sm block">₹{product.originalPrice}</span>
               <span className={`text-4xl font-black transition-colors duration-300 ${isSelected ? 'text-[#9400D3]' : 'text-white'} ${leagueSpartan.className}`}>
@@ -479,7 +446,6 @@ function ProductCard({ product, selectedItem, setSelectedItem, setIsDetailOpen }
               </button>
               <p className="text-xs tracking-[0.2em] text-[#9400D3]/70">{product.category}</p>
             </div>
-
             <div className="px-6 sm:px-8 pb-8 pt-6">
               <h3 className={`font-black text-3xl sm:text-4xl tracking-tight leading-[0.9] mb-2 ${leagueSpartan.className}`}>
                 {product.title.map((line, i) => (
@@ -489,14 +455,12 @@ function ProductCard({ product, selectedItem, setSelectedItem, setIsDetailOpen }
               {product.subtitle && (
                 <p className="text-[#9400D3] text-xs tracking-[0.1em] mb-6">• {product.subtitle}</p>
               )}
-
               <div
                 className="relative w-full h-48 sm:h-56 rounded-2xl overflow-hidden mb-6 bg-cover bg-center border border-neutral-800"
                 style={{ backgroundImage: `url(${product.image})` }}
               >
                 <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-transparent" />
               </div>
-
               <p className="text-xs tracking-[0.2em] text-white/50 mb-3">WHAT'S INCLUDED</p>
               <ul className="space-y-2 mb-8">
                 {product.features.map((feature, i) => (
@@ -506,7 +470,6 @@ function ProductCard({ product, selectedItem, setSelectedItem, setIsDetailOpen }
                   </li>
                 ))}
               </ul>
-
               <div className="flex items-baseline gap-3 mb-1">
                 <span className={`text-4xl font-black text-white ${leagueSpartan.className}`}>₹{product.price}</span>
                 <span className="text-neutral-500 line-through">₹{product.originalPrice}</span>
@@ -520,6 +483,131 @@ function ProductCard({ product, selectedItem, setSelectedItem, setIsDetailOpen }
   )
 }
 
+function CalendarModal({ onClose, onDateSelect }) {
+  const today = new Date()
+  const [currentMonth, setCurrentMonth] = useState(new Date(today.getFullYear(), today.getMonth(), 1))
+
+  const getDaysInMonth = (date) => {
+    const year = date.getFullYear()
+    const month = date.getMonth()
+    const firstDay = new Date(year, month, 1).getDay()
+    const daysInMonth = new Date(year, month + 1, 0).getDate()
+    return { firstDay, daysInMonth }
+  }
+
+  const { firstDay, daysInMonth } = getDaysInMonth(currentMonth)
+  const monthName = currentMonth.toLocaleString('default', { month: 'long', year: 'numeric' }).toUpperCase()
+  const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
+
+  const isDatePast = (day) => {
+    const checkDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day)
+    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+    return checkDate < todayStart
+  }
+
+  const isDateToday = (day) => {
+    return (
+      day === today.getDate() &&
+      currentMonth.getMonth() === today.getMonth() &&
+      currentMonth.getFullYear() === today.getFullYear()
+    )
+  }
+
+  const isDateFuture = (day) => {
+    const checkDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day)
+    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+    return checkDate > todayStart
+  }
+
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', onKey)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = ''
+    }
+  }, [])
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-md"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-3xl max-w-md w-full shadow-2xl overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between p-6 border-b border-neutral-200">
+          <div>
+            <p className="text-xs font-bold tracking-[0.2em] text-neutral-700">BOOK A FREE CALL</p>
+            <p className="text-xs text-neutral-500 mt-1">Select a date to continue</p>
+          </div>
+          <button onClick={onClose} className="p-1 hover:bg-neutral-100 rounded transition-colors">
+            <X className="w-5 h-5 text-neutral-600" />
+          </button>
+        </div>
+
+        <div className="p-6 bg-neutral-900 text-white">
+          <div className="flex items-center justify-between mb-6">
+            <span className="text-sm tracking-[0.1em]">{monthName}</span>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))}
+                className="p-1 hover:bg-white/10 rounded transition-colors"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))}
+                className="p-1 hover:bg-white/10 rounded transition-colors"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-7 gap-2 mb-4">
+            {days.map(day => (
+              <div key={day} className="text-xs text-neutral-500 text-center py-2">{day}</div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-7 gap-2">
+            {Array.from({ length: firstDay }).map((_, i) => (
+              <div key={`empty-${i}`} />
+            ))}
+            {Array.from({ length: daysInMonth }).map((_, i) => {
+              const day = i + 1
+              const isPast = isDatePast(day)
+              const isTodayDate = isDateToday(day)
+              const isFuture = isDateFuture(day)
+              return (
+                <button
+                  key={day}
+                  disabled={isPast}
+                  onClick={() => onDateSelect(new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day))}
+                  className={`
+                    relative aspect-square flex items-center justify-center text-sm rounded-full transition-colors
+                    ${isTodayDate ? 'ring-2 ring-[#9400D3] bg-[#9400D3]/20 text-white font-semibold' : ''}
+                    ${isPast ? 'text-neutral-600 cursor-not-allowed' : 'hover:bg-white/10 cursor-pointer'}
+                    ${isFuture ? 'text-white' : ''}
+                  `}
+                >
+                  {day}
+                  {isFuture && (
+  <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#9400D3] animate-blink-dot" />
+)}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function BookingModal({ selectedDate, onClose }) {
   const [selectedSession, setSelectedSession] = useState(SESSION_OPTIONS.find(s => s.isPriority) || SESSION_OPTIONS[0])
   const [step, setStep] = useState(0)
@@ -529,35 +617,27 @@ function BookingModal({ selectedDate, onClose }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [authMode, setAuthMode] = useState('register')
-  const [registerData, setRegisterData] = useState({
-    fullName: '',
-    email: '',
-    phone: '',
-    password: '',
-  })
-  const [loginData, setLoginData] = useState({
-    email: '',
-    password: '',
-  })
+  const [registerData, setRegisterData] = useState({ fullName: '', email: '', phone: '', password: '' })
+  const [loginData, setLoginData] = useState({ email: '', password: '' })
   const router = useRouter()
 
   if (!selectedDate) return null
 
   const dateStr = selectedDate.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+    year: 'numeric', month: 'long', day: 'numeric'
   }).toUpperCase()
 
   const dateForBackend = selectedDate.toLocaleDateString('en-IN', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+    year: 'numeric', month: 'long', day: 'numeric'
   })
 
   const slots = [
-    { id: 'slot1', name: 'SLOT 1' },
-    { id: 'slot2', name: 'SLOT 2' },
+    { id: 'slot1', name: 'SLOT 1', time: '9:00 AM - 9:30 AM' },
+    { id: 'slot2', name: 'SLOT 2', time: '11:00 AM - 11:30 AM' },
+    { id: 'slot3', name: 'SLOT 3', time: '1:00 PM - 1:30 PM' },
+    { id: 'slot4', name: 'SLOT 4', time: '3:00 PM - 3:30 PM' },
+    { id: 'slot5', name: 'SLOT 5', time: '5:00 PM - 5:30 PM' },
+    { id: 'slot6', name: 'SLOT 6', time: '7:00 PM - 7:30 PM' },
   ]
 
   const handleProceedFromRegister = async () => {
@@ -575,10 +655,7 @@ function BookingModal({ selectedDate, onClose }) {
         }),
       })
       const data = await res.json()
-      if (!data.success) {
-        setError(data.message)
-        return
-      }
+      if (!data.success) { setError(data.message); return }
       setAuthMode('register')
       setStep(4)
     } catch (err) {
@@ -595,16 +672,10 @@ function BookingModal({ selectedDate, onClose }) {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: loginData.email,
-          password: loginData.password,
-        }),
+        body: JSON.stringify({ email: loginData.email, password: loginData.password }),
       })
       const data = await res.json()
-      if (!data.success) {
-        setError(data.message)
-        return
-      }
+      if (!data.success) { setError(data.message); return }
       setAuthMode('login')
       setStep(4)
     } catch (err) {
@@ -618,25 +689,14 @@ function BookingModal({ selectedDate, onClose }) {
     if (!agreed) return
     setError('')
     setLoading(true)
-
     try {
       const orderRes = await fetch('/api/booking/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sessionId: selectedSession.id,
-          date: dateForBackend,
-          slot: selectedSlot,
-        }),
+        body: JSON.stringify({ sessionId: selectedSession.id, date: dateForBackend, slot: selectedSlot }),
       })
-
       const orderData = await orderRes.json()
-
-      if (!orderData.success) {
-        setError(orderData.message)
-        setLoading(false)
-        return
-      }
+      if (!orderData.success) { setError(orderData.message); setLoading(false); return }
 
       const razorpayOptions = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
@@ -645,14 +705,8 @@ function BookingModal({ selectedDate, onClose }) {
         name: 'ARYANHEIS',
         description: `1:1 Call — ${selectedSession.duration}`,
         order_id: orderData.order.id,
-        prefill: {
-          name: orderData.user.name,
-          email: orderData.user.email,
-          contact: orderData.user.phone,
-        },
-        theme: {
-          color: '#000000',
-        },
+        prefill: { name: orderData.user.name, email: orderData.user.email, contact: orderData.user.phone },
+        theme: { color: '#000000' },
         handler: async (response) => {
           try {
             const verifyRes = await fetch('/api/booking/verify', {
@@ -667,14 +721,8 @@ function BookingModal({ selectedDate, onClose }) {
                 slot: selectedSlot,
               }),
             })
-
             const verifyData = await verifyRes.json()
-
-            if (!verifyData.success) {
-              setError(verifyData.message)
-              return
-            }
-
+            if (!verifyData.success) { setError(verifyData.message); return }
             localStorage.setItem('bookingDetails', JSON.stringify({
               date: dateForBackend,
               slot: selectedSlot,
@@ -683,10 +731,8 @@ function BookingModal({ selectedDate, onClose }) {
               bookingId: verifyData.booking.id,
               razorpayPaymentId: verifyData.booking.razorpayPaymentId,
             }))
-
             onClose()
             router.push('/booking-success')
-
           } catch (err) {
             setError('Payment verification failed please contact support')
           }
@@ -694,14 +740,8 @@ function BookingModal({ selectedDate, onClose }) {
       }
 
       const razorpay = new window.Razorpay(razorpayOptions)
-
-      razorpay.on('payment.failed', () => {
-        setError('Payment failed please try again')
-        setLoading(false)
-      })
-
+      razorpay.on('payment.failed', () => { setError('Payment failed please try again'); setLoading(false) })
       razorpay.open()
-
     } catch (err) {
       setError('Something went wrong please try again')
     } finally {
@@ -712,8 +752,6 @@ function BookingModal({ selectedDate, onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-md">
       <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl">
-
-        {/* Header */}
         <div className="flex items-start justify-between p-6 border-b border-neutral-200">
           <div>
             <p className="text-xs font-bold tracking-[0.2em] text-neutral-700">1:1 CALL</p>
@@ -723,10 +761,8 @@ function BookingModal({ selectedDate, onClose }) {
             <X className="w-5 h-5 text-neutral-600" />
           </button>
         </div>
-
         <div className="h-px bg-neutral-900 mx-6" />
 
-        {/* Step 0: Session Selection */}
         {step === 0 && (
           <>
             <div className="p-6 space-y-4">
@@ -749,9 +785,7 @@ function BookingModal({ selectedDate, onClose }) {
                   <p className="text-xs text-neutral-500 tracking-[0.05em]">{session.durationLabel}</p>
                   {session.badge && selectedSession.id === session.id && (
                     <div className="mt-3 inline-block">
-                      <span className="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full tracking-[0.1em]">
-                        {session.badge}
-                      </span>
+                      <span className="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full tracking-[0.1em]">{session.badge}</span>
                     </div>
                   )}
                 </button>
@@ -768,68 +802,62 @@ function BookingModal({ selectedDate, onClose }) {
           </>
         )}
 
-        {/* Step 1: Slot Selection */}
-        {step === 1 && (
-          <>
-            <div className="p-6 space-y-4">
-              <button
-                onClick={() => setStep(0)}
-                className="flex items-center gap-2 text-xs font-bold text-neutral-600 hover:text-neutral-900 transition-colors tracking-[0.1em]"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                BACK TO TIERS
-              </button>
-              <p className="text-xs font-bold tracking-[0.15em] text-neutral-500">SCHEDULING WINDOW</p>
-            </div>
-            <div className="px-6 pb-6 space-y-3">
-              {slots.map(slot => (
-                <button
-                  key={slot.id}
-                  onClick={() => setSelectedSlot(slot.id)}
-                  className={`w-full text-left p-4 rounded-2xl transition-all duration-300 ${
-                    selectedSlot === slot.id
-                      ? 'border-2 border-[#9400D3] bg-[#9400D3] shadow-[0_0_25px_rgba(148,0,211,0.4)] scale-105'
-                      : 'border-2 border-neutral-200 bg-white hover:border-[#9400D3] hover:shadow-[0_0_20px_rgba(148,0,211,0.2)]'
-                  }`}
-                >
-                  <p className={`font-black text-sm italic tracking-tight ${selectedSlot === slot.id ? 'text-[#9400D3]' : 'text-neutral-800'} ${leagueSpartan.className}`}>
-                    {slot.name}
-                  </p>
-                </button>
-              ))}
-            </div>
-            <div className="px-6 pb-6">
-              <button
-                onClick={() => setStep(2)}
-                disabled={!selectedSlot}
-                className={`w-full py-3 rounded-lg font-bold text-xs tracking-[0.15em] transition-all duration-200 ${
-                  selectedSlot
-                    ? 'bg-neutral-900 text-white hover:bg-neutral-800 hover:shadow-lg hover:scale-105 active:scale-95'
-                    : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
-                }`}
-              >
-                CONFIRM BOOKING
-              </button>
-            </div>
-          </>
-        )}
+{step === 1 && (
+  <>
+    <div className="px-6 pt-6 pb-4 space-y-3">
+      <button onClick={() => setStep(0)} className="flex items-center gap-2 text-xs font-bold text-neutral-600 hover:text-neutral-900 transition-colors tracking-[0.1em]">
+        <ChevronLeft className="w-4 h-4" />
+        BACK TO TIERS
+      </button>
+      <p className="text-xs font-bold tracking-[0.15em] text-neutral-500">SCHEDULING WINDOW</p>
+    </div>
+    <div className="px-6 pb-6">
+      <div className="grid grid-cols-2 gap-4">
+        {slots.map(slot => (
+          <button
+            key={slot.id}
+            onClick={() => setSelectedSlot(slot.id)}
+            className={`text-left p-5 rounded-2xl transition-all duration-300 ${
+              selectedSlot === slot.id
+                ? 'border-2 border-[#9400D3] bg-white shadow-[0_0_20px_rgba(148,0,211,0.5),inset_0_0_12px_rgba(148,0,211,0.08)]'
+                : 'border-2 border-neutral-200 bg-white hover:border-[#9400D3] hover:shadow-[0_0_14px_rgba(148,0,211,0.25)]'
+            }`}
+          >
+            <p className={`font-black text-sm tracking-tight ${selectedSlot === slot.id ? 'text-[#9400D3]' : 'text-neutral-800'} ${leagueSpartan.className}`}>
+              {slot.name}
+            </p>
+            <p className={`text-xs mt-2 ${selectedSlot === slot.id ? 'text-[#9400D3]/70' : 'text-neutral-400'}`}>
+              {slot.time}
+            </p>
+          </button>
+        ))}
+      </div>
+    </div>
+    <div className="px-6 pb-8">
+      <button
+        onClick={() => setStep(2)}
+        disabled={!selectedSlot}
+        className={`w-full py-3 rounded-lg font-bold text-xs tracking-[0.15em] transition-all duration-200 ${
+          selectedSlot
+            ? 'bg-neutral-900 text-white hover:bg-neutral-800 hover:shadow-lg hover:scale-105 active:scale-95'
+            : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
+        }`}
+      >
+        CONFIRM BOOKING
+      </button>
+    </div>
+  </>
+)}
 
-        {/* Step 2: Register Form */}
         {step === 2 && (
           <>
             <div className="p-6 space-y-4">
               <div className="flex items-center justify-between">
-                <button
-                  onClick={() => setStep(1)}
-                  className="flex items-center gap-2 text-xs font-bold text-neutral-600 hover:text-neutral-900 transition-colors tracking-[0.1em]"
-                >
+                <button onClick={() => setStep(1)} className="flex items-center gap-2 text-xs font-bold text-neutral-600 hover:text-neutral-900 transition-colors tracking-[0.1em]">
                   <ChevronLeft className="w-4 h-4" />
                   BACK TO SLOTS
                 </button>
-                <button
-                  onClick={() => { setError(''); setStep(3) }}
-                  className="text-xs font-bold text-[#9400D3] hover:text-[#9400D3] tracking-[0.1em] transition-colors"
-                >
+                <button onClick={() => { setError(''); setStep(3) }} className="text-xs font-bold text-[#9400D3] tracking-[0.1em] transition-colors">
                   ALREADY REGISTERED?
                 </button>
               </div>
@@ -862,30 +890,20 @@ function BookingModal({ selectedDate, onClose }) {
                   />
                 </div>
               ))}
-              {error && (
-                <p className="text-red-500 text-xs text-center tracking-wide">{error}</p>
-              )}
+              {error && <p className="text-red-500 text-xs text-center tracking-wide">{error}</p>}
             </div>
             <div className="px-6 pb-6">
               <button
                 onClick={handleProceedFromRegister}
                 disabled={
                   loading ||
-                  !registerData.fullName ||
-                  registerData.fullName.length < 2 ||
-                  !registerData.email ||
-                  !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registerData.email) ||
-                  !registerData.phone ||
-                  !/^\d{10}$/.test(registerData.phone) ||
-                  !registerData.password ||
-                  registerData.password.length < 8
+                  !registerData.fullName || registerData.fullName.length < 2 ||
+                  !registerData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registerData.email) ||
+                  !registerData.phone || !/^\d{10}$/.test(registerData.phone) ||
+                  !registerData.password || registerData.password.length < 8
                 }
                 className={`w-full py-3 rounded-lg font-bold text-xs tracking-[0.15em] transition-all duration-200 ${
-                  !loading &&
-                  registerData.fullName?.length >= 2 &&
-                  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registerData.email) &&
-                  /^\d{10}$/.test(registerData.phone) &&
-                  registerData.password?.length >= 8
+                  !loading && registerData.fullName?.length >= 2 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registerData.email) && /^\d{10}$/.test(registerData.phone) && registerData.password?.length >= 8
                     ? 'bg-neutral-900 text-white hover:bg-neutral-800 hover:shadow-lg hover:scale-105 active:scale-95'
                     : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
                 }`}
@@ -896,22 +914,15 @@ function BookingModal({ selectedDate, onClose }) {
           </>
         )}
 
-        {/* Step 3: Login Form */}
         {step === 3 && (
           <>
             <div className="p-6 space-y-4">
               <div className="flex items-center justify-between">
-                <button
-                  onClick={() => { setError(''); setStep(2) }}
-                  className="flex items-center gap-2 text-xs font-bold text-neutral-600 hover:text-neutral-900 transition-colors tracking-[0.1em]"
-                >
+                <button onClick={() => { setError(''); setStep(2) }} className="flex items-center gap-2 text-xs font-bold text-neutral-600 hover:text-neutral-900 transition-colors tracking-[0.1em]">
                   <ChevronLeft className="w-4 h-4" />
                   BACK
                 </button>
-                <button
-                  onClick={() => { setError(''); setStep(2) }}
-                  className="text-xs font-bold text-[#9400D3] hover:text-[#9400D3] tracking-[0.1em] transition-colors"
-                >
+                <button onClick={() => { setError(''); setStep(2) }} className="text-xs font-bold text-[#9400D3] tracking-[0.1em] transition-colors">
                   NOT REGISTERED?
                 </button>
               </div>
@@ -942,24 +953,18 @@ function BookingModal({ selectedDate, onClose }) {
                   />
                 </div>
               ))}
-              {error && (
-                <p className="text-red-500 text-xs text-center tracking-wide">{error}</p>
-              )}
+              {error && <p className="text-red-500 text-xs text-center tracking-wide">{error}</p>}
             </div>
             <div className="px-6 pb-6">
               <button
                 onClick={handleProceedFromLogin}
                 disabled={
                   loading ||
-                  !loginData.email ||
-                  !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginData.email) ||
-                  !loginData.password ||
-                  loginData.password.length < 8
+                  !loginData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginData.email) ||
+                  !loginData.password || loginData.password.length < 8
                 }
                 className={`w-full py-3 rounded-lg font-bold text-xs tracking-[0.15em] transition-all duration-200 ${
-                  !loading &&
-                  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginData.email) &&
-                  loginData.password?.length >= 8
+                  !loading && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginData.email) && loginData.password?.length >= 8
                     ? 'bg-neutral-900 text-white hover:bg-neutral-800 hover:shadow-lg hover:scale-105 active:scale-95'
                     : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
                 }`}
@@ -970,7 +975,6 @@ function BookingModal({ selectedDate, onClose }) {
           </>
         )}
 
-        {/* Step 4: Authorization */}
         {step === 4 && (
           <>
             <div className="px-6 pt-6 pb-2">
@@ -980,25 +984,18 @@ function BookingModal({ selectedDate, onClose }) {
                 ))}
               </div>
             </div>
-
             <div className="p-6 space-y-4">
-              <button
-                onClick={() => setStep(2)}
-                className="flex items-center gap-2 text-xs font-bold text-neutral-600 hover:text-neutral-900 transition-colors tracking-[0.1em]"
-              >
+              <button onClick={() => setStep(2)} className="flex items-center gap-2 text-xs font-bold text-neutral-600 hover:text-neutral-900 transition-colors tracking-[0.1em]">
                 <ChevronLeft className="w-4 h-4" />
                 BACK TO DETAILS
               </button>
               <p className="text-xs font-bold tracking-[0.15em] text-neutral-500">AUTHORIZATION</p>
             </div>
-
             <div className="px-6 pb-6 space-y-4">
               <div className="border-2 border-neutral-200 rounded-2xl p-4 flex items-center gap-3">
                 <div
                   onClick={() => setAgreed(!agreed)}
-                  className={`w-5 h-5 rounded border-2 flex items-center justify-center cursor-pointer transition-all duration-200 shrink-0 ${
-                    agreed ? 'border-neutral-900 bg-neutral-900' : 'border-neutral-300'
-                  }`}
+                  className={`w-5 h-5 rounded border-2 flex items-center justify-center cursor-pointer transition-all duration-200 shrink-0 ${agreed ? 'border-neutral-900 bg-neutral-900' : 'border-neutral-300'}`}
                 >
                   {agreed && (
                     <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
@@ -1014,25 +1011,18 @@ function BookingModal({ selectedDate, onClose }) {
                   <Link href="/privacy" className="underline text-neutral-800 font-semibold">Privacy Policy</Link>.
                 </p>
               </div>
-
               <div className="border-2 border-neutral-100 bg-neutral-50 rounded-2xl p-4 flex items-center justify-between">
                 <div>
                   <p className="text-xs tracking-[0.15em] text-neutral-500 font-medium mb-1">INVESTMENT</p>
-                  <p className={`text-2xl font-black text-neutral-900 tracking-tight ${leagueSpartan.className}`}>
-                    ₹{selectedSession.price.toLocaleString('en-IN')}
-                  </p>
+                  <p className={`text-2xl font-black text-neutral-900 tracking-tight ${leagueSpartan.className}`}>₹{selectedSession.price.toLocaleString('en-IN')}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-xs tracking-[0.15em] text-neutral-500 font-medium mb-1">DURATION</p>
                   <p className={`text-2xl font-black text-neutral-900 tracking-tight ${leagueSpartan.className}`}>{selectedSession.durationLabel.split(' ')[0]} <span className="text-sm font-bold">MIN</span></p>
                 </div>
               </div>
-
-              {error && (
-                <p className="text-red-500 text-xs text-center tracking-wide">{error}</p>
-              )}
+              {error && <p className="text-red-500 text-xs text-center tracking-wide">{error}</p>}
             </div>
-
             <div className="px-6 pb-6">
               <button
                 disabled={!agreed || loading}
@@ -1049,7 +1039,6 @@ function BookingModal({ selectedDate, onClose }) {
             </div>
           </>
         )}
-
       </div>
     </div>
   )
@@ -1071,13 +1060,11 @@ function BookingSection({ selectedDate, setSelectedDate }) {
   const monthName = currentMonth.toLocaleString('default', { month: 'long', year: 'numeric' }).toUpperCase()
   const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
 
-  const isDateToday = (day) => {
-    return (
-      day === today.getDate() &&
-      currentMonth.getMonth() === today.getMonth() &&
-      currentMonth.getFullYear() === today.getFullYear()
-    )
-  }
+  const isDateToday = (day) => (
+    day === today.getDate() &&
+    currentMonth.getMonth() === today.getMonth() &&
+    currentMonth.getFullYear() === today.getFullYear()
+  )
 
   const isDatePast = (day) => {
     const checkDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day)
@@ -1109,50 +1096,37 @@ function BookingSection({ selectedDate, setSelectedDate }) {
           <p className="text-muted-foreground font-semibold max-w-sm mx-auto mb-12">
             {BOOKING_CONFIG.subtitle}
           </p>
-
           <div className="max-w-md mx-auto bg-neutral-900 rounded-3xl p-6 text-white">
             <div className="flex items-center justify-between mb-6">
               <span className="text-sm tracking-[0.1em]">{monthName}</span>
               <div className="flex gap-2">
-                <button
-                  onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))}
-                  className="p-1 hover:bg-white/10 rounded transition-colors"
-                >
+                <button onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))} className="p-1 hover:bg-white/10 rounded transition-colors">
                   <ChevronLeft className="w-5 h-5" />
                 </button>
-                <button
-                  onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))}
-                  className="p-1 hover:bg-white/10 rounded transition-colors"
-                >
+                <button onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))} className="p-1 hover:bg-white/10 rounded transition-colors">
                   <ChevronRight className="w-5 h-5" />
                 </button>
               </div>
             </div>
-
             <div className="grid grid-cols-7 gap-2 mb-4">
               {days.map(day => (
                 <div key={day} className="text-xs text-neutral-500 py-2">{day}</div>
               ))}
             </div>
-
             <div className="grid grid-cols-7 gap-2">
-              {Array.from({ length: firstDay }).map((_, i) => (
-                <div key={`empty-${i}`} />
-              ))}
+              {Array.from({ length: firstDay }).map((_, i) => <div key={`empty-${i}`} />)}
               {Array.from({ length: daysInMonth }).map((_, i) => {
                 const day = i + 1
                 const isTodayDate = isDateToday(day)
                 const isPast = isDatePast(day)
                 const isFuture = isDateFuture(day)
-
                 return (
                   <button
                     key={day}
                     disabled={isPast}
                     onClick={() => handleDateClick(day)}
                     className={`
-                      relative aspect-square flex items-center justify-center text-sm rounded-full
-                      transition-colors
+                      relative aspect-square flex items-center justify-center text-sm rounded-full transition-colors
                       ${isTodayDate ? 'ring-2 ring-[#9400D3] bg-[#9400D3]/20 text-white font-semibold' : ''}
                       ${isPast ? 'text-neutral-600 cursor-not-allowed' : 'hover:bg-white/10 cursor-pointer'}
                       ${isFuture ? 'text-white' : ''}
@@ -1192,7 +1166,6 @@ function Footer() {
             </div>
             <p className="text-neutral-400 text-sm leading-relaxed">{SITE_CONFIG.tagline}</p>
           </div>
-
           <div>
             <h4 className="text-xs tracking-[0.2em] text-neutral-500 mb-4">COMPANY</h4>
             <ul className="space-y-3">
@@ -1200,7 +1173,6 @@ function Footer() {
               <li><Link href="/contact" className="text-neutral-300 hover:text-white transition-colors">Contact Us</Link></li>
             </ul>
           </div>
-
           <div>
             <h4 className="text-xs tracking-[0.2em] text-neutral-500 mb-4">LEGAL</h4>
             <ul className="space-y-3">
@@ -1209,14 +1181,11 @@ function Footer() {
               <li><Link href="/refund" className="text-neutral-300 hover:text-white transition-colors">Refund & Policy</Link></li>
             </ul>
           </div>
-
           <div>
             <h4 className="text-xs tracking-[0.2em] text-neutral-500 mb-4">SUPPORT</h4>
             <div className="mb-4">
               <p className="text-xs text-neutral-500 mb-1">DIRECT HQ SUPPORT</p>
-              <a href={`mailto:${SITE_CONFIG.email}`} className="text-white font-medium hover:underline">
-                {SITE_CONFIG.email}
-              </a>
+              <a href={`mailto:${SITE_CONFIG.email}`} className="text-white font-medium hover:underline">{SITE_CONFIG.email}</a>
             </div>
             <div>
               <p className="text-xs tracking-[0.2em] text-neutral-500 mb-1">HQ OFFICE</p>
@@ -1227,7 +1196,6 @@ function Footer() {
             </div>
           </div>
         </div>
-
         <div className="border-t border-neutral-800 pt-8">
           <p className="text-center text-neutral-500 text-xs tracking-[0.15em]">{SITE_CONFIG.copyright}</p>
           <div className="text-center mt-8 pt-8 border-t border-neutral-800">
@@ -1243,7 +1211,7 @@ function Footer() {
   )
 }
 
-function StickyBottomBar({ selectedItem, setSelectedItem, selectedDate, isDetailOpen }) {
+function StickyBottomBar({ selectedItem, setSelectedItem, selectedDate, isDetailOpen, calendarOpen }) {
   const [agreed, setAgreed] = useState(false)
   const [isUnlocking, setIsUnlocking] = useState(false)
   const total = selectedItem.reduce((sum, i) => sum + i.price, 0)
@@ -1257,23 +1225,17 @@ function StickyBottomBar({ selectedItem, setSelectedItem, selectedDate, isDetail
   const handleUnlock = async () => {
     if (!agreed) return
     if (selectedItem.length === 0) return
-
     setIsUnlocking(true)
-
     try {
       const res = await fetch('/api/auth/me')
       const data = await res.json()
-
       localStorage.setItem('selectedItems', JSON.stringify(selectedItem))
-
       if (!data.success) {
         localStorage.setItem('redirectAfterAuth', '/checkout')
         router.push('/login')
         return
       }
-
       router.push('/checkout')
-
     } catch (err) {
       console.error('Unlock error:', err)
     } finally {
@@ -1282,9 +1244,8 @@ function StickyBottomBar({ selectedItem, setSelectedItem, selectedDate, isDetail
   }
 
   return (
-    <div className={`fixed bottom-0 left-0 right-0 z-50 bg-background transition-all duration-300 ${selectedDate || isDetailOpen ? 'hidden' : ''}`}>
+    <div className={`fixed bottom-0 left-0 right-0 z-50 bg-background transition-all duration-300 ${selectedDate || isDetailOpen || calendarOpen ? 'hidden' : ''}`}>
       <div className="max-w-[480px] mx-auto px-5 pb-4 pt-2">
-
         {showBestValue && (
           <div className="bg-neutral-900 rounded-xl mb-3 cursor-pointer shadow-[0_2px_16px_-4px_rgba(0,0,0,0.2)] transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-[0_4px_24px_-4px_rgba(148,0,211,0.4)] hover:bg-neutral-800">
             <div className="px-5 py-2.5">
@@ -1293,17 +1254,13 @@ function StickyBottomBar({ selectedItem, setSelectedItem, selectedDate, isDetail
                   <p className="text-xs tracking-[0.2em] text-[#9400D3] font-semibold">BEST VALUE</p>
                   <p className="text-sm text-white">Get the Full Bundle – Lifetime Access</p>
                 </div>
-                <button
-                  onClick={handleUpgrade}
-                  className="bg-[#9400D3] hover:bg-[#9400D3] active:bg-[#9400D3] text-white px-4 py-1.5 rounded-full text-xs font-bold tracking-[0.15em] transition-all duration-200 hover:scale-105 active:scale-95 shrink-0"
-                >
+                <button onClick={handleUpgrade} className="bg-[#9400D3] text-white px-4 py-1.5 rounded-full text-xs font-bold tracking-[0.15em] transition-all duration-200 hover:scale-105 active:scale-95 shrink-0">
                   UPGRADE
                 </button>
               </div>
             </div>
           </div>
         )}
-
         <div>
           <div className="flex items-center justify-between gap-4 mb-3">
             <div>
@@ -1324,7 +1281,6 @@ function StickyBottomBar({ selectedItem, setSelectedItem, selectedDate, isDetail
               </span>
             </label>
           </div>
-
           <button
             disabled={!agreed || isUnlocking}
             onClick={handleUnlock}
@@ -1340,7 +1296,6 @@ function StickyBottomBar({ selectedItem, setSelectedItem, selectedDate, isDetail
             <Lock className="w-3.5 h-3.5" />
           </button>
         </div>
-
       </div>
     </div>
   )
@@ -1350,16 +1305,37 @@ export default function AryanMethodPage() {
   const [selectedItem, setSelectedItem] = useState([{ type: 'main', id: MAIN_PACKAGE.id, price: MAIN_PACKAGE.price }])
   const [selectedDate, setSelectedDate] = useState(null)
   const [isDetailOpen, setIsDetailOpen] = useState(false)
+  const [calendarOpen, setCalendarOpen] = useState(false)
+
+  const handleDateSelected = (date) => {
+    setCalendarOpen(false)
+    setSelectedDate(date)
+  }
 
   return (
     <div className="min-h-screen bg-background pb-32">
       <Header isDetailOpen={isDetailOpen} />
       <HeroSection selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
       <ProductsSection selectedItem={selectedItem} setSelectedItem={setSelectedItem} setIsDetailOpen={setIsDetailOpen} />
-      <CoachingCard/>
+      <CoachingCard onBookCall={() => setCalendarOpen(true)} />
       <Footer />
-      <StickyBottomBar selectedItem={selectedItem} setSelectedItem={setSelectedItem} selectedDate={selectedDate} isDetailOpen={isDetailOpen} />
+      <StickyBottomBar
+        selectedItem={selectedItem}
+        setSelectedItem={setSelectedItem}
+        selectedDate={selectedDate}
+        isDetailOpen={isDetailOpen}
+        calendarOpen={calendarOpen}
+      />
+      {calendarOpen && (
+        <CalendarModal
+          onClose={() => setCalendarOpen(false)}
+          onDateSelect={handleDateSelected}
+        />
+      )}
+      <BookingModal
+        selectedDate={selectedDate}
+        onClose={() => setSelectedDate(null)}
+      />
     </div>
   )
 }
- //<BookingSection selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
