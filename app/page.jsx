@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { League_Spartan } from 'next/font/google'
 import { PRODUCTS, MAIN_PACKAGE } from '@/lib/products'
+import CoachingCard from "../components/CoachingCard.jsx"
 
 const leagueSpartan = League_Spartan({ subsets: ['latin'], weight: ['400','500','600','700','800','900'] })
 
@@ -1355,6 +1356,7 @@ export default function AryanMethodPage() {
       <Header isDetailOpen={isDetailOpen} />
       <HeroSection selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
       <ProductsSection selectedItem={selectedItem} setSelectedItem={setSelectedItem} setIsDetailOpen={setIsDetailOpen} />
+      <CoachingCard/>
       <BookingSection selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
       <Footer />
       <StickyBottomBar selectedItem={selectedItem} setSelectedItem={setSelectedItem} selectedDate={selectedDate} isDetailOpen={isDetailOpen} />
