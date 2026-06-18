@@ -113,7 +113,7 @@ const mogwardStyles = `
     object-fit: contain;
     mix-blend-mode: screen;
     display: block;
-    filter: brightness(1.6) contrast(1.15);
+    filter: brightness(1.4) contrast(1.15);
   }
 `;
 
