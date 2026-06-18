@@ -118,8 +118,9 @@ const mogwardStyles = `
 `;
 
 function useIsDesktop() {
-  const [isDesktop, setIsDesktop] = useState(() => window.innerWidth >= 768);
+  const [isDesktop, setIsDesktop] = useState(false); // ✅ safe default for SSR
   useEffect(() => {
+    setIsDesktop(window.innerWidth >= 768);
     const handler = () => setIsDesktop(window.innerWidth >= 768);
     window.addEventListener("resize", handler);
     return () => window.removeEventListener("resize", handler);
