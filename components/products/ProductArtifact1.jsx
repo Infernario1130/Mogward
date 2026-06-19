@@ -220,7 +220,7 @@ function UpsellCard({ tag, name, desc, cta }) {
       <span className="fp-upsell__tag">{tag || "RECOMMENDED NEXT"}</span>
       <h4 className="fp-upsell__name">{name}</h4>
       <p className="fp-upsell__desc"><RichText text={desc} /></p>
-      <span className="fp-upsell__cta">{cta} <Icon name="arrow" /></span>
+      <Link href="/dashboard/products/6a2d29efa993b7307f224526" className="fp-upsell__cta" style={{textDecoration:"none"}}>{cta} <Icon name="arrow" /></Link>
     </div>
   );
 }
@@ -230,7 +230,7 @@ function CoachingCrossSell() {
       <span className="tp-coach__tag"><Icon name="user" /> 1-1 · BY APPLICATION</span>
       <h4 className="tp-coach__name">The 1:1 Mogward Program</h4>
       <p className="tp-coach__desc">Skip the program design entirely — a complete plan built and adjusted specifically around your body, schedule, equipment, and recovery. Direct coaching, not a template.</p>
-      <span className="tp-coach__cta">APPLY NOW <Icon name="arrow" /></span>
+      <Link href="/" className="dp-coach__cta" style={{textDecoration:"none"}}>APPLY FOR 1-1 COACHING <Icon name="arrow" /></Link>
     </div>
   );
 }
