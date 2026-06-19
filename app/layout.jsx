@@ -21,7 +21,7 @@ const leagueSpartan = League_Spartan({
 })
 
 export const metadata = {
-  title: 'Authenticate | Protocol ID',
+  title: 'Mogward',
   description: 'Secure authentication portal',
 }
 
