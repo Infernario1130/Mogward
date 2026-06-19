@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import Link from 'next/link';
 
 /* ==========================================================================
    MOGWARD — THE FRAME PROTOCOL
@@ -225,7 +226,7 @@ function UpsellCard({ name, desc, cta }) {
       <span className="fp-upsell__tag">RECOMMENDED NEXT</span>
       <h4 className="fp-upsell__name">{name}</h4>
       <p className="fp-upsell__desc"><RichText text={desc} /></p>
-      <span className="fp-upsell__cta">{cta} <Icon name="arrow" /></span>
+      <Link href={name === "The Diet Protocol" ? "/dashboard/products/6a2d29efa993b7307f224525" : "/dashboard/products/6a2d29efa993b7307f224526"} className="fp-upsell__cta" style={{textDecoration:"none"}}>{cta} <Icon name="arrow" /></Link>
     </div>
   );
 }
