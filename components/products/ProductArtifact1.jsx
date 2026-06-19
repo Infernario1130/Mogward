@@ -1748,7 +1748,7 @@ const CSS = `
   .mw-sidebar{position:fixed; left:0; top:var(--header-h); bottom:0; z-index:40;
     transform:translateX(-100%); transition:transform 250ms ease; box-shadow:8px 0 40px rgba(0,0,0,0.5);}
   .mw-sidebar.is-open{transform:translateX(0);}
-  .mw-scrim{display:block; position:fixed; inset:var(--header-h) 0 0 0; background:rgba(0,0,0,0.6); z-index:35;}
+  .mw-scrim{display:block; position:fixed; inset:var(--header-h) 0 0 0; background:rgba(0,0,0,.5); z-index:25; touch-action:none; overscroll-behavior:contain;}
   .mw-content__inner{padding:22px 18px 90px;}
   .mw-sec-head__title{font-size:25px;}
   .mw-volrow{grid-template-columns:70px 1fr; gap:10px;}
