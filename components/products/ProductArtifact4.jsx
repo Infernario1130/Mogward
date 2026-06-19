@@ -1507,7 +1507,7 @@ function StyleSheet() { return <style>{`@import url('https://fonts.googleapis.co
   .fp-sidebar.is-open{transform:translateX(0);}
   .fp-content{margin-left:0;}
   .fp-content__inner{padding:24px 20px 100px;}
-  .fp-scrim{display:block; position:fixed; inset:var(--header-h) 0 0 0; background:rgba(0,0,0,.5); z-index:25;}
+  .fp-scrim{display:block; position:fixed; inset:var(--header-h) 0 0 0; background:rgba(0,0,0,.5); z-index:25; touch-action:none; overscroll-behavior:contain;}
   .fp-tl,.fp-pc,.fp-upsell-pair,.fp-skin__grid{grid-template-columns:1fr;}
   .fp-skin__grid{grid-template-columns:repeat(2,1fr);}
   .fp-sechead__title{font-size:24px;}
