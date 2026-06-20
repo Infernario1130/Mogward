@@ -313,7 +313,7 @@ function MainPackageCard({ selectedItem, setSelectedItem, setIsDetailOpen }) {
               <span className={`text-4xl font-black ${leagueSpartan.className}`}>₹{MAIN_PACKAGE.price}</span>
               <span className="text-neutral-500 line-through">₹{MAIN_PACKAGE.originalPrice}</span>
               {MAIN_PACKAGE.discount && (
-                <span className="text-[10px] font-bold text-[#9400D3] bg-[#9400D3]/15 px-1.5 py-0.5 rounded-md tracking-wide whitespace-nowrap">
+                <span className="text-[12px] font-bold text-[#9400D3] bg-[#9400D3]/15 px-1.5 py-0.5 rounded-md tracking-wide whitespace-nowrap">
                   {MAIN_PACKAGE.discount}
                 </span>
               )}
@@ -378,7 +378,7 @@ function MainPackageCard({ selectedItem, setSelectedItem, setIsDetailOpen }) {
                     ))}
                   </ul>
 
-                  <div className="rounded-2xl border border-[#9400D3]/30 bg-[#9400D3]/10 p-4 mb-6">
+                  <div className="rounded-2xl border border-[#9400D3]/40 bg-[#9400D3]/10 p-4 mb-6 animate-glow-pulse">
                     <p className={`text-sm tracking-[0.15em] text-[#9400D3] font-extrabold mb-2 ${leagueSpartan.className}`}>
                       {MAIN_PACKAGE.description.bonusTitle}
                     </p>
