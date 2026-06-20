@@ -455,21 +455,34 @@ function ProductCard({ product, selectedItem, setSelectedItem, setIsDetailOpen }
               {product.subtitle && (
                 <p className="text-[#9400D3] text-xs tracking-[0.1em] mb-6">• {product.subtitle}</p>
               )}
-              <div
-                className="relative w-full h-48 sm:h-56 rounded-2xl overflow-hidden mb-6 bg-cover bg-center border border-neutral-800"
-                style={{ backgroundImage: `url(${product.image})` }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-transparent" />
-              </div>
-              <p className="text-xs tracking-[0.2em] text-white/50 mb-3">WHAT'S INCLUDED</p>
-              <ul className="space-y-2 mb-8">
-                {product.features.map((feature, i) => (
-                  <li key={i} className="flex items-center gap-2 text-sm text-neutral-300">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#9400D3]" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
+
+              {product.description && (
+                <div className="mb-8">
+                  <p className="text-xs tracking-[0.2em] text-white/50 mb-2">{product.description.framework}</p>
+                  <p className={`font-black text-lg tracking-tight leading-tight mb-3 ${leagueSpartan.className}`}>
+                    {product.description.hook}
+                  </p>
+                  <p className="text-sm text-neutral-300 leading-relaxed mb-6">
+                    {product.description.body}
+                  </p>
+
+                  <p className="text-xs tracking-[0.2em] text-white/50 mb-3">WHAT'S INCLUDED</p>
+                  <ul className="space-y-2 mb-6">
+                    {product.description.included.map((item, i) => (
+                      <li key={i} className="flex items-start gap-2 text-sm text-neutral-300">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#9400D3] mt-1.5 shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <p className="text-xs tracking-[0.2em] text-white/50 mb-2">WHO THIS IS FOR</p>
+                  <p className="text-sm text-neutral-300 leading-relaxed">
+                    {product.description.whoFor}
+                  </p>
+                </div>
+              )}
+
               <div className="flex items-baseline gap-3 mb-1">
                 <span className={`text-4xl font-black text-white ${leagueSpartan.className}`}>₹{product.price}</span>
                 <span className="text-neutral-500 line-through">₹{product.originalPrice}</span>
