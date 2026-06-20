@@ -241,23 +241,19 @@ function HeroSection({ selectedItem, setSelectedItem, setIsDetailOpen }) {
 function MainPackageCard({ selectedItem, setSelectedItem, setIsDetailOpen }) {
   const isSelected = selectedItem.some(i => i.type === 'main')
   const [detailsOpen, setDetailsOpen] = useState(false)
-
   const handleSelect = (e) => {
     e.stopPropagation()
     if (isSelected) return
     setSelectedItem([{ type: 'main', id: MAIN_PACKAGE.id, price: MAIN_PACKAGE.price }])
   }
-
   const handleOpenDetails = () => {
     setDetailsOpen(true)
     setIsDetailOpen(true)
   }
-
   const handleCloseDetails = () => {
     setDetailsOpen(false)
     setIsDetailOpen(false)
   }
-
   useEffect(() => {
     if (!detailsOpen) return
     const onKey = (e) => { if (e.key === 'Escape') handleCloseDetails() }
@@ -269,7 +265,6 @@ function MainPackageCard({ selectedItem, setSelectedItem, setIsDetailOpen }) {
       document.body.style.overflow = prevOverflow
     }
   }, [detailsOpen])
-
   return (
     <>
       <div className="relative max-w-md mx-auto cursor-pointer group" onClick={handleOpenDetails}>
@@ -318,7 +313,7 @@ function MainPackageCard({ selectedItem, setSelectedItem, setIsDetailOpen }) {
               <span className={`text-4xl font-black ${leagueSpartan.className}`}>₹{MAIN_PACKAGE.price}</span>
               <span className="text-neutral-500 line-through">₹{MAIN_PACKAGE.originalPrice}</span>
               {MAIN_PACKAGE.discount && (
-                <span className="text-[12px] font-bold text-[#9400D3] bg-[#9400D3]/15 px-1.5 py-1.5 rounded-md tracking-wide whitespace-nowrap">
+                <span className="text-[10px] font-bold text-[#9400D3] bg-[#9400D3]/15 px-1.5 py-0.5 rounded-md tracking-wide whitespace-nowrap">
                   {MAIN_PACKAGE.discount}
                 </span>
               )}
@@ -328,7 +323,6 @@ function MainPackageCard({ selectedItem, setSelectedItem, setIsDetailOpen }) {
           </div>
         </div>
       </div>
-
       {detailsOpen && createPortal(
         <div
           className="fixed inset-0 z-[999] flex items-center justify-center p-4 sm:p-8 bg-black/80 backdrop-blur-xl animate-in fade-in duration-200"
@@ -338,58 +332,71 @@ function MainPackageCard({ selectedItem, setSelectedItem, setIsDetailOpen }) {
           aria-label={`${MAIN_PACKAGE.title.join(' ')} details`}
         >
           <div
-            className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl text-white shadow-2xl shadow-[#9400D3]/10 border border-neutral-700"
+            className="relative w-full max-w-lg max-h-[90vh] rounded-3xl overflow-hidden border border-neutral-700 shadow-2xl shadow-[#9400D3]/10 text-white"
             onClick={(e) => e.stopPropagation()}
           >
-           <div
-  className="absolute inset-0 bg-cover bg-center opacity-60 rounded-3xl"
-  style={{ backgroundImage: `url(${MAIN_PACKAGE.image})` }}
-/> 
-<div className="absolute inset-0 bg-gradient-to-b from-neutral-900/40 via-neutral-900/50 to-neutral-950/80 rounded-3xl" />
+            <div
+              className="absolute inset-0 bg-cover bg-center opacity-60"
+              style={{ backgroundImage: `url(${MAIN_PACKAGE.image})` }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-neutral-900/40 via-neutral-900/50 to-neutral-950/80" />
 
-            <div className="relative z-10 flex items-center justify-between px-6 sm:px-8 pt-6">
-              <button
-                type="button"
-                onClick={handleCloseDetails}
-                className="flex items-center gap-2 text-xs tracking-[0.2em] text-white/60 hover:text-[#9400D3] transition-colors cursor-pointer"
-                aria-label="Back"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                BACK
-              </button>
-              <span className="text-xs tracking-[0.2em] text-[#9400D3]/70">{MAIN_PACKAGE.label}</span>
-            </div>
-
-            <div className="relative z-10 px-6 sm:px-8 pb-8 pt-6">
-              <h3 className={`font-black text-3xl sm:text-4xl tracking-tight leading-[0.9] mb-6 ${leagueSpartan.className}`}>
-                {MAIN_PACKAGE.title.map((line, i) => (
-                  <span key={i} className="block">{line}</span>
-                ))}
-              </h3>
-
-              <div className="mb-8">
-                <p className="text-xs tracking-[0.2em] text-white/50 mb-2">{MAIN_PACKAGE.description.framework}</p>
-                <p className={`font-black text-lg tracking-tight leading-tight mb-3 ${leagueSpartan.className}`}>
-                  {MAIN_PACKAGE.description.hook}
-                </p>
-                <p className="text-sm text-neutral-300 leading-relaxed mb-6">
-                  {MAIN_PACKAGE.description.body}
-                </p>
-
-                <p className="text-xs tracking-[0.2em] text-white/50 mb-3">WHAT'S INCLUDED</p>
-                <ul className="space-y-2 mb-6">
-                  {MAIN_PACKAGE.description.included.map((item, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-neutral-300">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#9400D3] mt-1.5 shrink-0" />
-                      {item}
-                    </li>
+            <div className="relative z-10 max-h-[90vh] overflow-y-auto">
+              <div className="flex items-center justify-between px-6 sm:px-8 pt-6">
+                <button
+                  type="button"
+                  onClick={handleCloseDetails}
+                  className="flex items-center gap-2 text-xs tracking-[0.2em] text-white/60 hover:text-[#9400D3] transition-colors cursor-pointer"
+                  aria-label="Back"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  BACK
+                </button>
+                <span className="text-xs tracking-[0.2em] text-[#9400D3]/70">{MAIN_PACKAGE.label}</span>
+              </div>
+              <div className="px-6 sm:px-8 pb-8 pt-6">
+                <h3 className={`font-black text-3xl sm:text-4xl tracking-tight leading-[0.9] mb-6 ${leagueSpartan.className}`}>
+                  {MAIN_PACKAGE.title.map((line, i) => (
+                    <span key={i} className="block">{line}</span>
                   ))}
-                </ul>
+                </h3>
+                <div className="mb-8">
+                  <p className="text-xs tracking-[0.2em] text-white/50 mb-2">{MAIN_PACKAGE.description.framework}</p>
+                  <p className={`font-black text-lg tracking-tight leading-tight mb-3 ${leagueSpartan.className}`}>
+                    {MAIN_PACKAGE.description.hook}
+                  </p>
+                  <p className="text-sm text-neutral-300 leading-relaxed mb-6">
+                    {MAIN_PACKAGE.description.body}
+                  </p>
+                  <p className="text-xs tracking-[0.2em] text-white/50 mb-3">WHAT'S INCLUDED</p>
+                  <ul className="space-y-2 mb-6">
+                    {MAIN_PACKAGE.description.included.map((item, i) => (
+                      <li key={i} className="flex items-start gap-2 text-sm text-neutral-300">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#9400D3] mt-1.5 shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
 
-                <p className="text-xs tracking-[0.2em] text-white/50 mb-2">WHO THIS IS FOR</p>
-                <p className="text-sm text-neutral-300 leading-relaxed">
-                  {MAIN_PACKAGE.description.whoFor}
-                </p>
+                  <div className="rounded-2xl border border-[#9400D3]/30 bg-[#9400D3]/10 p-4 mb-6">
+                    <p className={`text-sm tracking-[0.15em] text-[#9400D3] font-extrabold mb-2 ${leagueSpartan.className}`}>
+                      {MAIN_PACKAGE.description.bonusTitle}
+                    </p>
+                    <p className="text-sm text-neutral-200 leading-relaxed">
+                      {MAIN_PACKAGE.description.bonusBody}
+                    </p>
+                  </div>
+
+                  <p className="text-xs tracking-[0.2em] text-white/50 mb-2">{MAIN_PACKAGE.description.whyTitle}</p>
+                  <p className="text-sm text-neutral-300 leading-relaxed mb-6">
+                    {MAIN_PACKAGE.description.whyBody}
+                  </p>
+
+                  <p className="text-xs tracking-[0.2em] text-white/50 mb-2">WHO THIS IS FOR</p>
+                  <p className="text-sm text-neutral-300 leading-relaxed">
+                    {MAIN_PACKAGE.description.whoFor}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
