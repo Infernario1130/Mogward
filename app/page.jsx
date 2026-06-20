@@ -305,7 +305,7 @@ function MainPackageCard({ selectedItem, setSelectedItem, setIsDetailOpen }) {
                 <span key={i} className="block">{line}</span>
               ))}
             </h2>
-            <p className="text-neutral-400 text-sm mb-6 font-semibold">{MAIN_PACKAGE.description.hook}</p>
+            <p className="text-neutral-400 text-sm mb-6 font-bold">{MAIN_PACKAGE.summary}</p>
             <ul className="space-y-2 mb-8">
               {MAIN_PACKAGE.features.map((feature, i) => (
                 <li key={i} className="flex items-center gap-2 text-sm text-neutral-300">
@@ -317,6 +317,11 @@ function MainPackageCard({ selectedItem, setSelectedItem, setIsDetailOpen }) {
             <div className="flex items-baseline gap-3 mb-2">
               <span className={`text-4xl font-black ${leagueSpartan.className}`}>₹{MAIN_PACKAGE.price}</span>
               <span className="text-neutral-500 line-through">₹{MAIN_PACKAGE.originalPrice}</span>
+              {MAIN_PACKAGE.discount && (
+                <span className="text-[12px] font-bold text-[#9400D3] bg-[#9400D3]/15 px-1.5 py-1.5 rounded-md tracking-wide whitespace-nowrap">
+                  {MAIN_PACKAGE.discount}
+                </span>
+              )}
             </div>
             <p className="text-[#9400D3] text-xs tracking-[0.15em] font-extrabold mb-1">{MAIN_PACKAGE.duration}</p>
             <p className="text-neutral-500 text-xs font-extrabold tracking-[0.1em]">{MAIN_PACKAGE.perMonth}</p>
@@ -515,7 +520,14 @@ function ProductCard({ product, selectedItem, setSelectedItem, setIsDetailOpen }
               ))}
             </ul>
             <div className="text-right flex-shrink-0">
-              <span className="text-neutral-500 line-through text-sm block">₹{product.originalPrice}</span>
+              <div className="flex items-center justify-end gap-2 mb-0.5">
+                <span className="text-neutral-500 line-through text-sm">₹{product.originalPrice}</span>
+                {product.discount && (
+                  <span className="text-[12px] font-bold text-[#9400D3] bg-[#9400D3]/15 px-1.5 py-0.5 rounded-md tracking-wide whitespace-nowrap">
+                    {product.discount}
+                  </span>
+                )}
+              </div>
               <span className={`text-4xl font-black transition-colors duration-300 ${isSelected ? 'text-[#9400D3]' : 'text-white'} ${leagueSpartan.className}`}>
                 ₹{product.price}
               </span>
