@@ -197,7 +197,7 @@ function WatermarkBackground({ anchor = 'center' }) {
   )
 }
 
-function HeroSection({ selectedItem, setSelectedItem }) {
+function HeroSection({ selectedItem, setSelectedItem, setIsDetailOpen }) {
   return (
     <section className="relative min-h-screen pt-32 pb-20 overflow-hidden">
       <PulsingGlow />
@@ -231,64 +231,166 @@ function HeroSection({ selectedItem, setSelectedItem }) {
         <p className="text-xs font-bold tracking-[0.2em] text-muted-foreground mb-8">
           COMPLETE BUNDLE • BEST VALUE
         </p>
-        <MainPackageCard selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
+        <MainPackageCard selectedItem={selectedItem} setSelectedItem={setSelectedItem} setIsDetailOpen={setIsDetailOpen} />
       </div>
     </section>
   )
 }
 
-function MainPackageCard({ selectedItem, setSelectedItem }) {
+function MainPackageCard({ selectedItem, setSelectedItem, setIsDetailOpen }) {
   const isSelected = selectedItem.some(i => i.type === 'main')
-  const handleSelect = () => {
+  const [detailsOpen, setDetailsOpen] = useState(false)
+
+  const handleSelect = (e) => {
+    e.stopPropagation()
     if (isSelected) return
     setSelectedItem([{ type: 'main', id: MAIN_PACKAGE.id, price: MAIN_PACKAGE.price }])
   }
+
+  const handleOpenDetails = () => {
+    setDetailsOpen(true)
+    setIsDetailOpen(true)
+  }
+
+  const handleCloseDetails = () => {
+    setDetailsOpen(false)
+    setIsDetailOpen(false)
+  }
+
+  useEffect(() => {
+    if (!detailsOpen) return
+    const onKey = (e) => { if (e.key === 'Escape') handleCloseDetails() }
+    window.addEventListener('keydown', onKey)
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = prevOverflow
+    }
+  }, [detailsOpen])
+
   return (
-    <div className="relative max-w-md mx-auto cursor-pointer group" onClick={handleSelect}>
-      {isSelected && (
-        <div className="absolute -inset-[2px] bg-gradient-to-r from-[#9400D3] via-[#9400D3] to-[#9400D3] rounded-3xl animate-border-glow" />
-      )}
-      <div className={`relative bg-gradient-to-b from-neutral-900 to-neutral-950 rounded-3xl overflow-hidden text-white aspect-[3/4] flex flex-col ${!isSelected ? 'border border-neutral-700' : ''}`}>
-        <div
-          className={`absolute inset-0 bg-cover bg-center transition-all duration-300 ${isSelected ? 'brightness-125' : 'brightness-75 group-hover:brightness-110'}`}
-          style={{ backgroundImage: `url(${MAIN_PACKAGE.image})` }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-neutral-900/50 to-transparent" />
-        <div className="absolute top-6 left-6 z-20">
-          <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-white/30' : 'border-neutral-600'}`}>
-            {isSelected && <div className="w-3 h-3 rounded-full bg-white" />}
+    <>
+      <div className="relative max-w-md mx-auto cursor-pointer group" onClick={handleOpenDetails}>
+        {isSelected && (
+          <div className="absolute -inset-[2px] bg-gradient-to-r from-[#9400D3] via-[#9400D3] to-[#9400D3] rounded-3xl animate-border-glow" />
+        )}
+        <div className={`relative bg-gradient-to-b from-neutral-900 to-neutral-950 rounded-3xl overflow-hidden text-white aspect-[3/4] flex flex-col ${!isSelected ? 'border border-neutral-700' : ''}`}>
+          <div
+            className={`absolute inset-0 bg-cover bg-center transition-all duration-300 ${isSelected ? 'brightness-125' : 'brightness-75 group-hover:brightness-110'}`}
+            style={{ backgroundImage: `url(${MAIN_PACKAGE.image})` }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-neutral-900/50 to-transparent" />
+          <button
+            type="button"
+            onClick={handleSelect}
+            aria-label={isSelected ? 'Selected' : 'Select package'}
+            aria-pressed={isSelected}
+            className="absolute top-6 left-6 z-20 p-1 rounded-full cursor-pointer"
+          >
+            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-white/30' : 'border-neutral-600'}`}>
+              {isSelected && <div className="w-3 h-3 rounded-full bg-white" />}
+            </div>
+          </button>
+          <div className="absolute top-4 right-4 z-20">
+            <span className="bg-[#9400D3] text-white text-xs font-bold px-3 py-1.5 rounded-full tracking-wide">
+              {MAIN_PACKAGE.badge}
+            </span>
           </div>
-        </div>
-        <div className="absolute top-4 right-4 z-20">
-          <span className="bg-[#9400D3] text-white text-xs font-bold px-3 py-1.5 rounded-full tracking-wide">
-            {MAIN_PACKAGE.badge}
-          </span>
-        </div>
-        <div className="relative mt-auto p-8">
-          <p className="text-[#9400D3] font-extrabold text-xs tracking-[0.2em] mb-4">{MAIN_PACKAGE.label}</p>
-          <h2 className={`font-black text-3xl sm:text-4xl tracking-[0.01em] leading-[0.9] mb-20 ${leagueSpartan.className}`}>
-            {MAIN_PACKAGE.title.map((line, i) => (
-              <span key={i} className="block">{line}</span>
-            ))}
-          </h2>
-          <p className="text-neutral-400 text-sm mb-6 font-semibold">{MAIN_PACKAGE.description}</p>
-          <ul className="space-y-2 mb-8">
-            {MAIN_PACKAGE.features.map((feature, i) => (
-              <li key={i} className="flex items-center gap-2 text-sm text-neutral-300">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#9400D3]" />
-                {feature}
-              </li>
-            ))}
-          </ul>
-          <div className="flex items-baseline gap-3 mb-2">
-            <span className={`text-4xl font-black ${leagueSpartan.className}`}>₹{MAIN_PACKAGE.price}</span>
-            <span className="text-neutral-500 line-through">₹{MAIN_PACKAGE.originalPrice}</span>
+          <div className="relative mt-auto p-8">
+            <p className="text-[#9400D3] font-extrabold text-xs tracking-[0.2em] mb-4">{MAIN_PACKAGE.label}</p>
+            <h2 className={`font-black text-3xl sm:text-4xl tracking-[0.01em] leading-[0.9] mb-20 ${leagueSpartan.className}`}>
+              {MAIN_PACKAGE.title.map((line, i) => (
+                <span key={i} className="block">{line}</span>
+              ))}
+            </h2>
+            <p className="text-neutral-400 text-sm mb-6 font-semibold">{MAIN_PACKAGE.description.hook}</p>
+            <ul className="space-y-2 mb-8">
+              {MAIN_PACKAGE.features.map((feature, i) => (
+                <li key={i} className="flex items-center gap-2 text-sm text-neutral-300">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#9400D3]" />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            <div className="flex items-baseline gap-3 mb-2">
+              <span className={`text-4xl font-black ${leagueSpartan.className}`}>₹{MAIN_PACKAGE.price}</span>
+              <span className="text-neutral-500 line-through">₹{MAIN_PACKAGE.originalPrice}</span>
+            </div>
+            <p className="text-[#9400D3] text-xs tracking-[0.15em] font-extrabold mb-1">{MAIN_PACKAGE.duration}</p>
+            <p className="text-neutral-500 text-xs font-extrabold tracking-[0.1em]">{MAIN_PACKAGE.perMonth}</p>
           </div>
-          <p className="text-[#9400D3] text-xs tracking-[0.15em] font-extrabold mb-1">{MAIN_PACKAGE.duration}</p>
-          <p className="text-neutral-500 text-xs font-extrabold tracking-[0.1em]">{MAIN_PACKAGE.perMonth}</p>
         </div>
       </div>
-    </div>
+
+      {detailsOpen && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8 bg-black/70 backdrop-blur-md animate-in fade-in duration-200"
+          onClick={handleCloseDetails}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${MAIN_PACKAGE.title.join(' ')} details`}
+        >
+          <div
+            className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl text-white shadow-2xl shadow-[#9400D3]/10 border border-neutral-700"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Background image layer, low opacity */}
+            <div
+              className="absolute inset-0 bg-cover bg-center opacity-25"
+              style={{ backgroundImage: `url(${MAIN_PACKAGE.image})` }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-neutral-900/80 via-neutral-900/85 to-neutral-950/90" />
+
+            <div className="relative z-10 flex items-center justify-between px-6 sm:px-8 pt-6">
+              <button
+                type="button"
+                onClick={handleCloseDetails}
+                className="flex items-center gap-2 text-xs tracking-[0.2em] text-white/60 hover:text-[#9400D3] transition-colors cursor-pointer"
+                aria-label="Back"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                BACK
+              </button>
+              <span className="text-xs tracking-[0.2em] text-[#9400D3]/70">{MAIN_PACKAGE.label}</span>
+            </div>
+
+            <div className="relative z-10 px-6 sm:px-8 pb-8 pt-6">
+              <h3 className={`font-black text-3xl sm:text-4xl tracking-tight leading-[0.9] mb-6 ${leagueSpartan.className}`}>
+                {MAIN_PACKAGE.title.map((line, i) => (
+                  <span key={i} className="block">{line}</span>
+                ))}
+              </h3>
+
+              <div className="mb-8">
+                <p className="text-xs tracking-[0.2em] text-white/50 mb-2">{MAIN_PACKAGE.description.framework}</p>
+                <p className={`font-black text-lg tracking-tight leading-tight mb-3 ${leagueSpartan.className}`}>
+                  {MAIN_PACKAGE.description.hook}
+                </p>
+                <p className="text-sm text-neutral-300 leading-relaxed mb-6">
+                  {MAIN_PACKAGE.description.body}
+                </p>
+
+                <p className="text-xs tracking-[0.2em] text-white/50 mb-3">WHAT'S INCLUDED</p>
+                <ul className="space-y-2 mb-6">
+                  {MAIN_PACKAGE.description.included.map((item, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-neutral-300">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#9400D3] mt-1.5 shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+
+                <p className="text-xs tracking-[0.2em] text-white/50 mb-2">WHO THIS IS FOR</p>
+                <p className="text-sm text-neutral-300 leading-relaxed">
+                  {MAIN_PACKAGE.description.whoFor}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   )
 }
 
@@ -1331,7 +1433,7 @@ export default function AryanMethodPage() {
   return (
     <div className="min-h-screen bg-background pb-32">
       <Header isDetailOpen={isDetailOpen} />
-      <HeroSection selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
+      <HeroSection selectedItem={selectedItem} setSelectedItem={setSelectedItem} setIsDetailOpen={setIsDetailOpen} />
       <ProductsSection selectedItem={selectedItem} setSelectedItem={setSelectedItem} setIsDetailOpen={setIsDetailOpen} />
       <CoachingCard onBookCall={() => setCalendarOpen(true)} />
       <Footer />
