@@ -7,12 +7,12 @@ import { useState, useEffect } from 'react'
 const SITE_CONFIG = {
     brandName: "MOGWARD",
     brandInitials: "M",
-    email: "ascend@aryanmethod.in",
+    email: "ascend@mogward.com",
     address: {
       line1: "RAPTINAGAR PHASE-IV,",
       line2: "GORAKHPUR, 273013"
     },
-    tagline: "Where elite conditioning meets unwavering determination in the pursuit of victory.",
+    tagline: "Built for the version of you that's still ahead - physique, face and discipline, engineered together.",
     copyright: "© 2026 ARYANHEIS // ALL RIGHTS RESERVED."
   }
   function Header() {

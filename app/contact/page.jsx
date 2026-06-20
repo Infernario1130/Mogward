@@ -7,12 +7,15 @@ import { useState, useEffect } from 'react'
 const SITE_CONFIG = {
     brandName: "MOGWARD",
     brandInitials: "M",
-    email: "ascend@aryanmethod.in",
+    heroTitle: ["THE", "ARYAN", "METHOD"],
+    heroSubtitle: "The only 4 systems you need to ascend and grow.",
+    watermarkText: "ARYAN METHOD",
+    email: "ascend@mogward.com",
     address: {
       line1: "RAPTINAGAR PHASE-IV,",
       line2: "GORAKHPUR, 273013"
     },
-    tagline: "Where elite conditioning meets unwavering determination in the pursuit of victory.",
+    tagline: "Built for the version of you that's still ahead - physique, face and discipline, engineered together.",
     copyright: "© 2026 ARYANHEIS // ALL RIGHTS RESERVED."
   }
 
@@ -63,6 +66,7 @@ function Footer() {
       <footer className="bg-neutral-900 text-white py-10 sm:py-16">
         <div className="max-w-6xl mx-auto px-5 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-12 mb-10 sm:mb-12">
+            {/* Brand */}
             <div>
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center">
@@ -74,9 +78,12 @@ function Footer() {
                   ))}
                 </div>
               </div>
-              <p className="text-neutral-400 text-sm leading-relaxed">{SITE_CONFIG.tagline}</p>
+              <p className="text-neutral-400 text-sm leading-relaxed">
+                {SITE_CONFIG.tagline}
+              </p>
             </div>
             
+            {/* Company */}
             <div>
               <h4 className="text-xs tracking-[0.2em] text-neutral-500 mb-4">COMPANY</h4>
               <ul className="space-y-3">
@@ -85,6 +92,7 @@ function Footer() {
               </ul>
             </div>
             
+            {/* Legal */}
             <div>
               <h4 className="text-xs tracking-[0.2em] text-neutral-500 mb-4">LEGAL</h4>
               <ul className="space-y-3">
@@ -94,6 +102,7 @@ function Footer() {
               </ul>
             </div>
             
+            {/* Support */}
             <div>
               <h4 className="text-xs tracking-[0.2em] text-neutral-500 mb-4">SUPPORT</h4>
               <div className="mb-4">
@@ -113,7 +122,10 @@ function Footer() {
           </div>
           
           <div className="border-t border-neutral-800 pt-8">
-            <p className="text-center text-neutral-500 text-xs tracking-[0.15em]">{SITE_CONFIG.copyright}</p>
+            <p className="text-center text-neutral-500 text-xs tracking-[0.15em]">
+              {SITE_CONFIG.copyright}
+            </p>
+            
             <div className="text-center mt-8 pt-8 border-t border-neutral-800">
               <p className="text-xs tracking-[0.2em] text-neutral-600 mb-1">HQ OPERATIONS</p>
               <p className="text-xs tracking-[0.2em] text-neutral-500">
@@ -131,43 +143,64 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-black text-white">
       <Header />
-
+      
       <main className="pt-24 sm:pt-32 pb-16 sm:pb-20">
         <div className="max-w-3xl mx-auto px-5 sm:px-6 lg:px-8">
-
           {/* Title */}
-          <h1
+          <h1 
             className="text-[2.5rem] sm:text-[4rem] md:text-[5.5rem] lg:text-[7rem] font-normal tracking-tight leading-[0.9] uppercase mb-4"
             style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic' }}
           >
-            CONTACT
+            Contact
           </h1>
-
+          
           {/* Divider */}
           <div className="w-full h-[1px] bg-foreground/40 mb-8 sm:mb-14" />
-
+          
           {/* Content */}
           <div className="space-y-8 sm:space-y-12 text-base sm:text-[1.125rem] text-gray-300 leading-relaxed sm:leading-[1.7]">
+            <p>
+              Got a question before you commit? Reach out — a real person reads every message.
+            </p>
 
-            {/* 2 */}
-            <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">2. Strict No-Refund Policy</h2>
-              <p className="mb-3 sm:mb-4">
-              Please contact us at the following channels for any inquiries or support:
+            <div>
+              <h4 className="text-xs tracking-[0.2em] text-neutral-500 mb-4">DIRECT SUPPORT</h4>
+              <p>
+                Email: <a href={`mailto:${SITE_CONFIG.email}`} className="text-white font-bold hover:underline">{SITE_CONFIG.email}</a>
+                <br />
+                Instagram: <span className="text-white font-bold">@aryanheis</span> <span className="italic">(fastest response)</span>
               </p>
-              <ul className="space-y-2 sm:space-y-3 list-disc list-outside ml-5">
-                <li><span className="font-bold text-white">Instagram:</span> @aryanheis </li>
-                <li><span className="font-bold text-white">Email:</span> abc@gmail.com
-                </li>
-                <li><span className="font-bold text-white">Phone:</span> 0000000000
-                </li>
-              </ul>
-            </section>
+            </div>
 
+            <div>
+              <h4 className="text-xs tracking-[0.2em] text-neutral-500 mb-4">RESPONSE TIME</h4>
+              <p>
+                Within <span className="text-white font-bold italic">24–48 hours</span> on email. Bundle members get priority through <span className="text-white font-bold">Support+</span>.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="text-xs tracking-[0.2em] text-neutral-500 mb-4">REFUND POLICY</h4>
+              <p>
+                <span className="text-white font-bold">Digital protocols</span> (Training, Diet, Frame, Skin, Bundle) — all sales are final once accessed; see full terms in our{" "}
+                <Link href="/refund" className="text-white underline hover:text-neutral-300">Refund & Policy</Link> page.
+              </p>
+              <p className="mt-4">
+                <span className="text-white font-bold">1:1 Coaching Program</span> — backed by a <span className="text-white font-bold italic">100% refund + 20% bonus guarantee</span> if you {"don't"} get the results promised. Full terms in our{" "}
+                <Link href="/refund" className="text-white underline hover:text-neutral-300">Refund & Policy</Link> page.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="text-xs tracking-[0.2em] text-neutral-500 mb-4">HQ OFFICE</h4>
+              <p>
+                {SITE_CONFIG.address.line1} {SITE_CONFIG.address.line2}
+              </p>
+            </div>
           </div>
         </div>
       </main>
-
+      
       <Footer />
     </div>
   )

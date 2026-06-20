@@ -17,12 +17,12 @@ const SITE_CONFIG = {
   heroTitle: ["THE", "MOGWARD", "PROGRAM"],
   heroSubtitle: "The only 4 systems you need to ascend & max out your true potential.",
   watermarkText: "MOGWARD PROGRAM",
-  email: "ascend@aryanmethod.in",
+  email: "ascend@mogward.com",
   address: {
     line1: "RAPTINAGAR PHASE-IV,",
     line2: "GORAKHPUR, 273013"
   },
-  tagline: "Where elite conditioning meets unwavering determination in the pursuit of victory.",
+  tagline: "Built for the version of you that's still ahead - physique, face and discipline, engineered together.",
   copyright: "© 2026 ARYANHEIS // ALL RIGHTS RESERVED."
 }
 

@@ -10,12 +10,12 @@ const SITE_CONFIG = {
     heroTitle: ["THE", "ARYAN", "METHOD"],
     heroSubtitle: "The only 4 systems you need to ascend and grow.",
     watermarkText: "ARYAN METHOD",
-    email: "ascend@aryanmethod.in",
+    email: "ascend@mogward.com",
     address: {
       line1: "RAPTINAGAR PHASE-IV,",
       line2: "GORAKHPUR, 273013"
     },
-    tagline: "Where elite conditioning meets unwavering determination in the pursuit of victory.",
+    tagline: "Built for the version of you that's still ahead - physique, face and discipline, engineered together.",
     copyright: "© 2026 ARYANHEIS // ALL RIGHTS RESERVED."
   }
 
@@ -88,7 +88,7 @@ function Footer() {
               <h4 className="text-xs tracking-[0.2em] text-neutral-500 mb-4">COMPANY</h4>
               <ul className="space-y-3">
                 <li><Link href="/about" className="text-neutral-300 hover:text-white transition-colors">About Us</Link></li>
-                <li><Link href="#" className="text-neutral-300 hover:text-white transition-colors">Contact Us</Link></li>
+                <li><Link href="/contact" className="text-neutral-300 hover:text-white transition-colors">Contact Us</Link></li>
               </ul>
             </div>
             
@@ -160,26 +160,26 @@ export default function AboutPage() {
           {/* Content */}
           <div className="space-y-8 sm:space-y-12 text-base sm:text-[1.125rem] text-gray-300 leading-relaxed sm:leading-[1.7]">
             <p>
-              {"I'm"} <span className="text-white font-bold">Aryan</span>, and I {"didn't"} start with perfect skin, a strong physique, or a clear roadmap. Like many, I struggled with severe acne, endless confusion, and routines that simply {"didn't"} work.
+              I {"didn't"} start with the physique, the face, or the discipline. I started with <span className="text-white font-bold">tanning and complexion issues</span> I {"couldn't"} fix, a body I {"didn't"} recognize, and routines that promised everything and changed nothing.
             </p>
-            
+
             <p>
-              Over <span className="text-white font-bold italic">3 years of trial, learning, and personal transformation</span>, I completely re-engineered my approach. I cleared my acne, gained <span className="text-white font-bold italic">30kgs</span>, built my dream physique through strict lean bulking, and completely transformed my skin and facial aesthetics.
+              For <span className="text-white font-bold italic">3 years</span>, I tore apart everything I thought I knew and rebuilt it from scratch — what actually clears skin, what actually builds muscle, what actually sharpens a jawline. No shortcuts, no theory I {"hadn't"} tested on myself first. I cleared the acne. Gained <span className="text-white font-bold italic">30kg</span> through a lean bulk built on real numbers, not guesswork. Rebuilt my facial aesthetics from the ground up.
             </p>
-            
+
             <p>
-              What started as a solitary personal journey turned into a larger mission when thousands began following the progress and asking how to achieve the exact same results. Today, with a community of over <span className="text-white font-bold italic">100,000 people</span>, my goal is simple:
+              Somewhere in that process, people started noticing. Thousands of messages asking the same question: <span className="italic text-white">how.</span> Today {"that's"} a community of over <span className="text-white font-bold italic">3,000</span>  and the answer to {'"how"'} became Mogward.
             </p>
-            
+
             {/* Blockquote */}
             <blockquote className="border-l-[3px] border-white pl-6 py-1 my-8">
               <p className="text-[1.25rem] sm:text-[1.375rem] italic text-white leading-[1.5]">
-                {'"Simplify health, skincare, fitness, and nutrition so anyone can build an aesthetic physique and a confident lifestyle."'}
+                {'"Simplify physique, skin, and facial aesthetics into one system — so anyone can build the version of themselves they\'ve been chasing."'}
               </p>
             </blockquote>
-            
+
             <p>
-              These courses {"aren't"} just theory. They are the exact systems and strategies that helped me transform over those 3 years—purpose-built to help you start smarter, avoid my mistakes, and achieve your results faster.
+              THE TRAINING PROTOCOL. THE DIET PROTOCOL. THE FRAME PROTOCOL. THE SKIN PROTOCOL. Four systems, one standard — the exact one I used to get here. Not theory. Not recycled advice. The actual playbook, built so you start where I wish {"I'd"} started, skip the 3 years of trial and error, and get there faster.
             </p>
           </div>
         </div>
