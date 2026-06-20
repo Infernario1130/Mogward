@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import { League_Spartan } from 'next/font/google'
 import { PRODUCTS, MAIN_PACKAGE } from '@/lib/products'
 import CoachingCard from "../components/CoachingCard.jsx"
+import { createPortal } from 'react-dom'
 
 const leagueSpartan = League_Spartan({ subsets: ['latin'], weight: ['400','500','600','700','800','900'] })
 
@@ -323,9 +324,9 @@ function MainPackageCard({ selectedItem, setSelectedItem, setIsDetailOpen }) {
         </div>
       </div>
 
-      {detailsOpen && (
+      {detailsOpen && createPortal(
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8 bg-black/70 backdrop-blur-md animate-in fade-in duration-200"
+          className="fixed inset-0 z-[999] flex items-center justify-center p-4 sm:p-8 bg-black/80 backdrop-blur-xl animate-in fade-in duration-200"
           onClick={handleCloseDetails}
           role="dialog"
           aria-modal="true"
@@ -335,12 +336,11 @@ function MainPackageCard({ selectedItem, setSelectedItem, setIsDetailOpen }) {
             className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl text-white shadow-2xl shadow-[#9400D3]/10 border border-neutral-700"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Background image layer, low opacity */}
-            <div
-              className="absolute inset-0 bg-cover bg-center opacity-25"
-              style={{ backgroundImage: `url(${MAIN_PACKAGE.image})` }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-neutral-900/80 via-neutral-900/85 to-neutral-950/90" />
+           <div
+  className="absolute inset-0 bg-cover bg-center opacity-60 rounded-3xl"
+  style={{ backgroundImage: `url(${MAIN_PACKAGE.image})` }}
+/>
+<div className="absolute inset-0 bg-gradient-to-b from-neutral-900/40 via-neutral-900/50 to-neutral-950/80 rounded-3xl" />
 
             <div className="relative z-10 flex items-center justify-between px-6 sm:px-8 pt-6">
               <button
@@ -388,7 +388,8 @@ function MainPackageCard({ selectedItem, setSelectedItem, setIsDetailOpen }) {
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   )
@@ -524,9 +525,9 @@ function ProductCard({ product, selectedItem, setSelectedItem, setIsDetailOpen }
         </div>
       </div>
 
-      {detailsOpen && (
+      {detailsOpen && createPortal(
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8 bg-black/70 backdrop-blur-md animate-in fade-in duration-200"
+          className="fixed inset-0 z-[999] flex items-center justify-center p-4 sm:p-8 bg-black/80 backdrop-blur-xl animate-in fade-in duration-200"
           onClick={handleCloseDetails}
           role="dialog"
           aria-modal="true"
@@ -592,7 +593,8 @@ function ProductCard({ product, selectedItem, setSelectedItem, setIsDetailOpen }
               <p className="text-[#9400D3] text-xs tracking-[0.15em]">{product.duration}</p>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   )
