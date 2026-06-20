@@ -339,7 +339,7 @@ function MainPackageCard({ selectedItem, setSelectedItem, setIsDetailOpen }) {
            <div
   className="absolute inset-0 bg-cover bg-center opacity-60 rounded-3xl"
   style={{ backgroundImage: `url(${MAIN_PACKAGE.image})` }}
-/>
+/> 
 <div className="absolute inset-0 bg-gradient-to-b from-neutral-900/40 via-neutral-900/50 to-neutral-950/80 rounded-3xl" />
 
             <div className="relative z-10 flex items-center justify-between px-6 sm:px-8 pt-6">
@@ -1459,3 +1459,5 @@ export default function AryanMethodPage() {
     </div>
   )
 }
+
+// 
