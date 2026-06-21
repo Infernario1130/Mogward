@@ -308,6 +308,10 @@ function MainPackageCard({ selectedItem, setSelectedItem, setIsDetailOpen }) {
                   {feature}
                 </li>
               ))}
+              <li className="flex items-center gap-2 text-sm font-bold text-[#9400D3]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#9400D3]" />
+                SUPPORT+
+              </li>
             </ul>
             <div className="flex items-baseline gap-3 mb-2">
               <span className={`text-4xl font-black ${leagueSpartan.className}`}>₹{MAIN_PACKAGE.price}</span>
