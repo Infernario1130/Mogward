@@ -35,7 +35,7 @@ const SESSION_OPTIONS = [
   {
     id: '40min',
     duration: '30-MINUTE SESSION',
-    durationLabel: '30 MIN SESSION',
+    durationLabel: "Use this call to get your questions answered, clear any doubts about the program, and discuss anything that's holding you back.",
     price: 999,
     isPriority: true,
     badge: 'PRIORITY COMMS',
@@ -902,8 +902,8 @@ function BookingModal({ selectedDate, onClose }) {
         {step === 0 && (
           <>
             <div className="p-6 space-y-4">
-            <p className="text-xs text-green-600 text-center px-6 py-2">
-  This price will get adjusted in your monthly plan if you hop onto the program.
+            <p className="text-xs text-green-600 font-semibold text-center px-6 py-4">
+            The call is effectively free if you decide to move forward with the program.
 </p>
               {SESSION_OPTIONS.map(session => (
                 <button

@@ -1,8 +1,8 @@
 'use client'
 
 import Link from "next/link";
+import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Lock, Zap, X, Mail, Phone, User, Menu } from 'lucide-react'
-import { useState, useEffect } from 'react'
 
 const SITE_CONFIG = {
     brandName: "MOGWARD",
@@ -77,20 +77,22 @@ function Footer() {
               <p className="text-neutral-400 text-sm leading-relaxed">{SITE_CONFIG.tagline}</p>
             </div>
             
+             {/* Company */}
             <div>
               <h4 className="text-xs tracking-[0.2em] text-neutral-500 mb-4">COMPANY</h4>
               <ul className="space-y-3">
-                <li><Link href="#" className="text-neutral-300 hover:text-white transition-colors">About Us</Link></li>
-                <li><Link href="#" className="text-neutral-300 hover:text-white transition-colors">Contact Us</Link></li>
+                <li><Link href="/about" className="text-neutral-300 hover:text-white transition-colors">About Us</Link></li>
+                <li><Link href="/contact" className="text-neutral-300 hover:text-white transition-colors">Contact Us</Link></li>
               </ul>
             </div>
             
+            {/* Legal */}
             <div>
               <h4 className="text-xs tracking-[0.2em] text-neutral-500 mb-4">LEGAL</h4>
               <ul className="space-y-3">
-                <li><Link href="#" className="text-neutral-300 hover:text-white transition-colors">Terms & Conditions</Link></li>
-                <li><Link href="#" className="text-neutral-300 hover:text-white transition-colors">Privacy Policy</Link></li>
-                <li><Link href="#" className="text-neutral-300 hover:text-white transition-colors">Refund & Policy</Link></li>
+                <li><Link href="/terms" className="text-neutral-300 hover:text-white transition-colors">Terms & Conditions</Link></li>
+                <li><Link href="/privacy" className="text-neutral-300 hover:text-white transition-colors">Privacy Policy</Link></li>
+                <li><Link href="/refund" className="text-neutral-300 hover:text-white transition-colors">Refund & Policy</Link></li>
               </ul>
             </div>
             
@@ -127,7 +129,7 @@ function Footer() {
     )
   }
 
-export default function RefundPage() {
+export default function Privacy() {
   return (
     <div className="min-h-screen bg-black text-white">
       <Header />
@@ -140,8 +142,12 @@ export default function RefundPage() {
             className="text-[2.5rem] sm:text-[4rem] md:text-[5.5rem] lg:text-[7rem] font-normal tracking-tight leading-[0.9] uppercase mb-4"
             style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic' }}
           >
-            REFUND & CANCELLATION POLICY
+            PRIVACY POLICY
           </h1>
+
+          <p className="text-sm text-neutral-500 mb-8 sm:mb-10 tracking-wide">
+            Last updated: [DATE]
+          </p>
 
           {/* Divider */}
           <div className="w-full h-[1px] bg-foreground/40 mb-8 sm:mb-14" />
@@ -149,84 +155,132 @@ export default function RefundPage() {
           {/* Content */}
           <div className="space-y-8 sm:space-y-12 text-base sm:text-[1.125rem] text-gray-300 leading-relaxed sm:leading-[1.7]">
 
+            <p>
+              This Privacy Policy explains how Aryan, a sole proprietorship registered in India, operating as Mogward ({'"'}Mogward,{'"'} {'"'}we,{'"'} {'"'}us,{'"'} {'"'}our{'"'}), collects, uses, and protects your information when you visit mogward.com (the {'"'}Site{'"'}) or purchase any product or service from us.
+            </p>
+
             {/* 1 */}
             <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">1. General Overview</h2>
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">1. Information We Collect</h2>
+              <p className="mb-3 sm:mb-4">
+                We collect only the information necessary to process your purchase and provide our products and services to you:
+              </p>
+              <ul className="space-y-2 sm:space-y-3 list-disc list-outside ml-5 mb-3 sm:mb-4">
+                <li><span className="font-bold text-white">Name</span> — to identify your purchase and personalize your access</li>
+                <li><span className="font-bold text-white">Email address</span> — to deliver digital products, send order confirmations, and respond to support requests</li>
+                <li><span className="font-bold text-white">Payment information</span> — processed entirely by Razorpay (see Section 3 below); Mogward does not store your card, UPI, or banking details</li>
+              </ul>
               <p>
-              This Refund and Cancellation Policy governs the purchase of all digital products, courses, fitness routines, dietary plans, and related materials (collectively, the "Digital Content") from Devansh Method, independently owned and operated by Devansh Pathak. By completing a purchase on our platform, you explicitly agree to the terms outlined below.
+                We do <span className="font-bold text-white">not</span> currently collect health data, photos, body measurements, WhatsApp numbers, or any other personal data beyond the above, even for the 1:1 Coaching Program. If this changes in the future — for example, if the 1:1 Program begins collecting progress photos or health information as part of coaching — this Privacy Policy will be updated in advance, and your consent will be requested separately for that data.
               </p>
             </section>
 
             {/* 2 */}
             <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">2. Strict No-Refund Policy</h2>
-              <p className="mb-3 sm:mb-4">
-              Due to the immediate, digital nature of the products sold, and the fact that access to the proprietary Course content is granted instantly upon successful payment, all sales are strictly final.
-              </p>
-              <ul className="space-y-2 sm:space-y-3 list-disc list-outside ml-5">
-                <li><span className="font-bold text-white">No Returns or Exchanges:</span> We do not offer refunds, partial refunds, exchanges, or credits for any reason once a transaction is successfully processed and access to the Digital Content is delivered.</li>
-                <li><span className="font-bold text-white">No Result-Based Refunds:</span> As outlined in our Terms & Conditions, individual results regarding fitness, skincare, and diet vary greatly. We do not issue refunds based on a user's subjective dissatisfaction with the content, personal inability to adhere to the programs, or failure to achieve specific physical results.
-                </li>
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">2. How We Use Your Information</h2>
+              <p className="mb-3 sm:mb-4">We use the information we collect to:</p>
+              <ul className="space-y-2 sm:space-y-3 list-disc list-outside ml-5 mb-3 sm:mb-4">
+                <li>Process and fulfil your purchase</li>
+                <li>Deliver digital protocols to the email address provided</li>
+                <li>Communicate with you about your order, including confirmations and support</li>
+                <li>Provide 1:1 coaching services if you have enrolled in that program</li>
+                <li>Maintain records as required for tax, accounting, and legal compliance in India</li>
               </ul>
+              <p>
+                We do not use your information for any purpose beyond what is necessary to provide our products and services, and we do not currently use third-party analytics or advertising tracking tools on the Site.
+              </p>
             </section>
 
             {/* 3 */}
             <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">3. Cancellation Policy </h2>
-              
-              <ul className="space-y-2 sm:space-y-3 list-disc list-outside ml-5">
-                <li><span className="font-bold text-white">Post-Purchase:</span> Once a user initiates a transaction and the payment is successfully captured by our payment gateway, the order cannot be canceled under any circumstances.</li>
-                <li><span className="font-bold text-white">Pre-Purchase/Checkout:</span> You may abandon the checkout process at any time prior to confirming the payment without any charge or penalty.</li>
-              </ul>
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">3. Payment Processing</h2>
+              <p>
+                All payments are processed securely by <span className="font-bold text-white">Razorpay</span>, a third-party payment gateway. When you make a purchase, your payment details are submitted directly to Razorpay and are subject to {"Razorpay's"} own privacy policy and security practices. Mogward does not receive, store, or have access to your full card number, CVV, or banking credentials.
+              </p>
             </section>
 
             {/* 4 */}
             <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">4. Technical Issues & Access</h2>
-              <p className="mb-3">
-              Your inability to access the Digital Content due to user-end technical issues (e.g., forgotten passwords, device incompatibility, or poor internet connection) does not constitute grounds for a refund.
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">4. How We Share Your Information</h2>
+              <p className="mb-3 sm:mb-4">
+                We do not sell, rent, or trade your personal information to any third party.
               </p>
+              <p className="mb-3 sm:mb-4">We may share limited information only in the following circumstances:</p>
+              <ul className="space-y-2 sm:space-y-3 list-disc list-outside ml-5 mb-3 sm:mb-4">
+                <li>With <span className="font-bold text-white">Razorpay</span>, solely to process your payment</li>
+                <li>If required by <span className="font-bold text-white">law</span>, court order, or governmental request</li>
+                <li>With a <span className="font-bold text-white">successor entity</span> in the event of a business transfer, merger, or acquisition, in which case you will be notified</li>
+              </ul>
               <p>
-              If you experience any technical difficulties accessing your purchased courses on the platform, please contact our support team immediately. We will work diligently to restore your functional access.ß
+                We do not share your data with advertisers, data brokers, or marketing platforms.
               </p>
             </section>
 
             {/* 5 */}
             <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">5. Exceptional Circumstances (Duplicate Payments)</h2>
-              <p className="mb-3 sm:mb-4">
-              We recognize that technical errors with banking networks or payment gateways can occasionally occur. The only exception to our No-Refund policy is in the event of a verifiable duplicate transaction.
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">5. Data Storage and Security</h2>
+              <p>
+                Your information is stored securely and is accessed only as needed to fulfil your order or provide support. While we take reasonable measures to protect your data, no method of electronic storage or transmission is 100% secure, and we cannot guarantee absolute security.
               </p>
-              <ul className="space-y-2 sm:space-y-3 list-disc list-outside ml-5">
-                <li><span className="font-bold text-white">Duplicate Charges:</span> If your bank account or credit card is charged multiple times for a single course purchase due to a technical glitch or network timeout, you must notify us within 48 hours of the transaction.
-                </li>
-                <li><span className="font-bold text-white">Resolution Timeline:</span>  Upon verification of the duplicate charge on our payment gateway dashboard, we will initiate a refund for the erroneous duplicate amount. The refunded amount will be credited back to your original method of payment within 5 to 7 business days, depending on your bank's processing times.</li>
-              </ul>
             </section>
 
             {/* 6 */}
             <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">6.Chargeback Abuse & Friendly Fraud</h2>
-              <p className="mb-3 sm:mb-4">
-              We maintain meticulous logs of user access, IP addresses, and content consumption.
-
-In the event that a user successfully consumes the Digital Content and subsequently files a fraudulent chargeback or payment dispute with their bank or credit card issuer, we will submit all necessary access logs, IP tracking data, and this agreed-upon policy to the payment gateway and the issuing bank to contest the dispute.
-
-Users who file illegitimate chargebacks will be permanently banned from the platform and may face legal action to recover the disputed funds and associated gateway penalty fees.
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">6. Data Retention</h2>
+              <p>
+                We retain your name, email, and order information for as long as necessary to provide our services and to comply with applicable tax and legal record-keeping obligations in India. If you would like your data deleted and it is not otherwise required to be retained by law, contact us using the details in Section 9.
               </p>
             </section>
 
             {/* 7 */}
             <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">7. Contact for Payment Support</h2>
-              <p className="mb-3 sm:mb-4">If you believe you have been subjected to a duplicate charge, please contact our support team with your transaction ID, date of purchase, and the email address associated with your account:</p>
-              <ul className="space-y-2 sm:space-y-3 list-disc list-outside ml-5">
-                <li><span className="font-bold text-white">Email:</span> </li>
-                <li><span className="font-bold text-white">Operating Hours:</span> Monday to Friday, 10:00 AM - 6:00 PM IST.</li>
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">7. Your Rights</h2>
+              <p className="mb-3 sm:mb-4">You may, at any time:</p>
+              <ul className="space-y-2 sm:space-y-3 list-disc list-outside ml-5 mb-3 sm:mb-4">
+                <li>Request a copy of the personal data we hold about you</li>
+                <li>Request correction of inaccurate information</li>
+                <li>Request deletion of your data, subject to our legal and tax record-keeping obligations</li>
+                <li>Unsubscribe from any non-essential email communication</li>
               </ul>
+              <p>
+                To exercise any of these rights, email <span className="font-bold text-white">{SITE_CONFIG.email}</span>.
+              </p>
             </section>
 
-            
+            {/* 8 */}
+            <section>
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">8. {"Children's"} Privacy</h2>
+              <p>
+                This Site is not directed at children under 16. We do not knowingly collect personal information from anyone under 16. If you believe a child has provided us with personal information, contact us and we will delete it.
+              </p>
+            </section>
+
+            {/* 9 */}
+            <section>
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">9. Cookies</h2>
+              <p>
+                The Site may use essential cookies required for basic functionality (such as keeping you logged in or processing a checkout). We do not currently use cookies for advertising or third-party tracking purposes.
+              </p>
+            </section>
+
+            {/* 10 */}
+            <section>
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">10. Changes to This Policy</h2>
+              <p>
+                We may update this Privacy Policy from time to time to reflect changes in our practices or for legal reasons. The {'"'}Last updated{'"'} date at the top of this page will reflect the most recent revision. We encourage you to review this page periodically.
+              </p>
+            </section>
+
+            {/* 11 */}
+            <section>
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">11. Contact Us</h2>
+              <p className="mb-3 sm:mb-4">If you have any questions about this Privacy Policy or how your data is handled, contact us at:</p>
+              <ul className="space-y-2 sm:space-y-3 list-disc list-outside ml-5">
+                <li><span className="font-bold text-white">Email:</span> {SITE_CONFIG.email}</li>
+                <li><span className="font-bold text-white">Instagram:</span> @aryanheis</li>
+                <li><span className="font-bold text-white">Registered Office:</span> Raptinagar Phase-IV, Gorakhpur, Uttar Pradesh, 273013, India</li>
+              </ul>
+            </section>
 
           </div>
         </div>

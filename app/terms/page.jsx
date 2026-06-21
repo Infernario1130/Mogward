@@ -144,121 +144,180 @@ export default function TermsPage() {
             Terms & Conditions
           </h1>
 
+          <p className="text-sm text-neutral-500 mb-8 sm:mb-10 tracking-wide">
+            Last updated: [DATE]
+          </p>
+
           {/* Divider */}
           <div className="w-full h-[1px] bg-foreground/40 mb-8 sm:mb-14" />
 
           {/* Content */}
           <div className="space-y-8 sm:space-y-12 text-base sm:text-[1.125rem] text-gray-300 leading-relaxed sm:leading-[1.7]">
 
+            <p>
+              Please read these Terms & Conditions ({'"'}Terms{'"'}) carefully before using mogward.com (the {'"'}Site{'"'}) or purchasing any product or service from Mogward.
+            </p>
+
+            <p>
+              These Terms constitute a legally binding agreement between you ({'"'}you,{'"'} {'"'}user,{'"'} {'"'}customer{'"'}) and Aryan, a sole proprietorship registered in India, operating as Mogward ({'"'}Mogward,{'"'} {'"'}we,{'"'} {'"'}us,{'"'} {'"'}our{'"'}), with its registered office at Raptinagar Phase-IV, Gorakhpur, Uttar Pradesh, 273013, India.
+            </p>
+
+            <p>
+              By accessing the Site, creating an account, or purchasing any product, you agree to be bound by these Terms. If you do not agree, do not use the Site or purchase any product.
+            </p>
+
             {/* 1 */}
             <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">1. Acceptance of Terms</h2>
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">1. Who We Are and What We Offer</h2>
+              <p className="mb-3 sm:mb-4">
+                Mogward provides digital educational content and personal coaching services related to fitness, nutrition, skincare, and facial aesthetics, including but not limited to:
+              </p>
+              <ul className="space-y-2 sm:space-y-3 list-disc list-outside ml-5 mb-3 sm:mb-4">
+                <li>The Training Protocol (digital guide)</li>
+                <li>The Diet Protocol (digital guide)</li>
+                <li>The Frame Protocol (digital guide)</li>
+                <li>The Skin Protocol (digital guide)</li>
+                <li>The Mogward Bundle (combined digital guide package)</li>
+                <li>The Complete 1:1 Mogward Program (personal coaching service)</li>
+              </ul>
               <p>
-                By purchasing and accessing digital courses, materials, or programs (the &quot;Courses&quot;) from Aryan Method, you agree to these Terms and Conditions in their entirety. If you do not agree, you may not purchase or use the Courses.
+                All digital protocols are delivered electronically upon successful payment. The 1:1 Coaching Program is a personal service delivered over a 3-month or 6-month engagement period, as selected at the time of purchase.
               </p>
             </section>
 
             {/* 2 */}
             <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">2. Course Access and Content</h2>
-              <p className="mb-3 sm:mb-4">
-                The Courses contain personal fitness routines, dietary plans, skincare regimens, and health advice based on personal experience. Access is granted immediately upon purchase and is non-transferable and for personal use only.
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">2. Eligibility</h2>
+              <p>
+                You must be at least 18 years old to purchase any product or service on this Site. If you are between 16 and 18, you may use informational content on the Site with the involvement and consent of a parent or legal guardian, but purchases must be made by an adult.
               </p>
-              <ul className="space-y-2 sm:space-y-3 list-disc list-outside ml-5">
-                <li><span className="font-bold text-white">No Extraordinary Results Guaranteed:</span> Individual results vary greatly depending on body type, genetics, metabolism, and lifestyle. We make no guarantees of specific outcomes or transformations.</li>
-                <li><span className="font-bold text-white">Testimonials:</span> Any before/after photos or testimonials represent individual experiences and are not guaranteed for other users.</li>
-              </ul>
             </section>
 
             {/* 3 */}
             <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">3. Medical Disclaimer &amp; Health Liability Release</h2>
-              <p className="mb-3 sm:mb-4">
-                Course content is for educational and informational purposes only and does not constitute professional medical, fitness, dermatological, or nutritional advice. Content is based on personal experience and is not a substitute for professional medical guidance.
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">3. Not Medical Advice</h2>
+              <p className="mb-3 sm:mb-4 font-bold text-white">
+                This is the most important section of these Terms. Please read it carefully.
               </p>
-              <ul className="space-y-2 sm:space-y-3 list-disc list-outside ml-5">
-                <li><span className="font-bold text-white">Medical Consultation Required:</span> Before starting any fitness program, changing your diet, using new skincare products, or if you have pre-existing health conditions, allergies, injuries, or are taking medications, you MUST consult a qualified healthcare provider, physician, dermatologist, or nutritionist.</li>
-                <li><span className="font-bold text-white">Health Risks:</span> Fitness activities, dietary changes, and skincare routines carry inherent risks of physical injury, muscle strain, allergic reactions, skin irritation, gastrointestinal issues, and exacerbation of pre-existing medical conditions.</li>
-                <li><span className="font-bold text-white">Individual Variation:</span> Health outcomes are highly individual. What works for one person may not work for another and could potentially be harmful. Your body type, medical history, genetics, allergies, and current medications affect your response to fitness, diet, and skincare protocols.</li>
-                <li><span className="font-bold text-white">Waiver of Liability:</span> By purchasing and using these Courses, you acknowledge full responsibility for your health and wellbeing. You waive any right to hold Aryan Method, its owner, or instructors liable for any injury, illness, allergic reaction, weight loss/gain, skin conditions, dietary complications, or any other health outcome resulting from your use of the Courses.</li>
-                <li><span className="font-bold text-white">Emergency Situations:</span> If you experience chest pain, difficulty breathing, severe allergic reactions, or any medical emergency while following the Courses, stop immediately and seek emergency medical attention. We are not responsible for emergency situations.</li>
-              </ul>
+              <p className="mb-3 sm:mb-4">
+                All content provided by Mogward — including the Training Protocol, Diet Protocol, Frame Protocol, Skin Protocol, and the 1:1 Coaching Program — is provided for general educational and informational purposes only. It is <span className="font-bold text-white">not medical advice</span>, and Mogward is not a medical, dental, dietetic, or healthcare provider.
+              </p>
+              <p className="mb-3 sm:mb-4">
+                You should consult a qualified healthcare professional before beginning any new diet, exercise, breathing practice (including mouth taping or nasal breathing techniques), or skincare routine — particularly if you have any underlying health condition, including but not limited to sleep apnea or other breathing disorders, dental or jaw issues (including TMJ), skin conditions, cardiovascular conditions, or any condition affecting your ability to safely engage in physical exercise or caloric restriction.
+              </p>
+              <p>
+                You assume full responsibility for any decision you make based on {"Mogward's"} content, and Mogward is not liable for any injury, health complication, or adverse outcome resulting from your use of this content.
+              </p>
             </section>
 
             {/* 4 */}
             <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">4. Assumption of Risk</h2>
-              <p className="mb-3">
-                You acknowledge that fitness activities, dietary changes, and skincare routines carry inherent risks including physical injury, illness, allergic reactions, and aggravation of pre-existing conditions. You assume full responsibility for all risks and damages arising from your use of the Courses.
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">4. Purchases, Pricing, and Payment</h2>
+              <p className="mb-3 sm:mb-4">
+                All payments on this Site are processed securely through Razorpay. Mogward does not directly store or process your card or payment credentials.
+              </p>
+              <p className="mb-3 sm:mb-4">
+                Prices are listed in Indian Rupees (₹) for digital protocols and in US Dollars ($) for the 1:1 Coaching Program, and are subject to change without prior notice. The price applicable to your purchase is the price displayed at the time payment is completed.
               </p>
               <p>
-                By purchasing, you release Aryan Method and its owner from any liability for injuries, damages, or health complications resulting from your participation in the Courses.
+                You agree to provide accurate billing information and authorize Mogward, via Razorpay, to charge the listed price for your selected product or service.
               </p>
             </section>
 
             {/* 5 */}
             <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">5. Refund and Cancellation Policy</h2>
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">5. Digital Products — License to Use</h2>
               <p className="mb-3 sm:mb-4">
-                All Course sales are final. Due to the immediate digital delivery and non-returnable nature of the content, we do not offer refunds, exchanges, or cancellations once payment is processed and access is granted.
+                When you purchase a digital protocol (Training, Diet, Frame, Skin, or the Bundle), you are granted a <span className="font-bold text-white">personal, non-transferable, non-exclusive, lifetime license</span> to access and use that content for your own personal use.
               </p>
-              <ul className="space-y-2 sm:space-y-3 list-disc list-outside ml-5">
-                <li><span className="font-bold text-white">Technical Issues:</span> Problems accessing content due to forgotten passwords, device incompatibility, or internet issues do not qualify for refunds. Contact support immediately for assistance.</li>
-                <li><span className="font-bold text-white">Duplicate Charges Exception:</span> If charged multiple times for a single purchase due to a technical error, notify support within 48 hours. We will verify and refund the duplicate amount within 5–7 business days.</li>
+              <p className="mb-3 sm:mb-4">You may <span className="font-bold text-white">not</span>:</p>
+              <ul className="space-y-2 sm:space-y-3 list-disc list-outside ml-5 mb-3 sm:mb-4">
+                <li>Resell, redistribute, share, or publicly post the content of any protocol</li>
+                <li>Reproduce the content, in whole or in part, for commercial purposes</li>
+                <li>Share your account access or downloaded materials with any third party</li>
               </ul>
+              <p>
+                Mogward retains full ownership of all intellectual property in its protocols, frameworks, and materials. See Section 9 (Intellectual Property) for further detail.
+              </p>
             </section>
 
             {/* 6 */}
             <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">6. Intellectual Property</h2>
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">6. The 1:1 Coaching Program — Specific Terms</h2>
               <p className="mb-3 sm:mb-4">
-                All Course content (videos, text, PDFs, images) is proprietary and protected intellectual property. You receive a personal, non-transferable, non-exclusive license to view content for your own use only.
+                The Complete 1:1 Mogward Program is sold as a fixed-duration personal coaching engagement of either 3 months or 6 months, as selected and paid for at the time of enrollment.
               </p>
               <ul className="space-y-2 sm:space-y-3 list-disc list-outside ml-5">
-                <li><span className="font-bold text-white">Prohibited:</span> You may not copy, share, distribute, resell, screen-record, or broadcast any Course content.</li>
-                <li><span className="font-bold text-white">Violation Consequences:</span> Unauthorized distribution or account sharing results in immediate access termination without refund and may result in legal action.</li>
+                <li><span className="font-bold text-white">No mid-program cancellations.</span> Once enrolled, the program fee is committed in full for the selected duration. There are no cancellations, pauses, or partial refunds during the program.</li>
+                <li><span className="font-bold text-white">Results guarantee.</span> Mogward offers a 100% refund plus a 20% bonus if you do not achieve the results promised, subject to the conditions set out in our <Link href="/refund" className="text-white underline hover:text-neutral-300">Refund & Policy</Link> page, including the defined 60-day check-in point.</li>
+                <li><span className="font-bold text-white">Your responsibility.</span> The 1:1 Program requires your active participation, including attending scheduled check-ins and following the guidance provided. {"Mogward's"} guarantee is contingent on the terms described in the Refund & Policy page.</li>
               </ul>
             </section>
 
             {/* 7 */}
             <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">7. User Conduct &amp; Account Responsibilities</h2>
-              <p className="mb-3 sm:mb-4">You agree to use the Courses lawfully and responsibly. Prohibited conduct includes:</p>
-              <ul className="space-y-2 sm:space-y-3 list-disc list-outside ml-5">
-                <li><span className="font-bold text-white">Illegal Activity:</span> You may not use the Courses for any illegal purpose or in violation of any local, state, or national law.</li>
-                <li><span className="font-bold text-white">Harassment &amp; Abuse:</span> You may not harass, threaten, defame, or abuse other users or Aryan Method staff.</li>
-                <li><span className="font-bold text-white">Misinformation:</span> You may not publicly misrepresent the Courses or spread false claims about their content or results.</li>
-                <li><span className="font-bold text-white">Unauthorized Access:</span> You may not attempt to hack, bypass, or gain unauthorized access to platform systems or other users&apos; accounts.</li>
-                <li><span className="font-bold text-white">Account Termination:</span> Aryan Method reserves the right to immediately suspend or terminate your access to the Courses without refund if you violate these terms, engage in prohibited conduct, or pose a risk to other users.</li>
-                <li><span className="font-bold text-white">Your Responsibility:</span> You are responsible for maintaining the confidentiality of your login credentials. You are liable for all activity under your account.</li>
-              </ul>
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">7. Support+ (Bundle Bonus)</h2>
+              <p>
+                Customers who purchase the complete Mogward Bundle receive Support+: priority placement in {"Mogward's"} direct Instagram inbox, maintained personally by the founder. Support+ is a best-effort personal commitment from the founder, not an automated platform feature or a guaranteed response time, and is provided at {"Mogward's"} discretion as part of the Bundle purchase.
+              </p>
             </section>
 
             {/* 8 */}
             <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">8. Chargeback and Fraud Prevention</h2>
-              <p className="mb-3">
-                We maintain detailed records of user access, IP addresses, and content usage. Any fraudulent chargeback or payment dispute will be contested with your bank using these records.
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">8. Refunds</h2>
+              <p className="mb-3 sm:mb-4">
+                Refunds are governed entirely by our <Link href="/refund" className="text-white underline hover:text-neutral-300">Refund & Policy</Link> page, which forms part of these Terms by reference. In summary:
               </p>
-              <p>
-                Users filing illegitimate chargebacks will be permanently banned and may face legal action to recover disputed funds and associated fees.
-              </p>
+              <ul className="space-y-2 sm:space-y-3 list-disc list-outside ml-5">
+                <li>Digital protocols are refundable only in cases of genuine technical or access issues, reported within 7 days of purchase.</li>
+                <li>The 1:1 Coaching Program is non-cancellable mid-program, and is covered separately by the results guarantee described in the Refund & Policy page.</li>
+              </ul>
             </section>
 
             {/* 9 */}
             <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">9. Limitation of Liability</h2>
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">9. Intellectual Property</h2>
               <p>
-                To the maximum extent permitted by law, Aryan Method and affiliates are not liable for direct, indirect, incidental, special, or consequential damages from your use of the Courses. Your total recovery is limited to the amount you paid.
+                All content on this Site — including but not limited to the Training Protocol, Diet Protocol, Frame Protocol, Skin Protocol, the CTP framework, the 5-step Frame hierarchy, all written guides, graphics, logos, and the Mogward brand name and assets — is the exclusive property of Mogward and is protected by applicable copyright and intellectual property laws. Unauthorized use, reproduction, or distribution is strictly prohibited and may result in legal action.
               </p>
             </section>
 
             {/* 10 */}
             <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">10. Governing Law</h2>
-              <p>
-                These Terms are governed by the laws of India and subject to the exclusive jurisdiction of courts in New Delhi, India.
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">10. Limitation of Liability</h2>
+              <p className="mb-3 sm:mb-4">
+                To the fullest extent permitted by law, Mogward and its founder shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the Site or any product, including but not limited to loss of results, injury, or dissatisfaction with outcomes, except where such liability cannot be excluded under applicable Indian law.
               </p>
+              <p>
+                Nothing in these Terms limits {"Mogward's"} liability for fraud, willful misconduct, or any liability that cannot be excluded by law.
+              </p>
+            </section>
+
+            {/* 11 */}
+            <section>
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">11. Changes to These Terms</h2>
+              <p>
+                Mogward may update these Terms from time to time. Continued use of the Site after changes are posted constitutes your acceptance of the revised Terms. We recommend reviewing this page periodically.
+              </p>
+            </section>
+
+            {/* 12 */}
+            <section>
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">12. Governing Law and Jurisdiction</h2>
+              <p>
+                These Terms are governed by the laws of India. Any disputes arising from these Terms or your use of the Site shall be subject to the exclusive jurisdiction of the courts of Gorakhpur, Uttar Pradesh, India.
+              </p>
+            </section>
+
+            {/* 13 */}
+            <section>
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">13. Contact</h2>
+              <p className="mb-3 sm:mb-4">For any questions about these Terms, contact us at:</p>
+              <ul className="space-y-2 sm:space-y-3 list-disc list-outside ml-5">
+                <li><span className="font-bold text-white">Email:</span> {SITE_CONFIG.email}</li>
+                <li><span className="font-bold text-white">Instagram:</span> @aryanheis</li>
+                <li><span className="font-bold text-white">Registered Office:</span> Raptinagar Phase-IV, Gorakhpur, Uttar Pradesh, 273013, India</li>
+              </ul>
             </section>
 
           </div>
