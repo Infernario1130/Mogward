@@ -907,7 +907,7 @@ function BookingModal({ selectedDate, onClose }) {
           <>
             <div className="p-6 space-y-4">
             <p className="text-xs text-green-600 font-semibold text-center px-6 py-4">
-            The call is effectively free if you decide to move forward with the program.
+            100% REFUND WILL BE PROVIDED IF YOU END UP HOPING ON THE PROGRAM
 </p>
               {SESSION_OPTIONS.map(session => (
                 <button
