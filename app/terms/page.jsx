@@ -145,7 +145,7 @@ export default function TermsPage() {
           </h1>
 
           <p className="text-sm text-neutral-500 mb-8 sm:mb-10 tracking-wide">
-            Last updated: [DATE]
+            Last updated: 21 June 2026
           </p>
 
           {/* Divider */}
