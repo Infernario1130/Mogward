@@ -1,8 +1,8 @@
 'use client'
 
 import Link from "next/link";
-import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Lock, Zap, X, Mail, Phone, User, Menu } from 'lucide-react'
+import { useState, useEffect } from 'react'
 
 const SITE_CONFIG = {
     brandName: "MOGWARD",
@@ -77,7 +77,6 @@ function Footer() {
               <p className="text-neutral-400 text-sm leading-relaxed">{SITE_CONFIG.tagline}</p>
             </div>
             
-             {/* Company */}
             <div>
               <h4 className="text-xs tracking-[0.2em] text-neutral-500 mb-4">COMPANY</h4>
               <ul className="space-y-3">
@@ -86,7 +85,6 @@ function Footer() {
               </ul>
             </div>
             
-            {/* Legal */}
             <div>
               <h4 className="text-xs tracking-[0.2em] text-neutral-500 mb-4">LEGAL</h4>
               <ul className="space-y-3">
@@ -129,7 +127,7 @@ function Footer() {
     )
   }
 
-export default function Privacy() {
+export default function RefundPage() {
   return (
     <div className="min-h-screen bg-black text-white">
       <Header />
@@ -142,7 +140,7 @@ export default function Privacy() {
             className="text-[2.5rem] sm:text-[4rem] md:text-[5.5rem] lg:text-[7rem] font-normal tracking-tight leading-[0.9] uppercase mb-4"
             style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic' }}
           >
-            PRIVACY POLICY
+            REFUND & POLICY
           </h1>
 
           <p className="text-sm text-neutral-500 mb-8 sm:mb-10 tracking-wide">
@@ -156,129 +154,80 @@ export default function Privacy() {
           <div className="space-y-8 sm:space-y-12 text-base sm:text-[1.125rem] text-gray-300 leading-relaxed sm:leading-[1.7]">
 
             <p>
-              This Privacy Policy explains how Aryan, a sole proprietorship registered in India, operating as Mogward ({'"'}Mogward,{'"'} {'"'}we,{'"'} {'"'}us,{'"'} {'"'}our{'"'}), collects, uses, and protects your information when you visit mogward.com (the {'"'}Site{'"'}) or purchase any product or service from us.
+              This page explains exactly when a refund is and is not available for purchases made on mogward.com. Refund terms differ between our digital protocols and the 1:1 Coaching Program — please read the section relevant to your purchase carefully before buying.
             </p>
 
             {/* 1 */}
             <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">1. Information We Collect</h2>
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">1. Digital Protocols (Training, Diet, Frame, Skin, and the Mogward Bundle)</h2>
               <p className="mb-3 sm:mb-4">
-                We collect only the information necessary to process your purchase and provide our products and services to you:
+                All digital protocols are sold as <span className="font-bold text-white">lifetime-access digital products</span>, delivered electronically upon successful payment.
+              </p>
+              <p className="mb-3 sm:mb-4">
+                <span className="font-bold text-white">General policy: all sales are final.</span> Because these are digital products delivered instantly and accessible immediately upon purchase, we do not offer refunds for change of mind, dissatisfaction with content style, or failure to complete the program.
+              </p>
+              <p className="mb-3 sm:mb-4">
+                <span className="font-bold text-white">Exception — technical or access issues.</span> If you are unable to access your purchased protocol due to a genuine technical fault (for example: payment was charged but content was never delivered, a broken download link, or a duplicate charge), you are entitled to a refund or replacement access, provided that:
               </p>
               <ul className="space-y-2 sm:space-y-3 list-disc list-outside ml-5 mb-3 sm:mb-4">
-                <li><span className="font-bold text-white">Name</span> — to identify your purchase and personalize your access</li>
-                <li><span className="font-bold text-white">Email address</span> — to deliver digital products, send order confirmations, and respond to support requests</li>
-                <li><span className="font-bold text-white">Payment information</span> — processed entirely by Razorpay (see Section 3 below); Mogward does not store your card, UPI, or banking details</li>
+                <li>You contact us at <span className="font-bold text-white">{SITE_CONFIG.email}</span> within <span className="font-bold text-white">7 days</span> of your purchase date</li>
+                <li>You provide your order/payment confirmation as proof of purchase</li>
+                <li>The issue is verified as a genuine technical or access fault on our end, and not, for example, an issue with your own device, email spam filtering, or internet connection</li>
               </ul>
               <p>
-                We do <span className="font-bold text-white">not</span> currently collect health data, photos, body measurements, WhatsApp numbers, or any other personal data beyond the above, even for the 1:1 Coaching Program. If this changes in the future — for example, if the 1:1 Program begins collecting progress photos or health information as part of coaching — this Privacy Policy will be updated in advance, and your consent will be requested separately for that data.
+                Refunds approved under this exception will be processed back to your original payment method via Razorpay within a reasonable timeframe.
               </p>
             </section>
 
             {/* 2 */}
             <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">2. How We Use Your Information</h2>
-              <p className="mb-3 sm:mb-4">We use the information we collect to:</p>
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">2. The Complete 1:1 Mogward Program</h2>
+              <p className="mb-3 sm:mb-4">
+                The 1:1 Coaching Program is sold as a <span className="font-bold text-white">fixed-term engagement</span> of either 3 months or 6 months, selected and paid for at enrollment.
+              </p>
+              <p className="mb-3 sm:mb-4">
+                <span className="font-bold text-white">No mid-program cancellations or refunds.</span> Once you enroll, the full program fee for your selected duration is committed. We do not offer cancellations, pauses, partial refunds, or pro-rated refunds at any point during the program, for any reason, including loss of motivation, scheduling conflicts, or change of mind.
+              </p>
+              <p className="mb-3 sm:mb-4">
+                <span className="font-bold text-white">The Results Guarantee — 100% Refund + 20% Bonus.</span> Separately from the above, the 1:1 Program is backed by a results guarantee:
+              </p>
               <ul className="space-y-2 sm:space-y-3 list-disc list-outside ml-5 mb-3 sm:mb-4">
-                <li>Process and fulfil your purchase</li>
-                <li>Deliver digital protocols to the email address provided</li>
-                <li>Communicate with you about your order, including confirmations and support</li>
-                <li>Provide 1:1 coaching services if you have enrolled in that program</li>
-                <li>Maintain records as required for tax, accounting, and legal compliance in India</li>
+                <li>This guarantee is evaluated at a <span className="font-bold text-white">defined 60-day check-in point</span> within your program.</li>
+                <li>To qualify, you must have <span className="font-bold text-white">completed the full 60 days</span> of the program as a participant (attending scheduled check-ins and engaging with the coaching process).</li>
+                <li>If, at that 60-day check-in, you have not achieved the results promised to you at the start of your program, Mogward will refund 100% of your program fee and provide an additional 20% bonus, as agreed with you individually at enrollment.</li>
+                <li>This guarantee evaluation is based on completion of the 60-day period itself; no separate proof-of-adherence documentation (such as logged workouts or photos) is required to qualify, beyond having participated in the program as instructed.</li>
               </ul>
               <p>
-                We do not use your information for any purpose beyond what is necessary to provide our products and services, and we do not currently use third-party analytics or advertising tracking tools on the Site.
+                This guarantee does not override the {"\"no mid-program cancellation\""} rule above — it is a distinct mechanism that activates specifically at the 60-day mark, not a general cancellation right.
               </p>
             </section>
 
             {/* 3 */}
             <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">3. Payment Processing</h2>
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">3. Support+ (Bundle Bonus)</h2>
               <p>
-                All payments are processed securely by <span className="font-bold text-white">Razorpay</span>, a third-party payment gateway. When you make a purchase, your payment details are submitted directly to Razorpay and are subject to {"Razorpay's"} own privacy policy and security practices. Mogward does not receive, store, or have access to your full card number, CVV, or banking credentials.
+                Support+ (priority Instagram DM access for Bundle purchasers) is a bonus feature, not a paid service in itself, and is not eligible for separate refund or compensation if unused or if response times vary.
               </p>
             </section>
 
             {/* 4 */}
             <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">4. How We Share Your Information</h2>
-              <p className="mb-3 sm:mb-4">
-                We do not sell, rent, or trade your personal information to any third party.
-              </p>
-              <p className="mb-3 sm:mb-4">We may share limited information only in the following circumstances:</p>
-              <ul className="space-y-2 sm:space-y-3 list-disc list-outside ml-5 mb-3 sm:mb-4">
-                <li>With <span className="font-bold text-white">Razorpay</span>, solely to process your payment</li>
-                <li>If required by <span className="font-bold text-white">law</span>, court order, or governmental request</li>
-                <li>With a <span className="font-bold text-white">successor entity</span> in the event of a business transfer, merger, or acquisition, in which case you will be notified</li>
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">4. How to Request a Refund</h2>
+              <p className="mb-3 sm:mb-4">To request a refund under any of the conditions above:</p>
+              <ul className="space-y-2 sm:space-y-3 list-disc list-outside ml-5">
+                <li>Email <span className="font-bold text-white">{SITE_CONFIG.email}</span> with your order confirmation and a description of the issue.</li>
+                <li>Allow us a reasonable period to review your request — we aim to respond within 2–3 business days.</li>
+                <li>If approved, refunds are processed via Razorpay to your original payment method.</li>
               </ul>
-              <p>
-                We do not share your data with advertisers, data brokers, or marketing platforms.
-              </p>
             </section>
 
             {/* 5 */}
             <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">5. Data Storage and Security</h2>
-              <p>
-                Your information is stored securely and is accessed only as needed to fulfil your order or provide support. While we take reasonable measures to protect your data, no method of electronic storage or transmission is 100% secure, and we cannot guarantee absolute security.
-              </p>
-            </section>
-
-            {/* 6 */}
-            <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">6. Data Retention</h2>
-              <p>
-                We retain your name, email, and order information for as long as necessary to provide our services and to comply with applicable tax and legal record-keeping obligations in India. If you would like your data deleted and it is not otherwise required to be retained by law, contact us using the details in Section 9.
-              </p>
-            </section>
-
-            {/* 7 */}
-            <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">7. Your Rights</h2>
-              <p className="mb-3 sm:mb-4">You may, at any time:</p>
-              <ul className="space-y-2 sm:space-y-3 list-disc list-outside ml-5 mb-3 sm:mb-4">
-                <li>Request a copy of the personal data we hold about you</li>
-                <li>Request correction of inaccurate information</li>
-                <li>Request deletion of your data, subject to our legal and tax record-keeping obligations</li>
-                <li>Unsubscribe from any non-essential email communication</li>
-              </ul>
-              <p>
-                To exercise any of these rights, email <span className="font-bold text-white">{SITE_CONFIG.email}</span>.
-              </p>
-            </section>
-
-            {/* 8 */}
-            <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">8. {"Children's"} Privacy</h2>
-              <p>
-                This Site is not directed at children under 16. We do not knowingly collect personal information from anyone under 16. If you believe a child has provided us with personal information, contact us and we will delete it.
-              </p>
-            </section>
-
-            {/* 9 */}
-            <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">9. Cookies</h2>
-              <p>
-                The Site may use essential cookies required for basic functionality (such as keeping you logged in or processing a checkout). We do not currently use cookies for advertising or third-party tracking purposes.
-              </p>
-            </section>
-
-            {/* 10 */}
-            <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">10. Changes to This Policy</h2>
-              <p>
-                We may update this Privacy Policy from time to time to reflect changes in our practices or for legal reasons. The {'"'}Last updated{'"'} date at the top of this page will reflect the most recent revision. We encourage you to review this page periodically.
-              </p>
-            </section>
-
-            {/* 11 */}
-            <section>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">11. Contact Us</h2>
-              <p className="mb-3 sm:mb-4">If you have any questions about this Privacy Policy or how your data is handled, contact us at:</p>
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">5. Questions</h2>
+              <p className="mb-3 sm:mb-4">If anything in this policy is unclear, contact us before purchasing:</p>
               <ul className="space-y-2 sm:space-y-3 list-disc list-outside ml-5">
                 <li><span className="font-bold text-white">Email:</span> {SITE_CONFIG.email}</li>
                 <li><span className="font-bold text-white">Instagram:</span> @aryanheis</li>
-                <li><span className="font-bold text-white">Registered Office:</span> Raptinagar Phase-IV, Gorakhpur, Uttar Pradesh, 273013, India</li>
               </ul>
             </section>
 
