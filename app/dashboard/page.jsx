@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Play, Zap } from "lucide-react";
+import { ArrowLeft, Play, Zap, X, ChevronLeft, ChevronRight, PhoneCall } from "lucide-react";
 import { League_Spartan } from "next/font/google";
 import { PRODUCTS, MAIN_PACKAGE } from "@/lib/products";
 
@@ -14,6 +14,15 @@ const SITE = {
   brandInitials: "M",
   watermarkText: "MY ARSENAL",
 };
+
+const SLOTS = [
+  { id: 'slot1', name: 'SLOT 1', time: '10:00 AM - 10:30 AM' },
+  { id: 'slot2', name: 'SLOT 2', time: '12:00 AM - 12:30 AM' },
+  { id: 'slot3', name: 'SLOT 3', time: '2:00 PM - 2:30 PM' },
+  { id: 'slot4', name: 'SLOT 4', time: '4:00 PM - 4:30 PM' },
+  { id: 'slot5', name: 'SLOT 5', time: '6:00 PM - 6:30 PM' },
+  { id: 'slot6', name: 'SLOT 6', time: '8:00 PM - 8:30 PM' },
+]
 
 function WatermarkBackground() {
   return (
@@ -173,12 +182,277 @@ function LoadingSkeleton() {
   );
 }
 
+// ---------- CALL BOOKING MODAL (Calendar -> Slot -> Confirm) ----------
+
+function CallBookingModal({ open, onClose, creditsRemaining, onBooked }) {
+  const today = new Date()
+  const [view, setView] = useState('calendar') // 'calendar' | 'slot' | 'success'
+  const [currentMonth, setCurrentMonth] = useState(new Date(today.getFullYear(), today.getMonth(), 1))
+  const [selectedDate, setSelectedDate] = useState(null)
+  const [selectedSlot, setSelectedSlot] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    if (!open) return
+    setView('calendar')
+    setSelectedDate(null)
+    setSelectedSlot(null)
+    setError('')
+  }, [open])
+
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', onKey)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = ''
+    }
+  }, [open, onClose])
+
+  if (!open) return null
+
+  const getDaysInMonth = (date) => {
+    const year = date.getFullYear()
+    const month = date.getMonth()
+    const firstDay = new Date(year, month, 1).getDay()
+    const daysInMonth = new Date(year, month + 1, 0).getDate()
+    return { firstDay, daysInMonth }
+  }
+
+  const { firstDay, daysInMonth } = getDaysInMonth(currentMonth)
+  const monthName = currentMonth.toLocaleString('default', { month: 'long', year: 'numeric' }).toUpperCase()
+  const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
+
+  const isDatePast = (day) => {
+    const checkDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day)
+    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+    return checkDate < todayStart
+  }
+  const isDateToday = (day) => (
+    day === today.getDate() &&
+    currentMonth.getMonth() === today.getMonth() &&
+    currentMonth.getFullYear() === today.getFullYear()
+  )
+  const isDateFuture = (day) => {
+    const checkDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day)
+    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+    return checkDate > todayStart
+  }
+
+  const handleDateSelect = (day) => {
+    setSelectedDate(new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day))
+    setView('slot')
+  }
+
+  const dateStr = selectedDate
+    ? selectedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }).toUpperCase()
+    : ''
+  const dateForBackend = selectedDate
+    ? selectedDate.toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })
+    : ''
+
+  const handleConfirmBooking = async () => {
+    if (!selectedSlot) return
+    setError('')
+    setLoading(true)
+    try {
+      const slotMeta = SLOTS.find(s => s.id === selectedSlot)
+      const res = await fetch('/api/booking/book-call', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          date: dateForBackend,
+          slot: selectedSlot,
+          slotLabel: slotMeta.time,
+        }),
+      })
+      const data = await res.json()
+      if (!data.success) {
+        setError(data.message || 'Something went wrong please try again')
+        setLoading(false)
+        return
+      }
+      setView('success')
+      onBooked(data.creditsRemaining)
+    } catch (err) {
+      setError('Something went wrong please try again')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-[999] flex items-center justify-center p-4 bg-black/40 backdrop-blur-md"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-3xl max-w-md w-full shadow-2xl overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-start justify-between p-6 border-b border-neutral-200">
+          <div>
+            <p className="text-xs font-bold tracking-[0.2em] text-neutral-700">BOOK A FREE CALL</p>
+            <p className="text-xs text-neutral-500 mt-1">
+              {view === 'calendar' && 'Select a date to continue'}
+              {view === 'slot' && dateStr}
+              {view === 'success' && 'Booking confirmed'}
+            </p>
+          </div>
+          <button onClick={onClose} className="p-1 hover:bg-neutral-100 rounded transition-colors">
+            <X className="w-5 h-5 text-neutral-600" />
+          </button>
+        </div>
+
+        {/* CALENDAR VIEW */}
+        {view === 'calendar' && (
+          <div className="p-6 bg-neutral-900 text-white">
+            <div className="flex items-center justify-between mb-6">
+              <span className="text-sm tracking-[0.1em]">{monthName}</span>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))}
+                  className="p-1 hover:bg-white/10 rounded transition-colors"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))}
+                  className="p-1 hover:bg-white/10 rounded transition-colors"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-7 gap-2 mb-4">
+              {days.map(day => (
+                <div key={day} className="text-xs text-neutral-500 text-center py-2">{day}</div>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-7 gap-2">
+              {Array.from({ length: firstDay }).map((_, i) => (
+                <div key={`empty-${i}`} />
+              ))}
+              {Array.from({ length: daysInMonth }).map((_, i) => {
+                const day = i + 1
+                const isPast = isDatePast(day)
+                const isTodayDate = isDateToday(day)
+                const isFuture = isDateFuture(day)
+                return (
+                  <button
+                    key={day}
+                    disabled={isPast}
+                    onClick={() => handleDateSelect(day)}
+                    className={`
+                      relative aspect-square flex items-center justify-center text-sm rounded-full transition-colors
+                      ${isTodayDate ? 'ring-2 ring-[#9400D3] bg-[#9400D3]/20 text-white font-semibold' : ''}
+                      ${isPast ? 'text-neutral-600 cursor-not-allowed' : 'hover:bg-white/10 cursor-pointer'}
+                      ${isFuture ? 'text-white' : ''}
+                    `}
+                  >
+                    {day}
+                    {isFuture && (
+                      <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#9400D3] animate-blink-dot" />
+                    )}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* SLOT VIEW */}
+        {view === 'slot' && (
+          <>
+            <div className="px-6 pt-6 pb-4 space-y-3">
+              <button
+                onClick={() => { setSelectedSlot(null); setView('calendar') }}
+                className="flex items-center gap-2 text-xs font-bold text-neutral-600 hover:text-neutral-900 transition-colors tracking-[0.1em]"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                BACK TO CALENDAR
+              </button>
+              <p className="text-xs font-bold tracking-[0.15em] text-neutral-500">SCHEDULING WINDOW</p>
+            </div>
+            <div className="px-6 pb-6">
+              <div className="grid grid-cols-2 gap-4">
+                {SLOTS.map(slot => (
+                  <button
+                    key={slot.id}
+                    onClick={() => setSelectedSlot(slot.id)}
+                    className={`text-left p-5 rounded-2xl transition-all duration-300 ${
+                      selectedSlot === slot.id
+                        ? 'border-2 border-[#9400D3] bg-white shadow-[0_0_20px_rgba(148,0,211,0.5),inset_0_0_12px_rgba(148,0,211,0.08)]'
+                        : 'border-2 border-neutral-200 bg-white hover:border-[#9400D3] hover:shadow-[0_0_14px_rgba(148,0,211,0.25)]'
+                    }`}
+                  >
+                    <p className={`font-black text-sm tracking-tight ${selectedSlot === slot.id ? 'text-[#9400D3]' : 'text-neutral-800'} ${leagueSpartan.className}`}>
+                      {slot.name}
+                    </p>
+                    <p className={`text-xs mt-2 ${selectedSlot === slot.id ? 'text-[#9400D3]/70' : 'text-neutral-400'}`}>
+                      {slot.time}
+                    </p>
+                  </button>
+                ))}
+              </div>
+              {error && <p className="text-red-500 text-xs text-center tracking-wide mt-4">{error}</p>}
+            </div>
+            <div className="px-6 pb-8">
+              <button
+                onClick={handleConfirmBooking}
+                disabled={!selectedSlot || loading}
+                className={`w-full py-3 rounded-lg font-bold text-xs tracking-[0.15em] transition-all duration-200 flex items-center justify-center gap-2 ${
+                  selectedSlot && !loading
+                    ? 'bg-neutral-900 text-white hover:bg-neutral-800 hover:shadow-lg hover:scale-105 active:scale-95'
+                    : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
+                }`}
+              >
+                {loading ? 'BOOKING...' : 'CONFIRM BOOKING'}
+                {!loading && <ChevronRight className="w-4 h-4" />}
+              </button>
+            </div>
+          </>
+        )}
+
+        {/* SUCCESS VIEW */}
+        {view === 'success' && (
+          <div className="p-8 text-center space-y-4">
+            <div className="w-14 h-14 rounded-full bg-[#9400D3]/10 flex items-center justify-center mx-auto">
+              <PhoneCall className="w-6 h-6 text-[#9400D3]" />
+            </div>
+            <p className={`font-black text-xl text-neutral-900 ${leagueSpartan.className}`}>CALL BOOKED</p>
+            <p className="text-sm text-neutral-500">
+              {dateStr} • {SLOTS.find(s => s.id === selectedSlot)?.time}
+            </p>
+            <p className="text-xs text-neutral-400 tracking-[0.1em]">
+              A confirmation has been sent to your email.
+            </p>
+            <button
+              onClick={onClose}
+              className="w-full py-3 rounded-lg font-bold text-xs tracking-[0.15em] bg-neutral-900 text-white hover:bg-neutral-800 transition-all duration-200 mt-4"
+            >
+              DONE
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export default function DashboardPage() {
   const router = useRouter()
   const [purchases, setPurchases] = useState([])
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [callModalOpen, setCallModalOpen] = useState(false)
 
   useEffect(() => {
     const fetchPurchases = async () => {
@@ -224,6 +498,12 @@ export default function DashboardPage() {
     fetchPurchases()
   }, [])
 
+  const creditsRemaining = user?.callCreditsRemaining || 0
+
+  const handleBooked = (newCreditsRemaining) => {
+    setUser(prev => prev ? { ...prev, callCreditsRemaining: newCreditsRemaining } : prev)
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
@@ -252,7 +532,30 @@ export default function DashboardPage() {
               <Zap className="w-3.5 h-3.5 text-[#9400D3]" />
               {purchases.length} ACTIVE {purchases.length === 1 ? "PROTOCOL" : "PROTOCOLS"}
             </div>
+            {!loading && user && (
+              <div className={`flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-card/40 backdrop-blur-sm text-xs tracking-[0.18em] ${leagueSpartan.className}`}>
+                <PhoneCall className="w-3.5 h-3.5 text-[#9400D3]" />
+                {creditsRemaining} FREE {creditsRemaining === 1 ? "CALL" : "CALLS"}
+              </div>
+            )}
           </div>
+
+          {!loading && user && (
+            <div className="mt-6">
+              <button
+                onClick={() => creditsRemaining > 0 && setCallModalOpen(true)}
+                disabled={creditsRemaining <= 0}
+                className={`inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold tracking-[0.15em] transition-all duration-200 ${leagueSpartan.className} ${
+                  creditsRemaining > 0
+                    ? 'bg-[#9400D3] text-white hover:bg-[#7e00b3] hover:scale-105 active:scale-95'
+                    : 'bg-neutral-200 dark:bg-neutral-800 text-muted-foreground/50 cursor-not-allowed'
+                }`}
+              >
+                <PhoneCall className="w-4 h-4" />
+                {creditsRemaining > 0 ? 'BOOK A CALL' : 'NO FREE CALLS AVAILABLE'}
+              </button>
+            </div>
+          )}
         </div>
       </section>
 
@@ -317,6 +620,13 @@ export default function DashboardPage() {
           © 2026 MOGWARDS // ALL RIGHTS RESERVED.
         </p>
       </footer>
+
+      <CallBookingModal
+        open={callModalOpen}
+        onClose={() => setCallModalOpen(false)}
+        creditsRemaining={creditsRemaining}
+        onBooked={handleBooked}
+      />
     </div>
   );
 }

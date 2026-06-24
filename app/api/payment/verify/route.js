@@ -5,6 +5,7 @@ import Product from '@/models/Product';
 import Order from '@/models/Order';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
+import { MAIN_PACKAGE } from '@/lib/products';
 
 export async function POST(request) {
   try {
@@ -37,6 +38,10 @@ export async function POST(request) {
       );
     }
 
+    // Dedupe to avoid false "not found" mismatches when the same product
+    // appears more than once in the request
+    const uniqueProductIds = [...new Set(productIds)];
+
     // Verify signature
     const expectedSignature = crypto
       .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
@@ -46,7 +51,10 @@ export async function POST(request) {
     const signatureBuffer = Buffer.from(razorpaySignature, 'hex');
     const expectedBuffer = Buffer.from(expectedSignature, 'hex');
 
-    if (!crypto.timingSafeEqual(signatureBuffer, expectedBuffer)) {
+    if (
+      signatureBuffer.length !== expectedBuffer.length ||
+      !crypto.timingSafeEqual(signatureBuffer, expectedBuffer)
+    ) {
       return NextResponse.json(
         { success: false, message: 'Payment verification failed invalid signature' },
         { status: 400 }
@@ -63,8 +71,8 @@ export async function POST(request) {
       );
     }
 
-    const products = await Product.find({ _id: { $in: productIds } });
-    if (products.length !== productIds.length) {
+    const products = await Product.find({ _id: { $in: uniqueProductIds } });
+    if (products.length !== uniqueProductIds.length) {
       return NextResponse.json(
         { success: false, message: 'One or more products not found' },
         { status: 404 }
@@ -97,6 +105,11 @@ export async function POST(request) {
     });
 
     await order.save();
+
+    const isBundle = uniqueProductIds.includes(MAIN_PACKAGE.id);
+    const creditsEarned = isBundle ? 2 : uniqueProductIds.length;
+    user.callCreditsRemaining = (user.callCreditsRemaining || 0) + creditsEarned;
+    await user.save();
 
     return NextResponse.json(
       {

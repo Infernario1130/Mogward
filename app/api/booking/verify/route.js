@@ -9,19 +9,23 @@ import { Resend } from 'resend'
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 const SESSION_CONFIG = {
-  '40min': {
-    price: 1999,
-    duration: '40 MIN SESSION',
-    label: '40-MINUTE SESSION',
+  '30min': {
+    price: 999,
+    duration: '30 MIN SESSION',
+    label: '30-MINUTE SESSION',
   },
 }
 
 const SLOT_LABELS = {
   slot1: 'Slot 1',
   slot2: 'Slot 2',
+  slot3: 'Slot 3',
+  slot4: 'Slot 4',
+  slot5: 'Slot 5',
+  slot6: 'Slot 6',
 }
 
-const CLIENT_EMAIL = 'ascend@aryanmethod.in'
+const CLIENT_EMAIL = 'aryank0204@gmail.com'
 
 export async function POST(request) {
   try {
@@ -80,7 +84,7 @@ export async function POST(request) {
     }
 
     // Validate slot
-    if (!['slot1', 'slot2'].includes(slot)) {
+    if (!['slot1', 'slot2' , , 'slot3', 'slot4', 'slot5', 'slot6'].includes(slot)) {
       return NextResponse.json(
         { success: false, message: 'Invalid time slot' },
         { status: 400 }
@@ -217,7 +221,7 @@ export async function POST(request) {
     // Send email to client (Aryan)
     try {
       await resend.emails.send({
-        from: 'onboarding@resend.dev',
+        from: 'aryank0204@gmail.com',
         to: CLIENT_EMAIL,
         subject: `New Call Booking — ${user.name} — ${date} ${SLOT_LABELS[slot]}`,
         html: `

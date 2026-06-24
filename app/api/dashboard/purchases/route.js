@@ -92,6 +92,7 @@ export async function GET(request) {
         user: {
           name: user.name,
           email: user.email,
+          callCreditsRemaining: user.callCreditsRemaining || 0,
         },
         purchases,
         totalPurchases: purchases.length,

@@ -33,9 +33,10 @@ const BOOKING_CONFIG = {
 
 const SESSION_OPTIONS = [
   {
-    id: '40min',
+    id: '30min',
     duration: '30-MINUTE SESSION',
     durationLabel: "Use this call to get your questions answered, clear any doubts about the program, and discuss anything that's holding you back.",
+    minutes: 30,
     price: 999,
     isPriority: true,
     badge: 'PRIORITY COMMS',
@@ -1210,8 +1211,7 @@ function BookingModal({ selectedDate, onClose }) {
                   <p className={`text-2xl font-black text-neutral-900 tracking-tight ${leagueSpartan.className}`}>₹{selectedSession.price.toLocaleString('en-IN')}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs tracking-[0.15em] text-neutral-500 font-medium mb-1">DURATION</p>
-                  <p className={`text-2xl font-black text-neutral-900 tracking-tight ${leagueSpartan.className}`}>{selectedSession.durationLabel.split(' ')[0]} <span className="text-sm font-bold">MIN</span></p>
+                <p className={`text-2xl font-black text-neutral-900 tracking-tight ${leagueSpartan.className}`}>{selectedSession.minutes} <span className="text-sm font-bold">MIN</span></p>
                 </div>
               </div>
               {error && <p className="text-red-500 text-xs text-center tracking-wide">{error}</p>}

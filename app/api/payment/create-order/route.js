@@ -36,6 +36,10 @@ export async function POST(request) {
       );
     }
 
+    // Dedupe to avoid false "not found" mismatches when the same product
+    // appears more than once in the request
+    const uniqueProductIds = [...new Set(productIds)];
+
     await connectDB();
 
     const user = await User.findById(decoded.userId);
@@ -47,9 +51,9 @@ export async function POST(request) {
     }
 
     // Fetch all products and verify all are active
-    const products = await Product.find({ _id: { $in: productIds }, active: true });
+    const products = await Product.find({ _id: { $in: uniqueProductIds }, active: true });
 
-    if (products.length !== productIds.length) {
+    if (products.length !== uniqueProductIds.length) {
       return NextResponse.json(
         { success: false, message: 'One or more products not found or no longer available' },
         { status: 404 }
@@ -71,7 +75,7 @@ export async function POST(request) {
         currency: 'INR',
         receipt: 'receipt_' + Date.now(),
         notes: {
-          productIds: productIds.join(','),
+          productIds: uniqueProductIds.join(','),
           userId: user._id.toString(),
         },
       });
