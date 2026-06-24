@@ -396,6 +396,40 @@ function MainPackageCard({ selectedItem, setSelectedItem, setIsDetailOpen }) {
                     {MAIN_PACKAGE.description.whyBody}
                   </p>
 
+                  {MAIN_PACKAGE.description.afterPurchase && (
+                    <div className="mb-6">
+                      <p className="text-xs tracking-[0.2em] text-white/50 mb-3">
+                        {MAIN_PACKAGE.description.afterPurchase.title}
+                      </p>
+                      <ol className="space-y-2 mb-4">
+                        {MAIN_PACKAGE.description.afterPurchase.steps.map((step, i) => (
+                          <li key={i} className="flex items-start gap-2 text-sm text-neutral-300">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#9400D3] mt-1.5 shrink-0" />
+                            {step}
+                          </li>
+                        ))}
+                      </ol>
+
+                      <div className="space-y-3 mb-4">
+                        {MAIN_PACKAGE.description.afterPurchase.calls.map((call, i) => (
+                          <div key={i} className="rounded-xl border border-neutral-700 bg-neutral-900/60 p-3">
+                            <p className={`text-sm font-bold text-[#9400D3] mb-1 ${leagueSpartan.className}`}>
+                              {call.title}
+                            </p>
+                            <p className="text-sm text-neutral-300 leading-relaxed">
+                              {call.body}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+
+                      <p className="flex items-start gap-2 text-sm text-neutral-300">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#9400D3] mt-1.5 shrink-0" />
+                        {MAIN_PACKAGE.description.afterPurchase.closingStep}
+                      </p>
+                    </div>
+                  )}
+
                   <p className="text-xs tracking-[0.2em] text-white/50 mb-2">WHO THIS IS FOR</p>
                   <p className="text-sm text-neutral-300 leading-relaxed">
                     {MAIN_PACKAGE.description.whoFor}
@@ -601,6 +635,22 @@ function ProductCard({ product, selectedItem, setSelectedItem, setIsDetailOpen }
                       </li>
                     ))}
                   </ul>
+
+                  {product.description.afterPurchase && (
+                    <div className="mb-6">
+                      <p className="text-xs tracking-[0.2em] text-white/50 mb-3">
+                        {product.description.afterPurchase.title}
+                      </p>
+                      <ol className="space-y-2">
+                        {product.description.afterPurchase.steps.map((step, i) => (
+                          <li key={i} className="flex items-start gap-2 text-sm text-neutral-300">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#9400D3] mt-1.5 shrink-0" />
+                            {step}
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  )}
 
                   <p className="text-xs tracking-[0.2em] text-white/50 mb-2">WHO THIS IS FOR</p>
                   <p className="text-sm text-neutral-300 leading-relaxed">

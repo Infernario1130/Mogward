@@ -4,11 +4,10 @@ const FACE_IMAGE_URL = "/images/mogward-face.png";
 
 const FEATURES = [
   "FULL MOGWARD PROTOCOL ACCESS",
-  "CUSTOM WORKOUT PLAN",
-  "CUSTOM DIET PLAN",
-  "DAILY VIDEO CALL CHECK-INS",
-  "24/7 SUPPORT",
-  "LOOKSMAX & PERSONALITY GUIDANCE",
+  "EVERY SYSTEM PERSONALIZED",
+  "DAILY CHECK-INS, EVERY WEEK",
+  "FULL LOOKSMAXX & LIFESTYLE GUIDANCE",
+  "RESULTS OR YOU DON'T PAY FOR IT",
 ];
 
 // Pricing config: only India gets a special price, everyone else (including
@@ -270,7 +269,7 @@ function MobileLayout({ onBookCall, pricing }) {
           backgroundColor: "rgb(147,51,234)", color: "white",
           boxShadow: "0 0 20px rgba(168,85,247,0.6)",
         }}>
-          LIMITED SLOTS
+          BUILT AROUND YOU
         </span>
       </div>
       <div className="mogward-face-wrap" style={{ aspectRatio: "1/1", margin: "0 -0.5rem 0.5rem" }}>
@@ -317,7 +316,7 @@ function DesktopLayout({ onBookCall, pricing }) {
             padding: "4px 12px", borderRadius: "9999px",
             border: "1px solid rgb(192,132,252)", color: "white",
           }}>
-            LIMITED SLOTS
+            BUILT AROUND YOU
           </span>
         </div>
         <h1 style={{
