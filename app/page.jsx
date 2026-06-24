@@ -222,7 +222,7 @@ function HeroSection({ selectedItem, setSelectedItem, setIsDetailOpen }) {
               { idx: "02", value: "01", label: "FRAMEWORK" },
               { idx: "03", value: "∞",  label: "LEVERAGE" },
             ].map((s) => (
-              <div key={s.idx} className="flex flex-col px-6 sm:px-8">
+              <div key={s.idx} className="flex flex-col px-6 sm:pr-10 pl-6">
                 <span className="text-[10px] sm:text-xs tracking-[0.25em] text-muted-foreground/70 mb-2 sm:mb-3">{s.idx}</span>
                 <span className="font-black leading-none text-6xl sm:text-10xl md:text-7xl text-foreground mb-2 sm:mb-3">{s.value}</span>
                 <span className="text-[10px] sm:text-xs tracking-[0.25em] text-muted-foreground">{s.label}</span>
