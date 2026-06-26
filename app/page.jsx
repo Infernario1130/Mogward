@@ -222,7 +222,7 @@ function HeroSection({ selectedItem, setSelectedItem, setIsDetailOpen }) {
               { idx: "02", value: "01", label: "FRAMEWORK" },
               { idx: "03", value: "∞",  label: "LEVERAGE" },
             ].map((s) => (
-              <div key={s.idx} className="flex flex-col px-6 sm:pr-10 pl-6">
+              <div key={s.idx} className="flex flex-col px-6 sm:px-8">
                 <span className="text-[10px] sm:text-xs tracking-[0.25em] text-muted-foreground/70 mb-2 sm:mb-3">{s.idx}</span>
                 <span className="font-black leading-none text-6xl sm:text-10xl md:text-7xl text-foreground mb-2 sm:mb-3">{s.value}</span>
                 <span className="text-[10px] sm:text-xs tracking-[0.25em] text-muted-foreground">{s.label}</span>
@@ -799,17 +799,8 @@ function CalendarModal({ onClose, onDateSelect }) {
   )
 }
 
-function BookingModal({ selectedDate, onClose }) {
-  const [selectedSession, setSelectedSession] = useState(SESSION_OPTIONS.find(s => s.isPriority) || SESSION_OPTIONS[0])
-  const [step, setStep] = useState(0)
+function SlotModal({ selectedDate, onClose }) {
   const [selectedSlot, setSelectedSlot] = useState(null)
-  const [agreed, setAgreed] = useState(false)
-  const [focusedField, setFocusedField] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [authMode, setAuthMode] = useState('register')
-  const [registerData, setRegisterData] = useState({ fullName: '', email: '', phone: '', password: '' })
-  const [loginData, setLoginData] = useState({ email: '', password: '' })
   const router = useRouter()
 
   if (!selectedDate) return null
@@ -831,113 +822,14 @@ function BookingModal({ selectedDate, onClose }) {
     { id: 'slot6', name: 'SLOT 6', time: '7:00 PM - 7:30 PM' },
   ]
 
-  const handleProceedFromRegister = async () => {
-    setError('')
-    setLoading(true)
-    try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: registerData.fullName,
-          email: registerData.email,
-          phone: registerData.phone,
-          password: registerData.password,
-        }),
-      })
-      const data = await res.json()
-      if (!data.success) { setError(data.message); return }
-      setAuthMode('register')
-      setStep(4)
-    } catch (err) {
-      setError('Something went wrong please try again')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleProceedFromLogin = async () => {
-    setError('')
-    setLoading(true)
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: loginData.email, password: loginData.password }),
-      })
-      const data = await res.json()
-      if (!data.success) { setError(data.message); return }
-      setAuthMode('login')
-      setStep(4)
-    } catch (err) {
-      setError('Something went wrong please try again')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleUnlockAccess = async () => {
-    if (!agreed) return
-    setError('')
-    setLoading(true)
-    try {
-      const orderRes = await fetch('/api/booking/create-order', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessionId: selectedSession.id, date: dateForBackend, slot: selectedSlot }),
-      })
-      const orderData = await orderRes.json()
-      if (!orderData.success) { setError(orderData.message); setLoading(false); return }
-
-      const razorpayOptions = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        amount: orderData.order.amount,
-        currency: orderData.order.currency,
-        name: 'ARYANHEIS',
-        description: `1:1 Call — ${selectedSession.duration}`,
-        order_id: orderData.order.id,
-        prefill: { name: orderData.user.name, email: orderData.user.email, contact: orderData.user.phone },
-        theme: { color: '#000000' },
-        handler: async (response) => {
-          try {
-            const verifyRes = await fetch('/api/booking/verify', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                razorpayOrderId: response.razorpay_order_id,
-                razorpayPaymentId: response.razorpay_payment_id,
-                razorpaySignature: response.razorpay_signature,
-                sessionId: selectedSession.id,
-                date: dateForBackend,
-                slot: selectedSlot,
-              }),
-            })
-            const verifyData = await verifyRes.json()
-            if (!verifyData.success) { setError(verifyData.message); return }
-            localStorage.setItem('bookingDetails', JSON.stringify({
-              date: dateForBackend,
-              slot: selectedSlot,
-              duration: selectedSession.duration,
-              price: selectedSession.price,
-              bookingId: verifyData.booking.id,
-              razorpayPaymentId: verifyData.booking.razorpayPaymentId,
-            }))
-            onClose()
-            router.push('/booking-success')
-          } catch (err) {
-            setError('Payment verification failed please contact support')
-          }
-        },
-      }
-
-      const razorpay = new window.Razorpay(razorpayOptions)
-      razorpay.on('payment.failed', () => { setError('Payment failed please try again'); setLoading(false) })
-      razorpay.open()
-    } catch (err) {
-      setError('Something went wrong please try again')
-    } finally {
-      setLoading(false)
-    }
+  const handleConfirm = () => {
+    if (!selectedSlot) return
+    const params = new URLSearchParams({
+      date: dateForBackend,
+      slot: selectedSlot,
+    })
+    onClose()
+    router.push(`/book-call?${params.toString()}`)
   }
 
   return (
@@ -945,7 +837,7 @@ function BookingModal({ selectedDate, onClose }) {
       <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl">
         <div className="flex items-start justify-between p-6 border-b border-neutral-200">
           <div>
-            <p className="text-xs font-bold tracking-[0.2em] text-neutral-700">1:1 CALL</p>
+            <p className="text-xs font-bold tracking-[0.2em] text-neutral-700">FREE 1:1 CALL</p>
             <p className="text-xs font-medium tracking-[0.1em] text-neutral-500 mt-1">{dateStr}</p>
           </div>
           <button onClick={onClose} className="p-1 hover:bg-neutral-100 rounded transition-colors">
@@ -954,284 +846,44 @@ function BookingModal({ selectedDate, onClose }) {
         </div>
         <div className="h-px bg-neutral-900 mx-6" />
 
-        {step === 0 && (
-          <>
-            <div className="p-6 space-y-4">
-            <p className="text-xs text-green-600 font-semibold text-center px-6 py-4">
-            100% REFUND WILL BE PROVIDED IF YOU END UP HOPING ON THE PROGRAM
-</p>
-              {SESSION_OPTIONS.map(session => (
-                <button
-                  key={session.id}
-                  onClick={() => setSelectedSession(session)}
-                  className={`w-full text-left p-4 rounded-2xl transition-all duration-300 ${
-                    selectedSession.id === session.id
-                      ? 'border-2 border-red-500 bg-red-50 shadow-[0_0_20px_rgba(239,68,68,0.3)] scale-105'
-                      : 'border-2 border-neutral-200 hover:border-neutral-300 bg-white'
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className={`font-black text-sm tracking-tight ${selectedSession.id === session.id ? 'text-neutral-900' : 'text-neutral-800'} ${leagueSpartan.className}`}>
-                      {session.duration}
-                    </span>
-                    <span className={`font-black text-lg tracking-tight text-neutral-900 ${leagueSpartan.className}`}>₹{session.price}</span>
-                  </div>
-                  <p className="text-xs text-neutral-500 tracking-[0.05em]">{session.durationLabel}</p>
-                  {session.badge && selectedSession.id === session.id && (
-                    <div className="mt-3 inline-block">
-                      <span className="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full tracking-[0.1em]">{session.badge}</span>
-                    </div>
-                  )}
-                </button>
-              ))}
-            </div>
-            <div className="px-6 pb-6">
+        <div className="px-6 pt-6 pb-4 space-y-3">
+          <p className="text-xs font-bold tracking-[0.15em] text-neutral-500">SCHEDULING WINDOW</p>
+        </div>
+        <div className="px-6 pb-6">
+          <div className="grid grid-cols-2 gap-4">
+            {slots.map(slot => (
               <button
-                onClick={() => setStep(1)}
-                className="w-full bg-neutral-900 text-white py-3 rounded-lg font-bold text-xs tracking-[0.15em] hover:bg-neutral-800 hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-200"
+                key={slot.id}
+                onClick={() => setSelectedSlot(slot.id)}
+                className={`text-left p-5 rounded-2xl transition-all duration-300 ${
+                  selectedSlot === slot.id
+                    ? 'border-2 border-[#9400D3] bg-white shadow-[0_0_20px_rgba(148,0,211,0.5),inset_0_0_12px_rgba(148,0,211,0.08)]'
+                    : 'border-2 border-neutral-200 bg-white hover:border-[#9400D3] hover:shadow-[0_0_14px_rgba(148,0,211,0.25)]'
+                }`}
               >
-                BOOK SESSION
+                <p className={`font-black text-sm tracking-tight ${selectedSlot === slot.id ? 'text-[#9400D3]' : 'text-neutral-800'} ${leagueSpartan.className}`}>
+                  {slot.name}
+                </p>
+                <p className={`text-xs mt-2 ${selectedSlot === slot.id ? 'text-[#9400D3]/70' : 'text-neutral-400'}`}>
+                  {slot.time}
+                </p>
               </button>
-            </div>
-          </>
-        )}
-
-{step === 1 && (
-  <>
-    <div className="px-6 pt-6 pb-4 space-y-3">
-      <button onClick={() => setStep(0)} className="flex items-center gap-2 text-xs font-bold text-neutral-600 hover:text-neutral-900 transition-colors tracking-[0.1em]">
-        <ChevronLeft className="w-4 h-4" />
-        BACK TO TIERS
-      </button>
-      <p className="text-xs font-bold tracking-[0.15em] text-neutral-500">SCHEDULING WINDOW</p>
-    </div>
-    <div className="px-6 pb-6">
-      <div className="grid grid-cols-2 gap-4">
-        {slots.map(slot => (
+            ))}
+          </div>
+        </div>
+        <div className="px-6 pb-8">
           <button
-            key={slot.id}
-            onClick={() => setSelectedSlot(slot.id)}
-            className={`text-left p-5 rounded-2xl transition-all duration-300 ${
-              selectedSlot === slot.id
-                ? 'border-2 border-[#9400D3] bg-white shadow-[0_0_20px_rgba(148,0,211,0.5),inset_0_0_12px_rgba(148,0,211,0.08)]'
-                : 'border-2 border-neutral-200 bg-white hover:border-[#9400D3] hover:shadow-[0_0_14px_rgba(148,0,211,0.25)]'
+            onClick={handleConfirm}
+            disabled={!selectedSlot}
+            className={`w-full py-3 rounded-lg font-bold text-xs tracking-[0.15em] transition-all duration-200 ${
+              selectedSlot
+                ? 'bg-neutral-900 text-white hover:bg-neutral-800 hover:shadow-lg hover:scale-105 active:scale-95'
+                : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
             }`}
           >
-            <p className={`font-black text-sm tracking-tight ${selectedSlot === slot.id ? 'text-[#9400D3]' : 'text-neutral-800'} ${leagueSpartan.className}`}>
-              {slot.name}
-            </p>
-            <p className={`text-xs mt-2 ${selectedSlot === slot.id ? 'text-[#9400D3]/70' : 'text-neutral-400'}`}>
-              {slot.time}
-            </p>
+            CONTINUE
           </button>
-        ))}
-      </div>
-    </div>
-    <div className="px-6 pb-8">
-      <button
-        onClick={() => setStep(2)}
-        disabled={!selectedSlot}
-        className={`w-full py-3 rounded-lg font-bold text-xs tracking-[0.15em] transition-all duration-200 ${
-          selectedSlot
-            ? 'bg-neutral-900 text-white hover:bg-neutral-800 hover:shadow-lg hover:scale-105 active:scale-95'
-            : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
-        }`}
-      >
-        CONFIRM BOOKING
-      </button>
-    </div>
-  </>
-)}
-
-        {step === 2 && (
-          <>
-            <div className="p-6 space-y-4">
-              <div className="flex items-center justify-between">
-                <button onClick={() => setStep(1)} className="flex items-center gap-2 text-xs font-bold text-neutral-600 hover:text-neutral-900 transition-colors tracking-[0.1em]">
-                  <ChevronLeft className="w-4 h-4" />
-                  BACK TO SLOTS
-                </button>
-                <button onClick={() => { setError(''); setStep(3) }} className="text-xs font-bold text-[#9400D3] tracking-[0.1em] transition-colors">
-                  ALREADY REGISTERED?
-                </button>
-              </div>
-              <p className="text-xs font-bold tracking-[0.15em] text-neutral-500">PERSONNEL DETAILS</p>
-            </div>
-            <div className="px-6 pb-6 space-y-3">
-              {[
-                { field: 'fullName', type: 'text', placeholder: 'Full Name', icon: <User className="w-5 h-5 text-neutral-400" /> },
-                { field: 'email', type: 'email', placeholder: 'Email Address', icon: <Mail className="w-5 h-5 text-neutral-400" /> },
-                { field: 'phone', type: 'tel', placeholder: 'Phone Number', icon: <Phone className="w-5 h-5 text-neutral-400" /> },
-                { field: 'password', type: 'password', placeholder: 'Create Password', icon: <Lock className="w-5 h-5 text-neutral-400" /> },
-              ].map(({ field, type, placeholder, icon }) => (
-                <div
-                  key={field}
-                  className={`flex items-center gap-3 p-4 rounded-xl transition-all duration-300 ${
-                    focusedField === field
-                      ? 'border-2 border-[#9400D3] bg-[#9400D3] shadow-[0_0_20px_rgba(148,0,211,0.3)]'
-                      : 'border-2 border-neutral-200 bg-white'
-                  }`}
-                >
-                  {icon}
-                  <input
-                    type={type}
-                    placeholder={placeholder}
-                    value={registerData[field]}
-                    onChange={(e) => setRegisterData(prev => ({ ...prev, [field]: e.target.value }))}
-                    onFocus={() => setFocusedField(field)}
-                    onBlur={() => setFocusedField(null)}
-                    className="flex-1 bg-transparent outline-none text-sm text-neutral-800 placeholder-neutral-400"
-                  />
-                </div>
-              ))}
-              {error && <p className="text-red-500 text-xs text-center tracking-wide">{error}</p>}
-            </div>
-            <div className="px-6 pb-6">
-              <button
-                onClick={handleProceedFromRegister}
-                disabled={
-                  loading ||
-                  !registerData.fullName || registerData.fullName.length < 2 ||
-                  !registerData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registerData.email) ||
-                  !registerData.phone || !/^\d{10}$/.test(registerData.phone) ||
-                  !registerData.password || registerData.password.length < 8
-                }
-                className={`w-full py-3 rounded-lg font-bold text-xs tracking-[0.15em] transition-all duration-200 ${
-                  !loading && registerData.fullName?.length >= 2 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registerData.email) && /^\d{10}$/.test(registerData.phone) && registerData.password?.length >= 8
-                    ? 'bg-neutral-900 text-white hover:bg-neutral-800 hover:shadow-lg hover:scale-105 active:scale-95'
-                    : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
-                }`}
-              >
-                {loading ? 'REGISTERING...' : 'PROCEED'}
-              </button>
-            </div>
-          </>
-        )}
-
-        {step === 3 && (
-          <>
-            <div className="p-6 space-y-4">
-              <div className="flex items-center justify-between">
-                <button onClick={() => { setError(''); setStep(2) }} className="flex items-center gap-2 text-xs font-bold text-neutral-600 hover:text-neutral-900 transition-colors tracking-[0.1em]">
-                  <ChevronLeft className="w-4 h-4" />
-                  BACK
-                </button>
-                <button onClick={() => { setError(''); setStep(2) }} className="text-xs font-bold text-[#9400D3] tracking-[0.1em] transition-colors">
-                  NOT REGISTERED?
-                </button>
-              </div>
-              <p className="text-xs font-bold tracking-[0.15em] text-neutral-500">AUTHENTICATE</p>
-            </div>
-            <div className="px-6 pb-6 space-y-3">
-              {[
-                { field: 'email', type: 'email', placeholder: 'Email Address', icon: <Mail className="w-5 h-5 text-neutral-400" /> },
-                { field: 'password', type: 'password', placeholder: 'Password', icon: <Lock className="w-5 h-5 text-neutral-400" /> },
-              ].map(({ field, type, placeholder, icon }) => (
-                <div
-                  key={field}
-                  className={`flex items-center gap-3 p-4 rounded-xl transition-all duration-300 ${
-                    focusedField === field
-                      ? 'border-2 border-[#9400D3] bg-[#9400D3] shadow-[0_0_20px_rgba(148,0,211,0.3)]'
-                      : 'border-2 border-neutral-200 bg-white'
-                  }`}
-                >
-                  {icon}
-                  <input
-                    type={type}
-                    placeholder={placeholder}
-                    value={loginData[field]}
-                    onChange={(e) => setLoginData(prev => ({ ...prev, [field]: e.target.value }))}
-                    onFocus={() => setFocusedField(field)}
-                    onBlur={() => setFocusedField(null)}
-                    className="flex-1 bg-transparent outline-none text-sm text-neutral-800 placeholder-neutral-400"
-                  />
-                </div>
-              ))}
-              {error && <p className="text-red-500 text-xs text-center tracking-wide">{error}</p>}
-            </div>
-            <div className="px-6 pb-6">
-              <button
-                onClick={handleProceedFromLogin}
-                disabled={
-                  loading ||
-                  !loginData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginData.email) ||
-                  !loginData.password || loginData.password.length < 8
-                }
-                className={`w-full py-3 rounded-lg font-bold text-xs tracking-[0.15em] transition-all duration-200 ${
-                  !loading && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginData.email) && loginData.password?.length >= 8
-                    ? 'bg-neutral-900 text-white hover:bg-neutral-800 hover:shadow-lg hover:scale-105 active:scale-95'
-                    : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
-                }`}
-              >
-                {loading ? 'AUTHENTICATING...' : 'AUTHENTICATE & START'}
-              </button>
-            </div>
-          </>
-        )}
-
-        {step === 4 && (
-          <>
-            <div className="px-6 pt-6 pb-2">
-              <div className="flex gap-1.5">
-                {[0, 1, 2, 3].map((i) => (
-                  <div key={i} className="flex-1 h-[3px] rounded-full bg-neutral-900" />
-                ))}
-              </div>
-            </div>
-            <div className="p-6 space-y-4">
-              <button onClick={() => setStep(2)} className="flex items-center gap-2 text-xs font-bold text-neutral-600 hover:text-neutral-900 transition-colors tracking-[0.1em]">
-                <ChevronLeft className="w-4 h-4" />
-                BACK TO DETAILS
-              </button>
-              <p className="text-xs font-bold tracking-[0.15em] text-neutral-500">AUTHORIZATION</p>
-            </div>
-            <div className="px-6 pb-6 space-y-4">
-              <div className="border-2 border-neutral-200 rounded-2xl p-4 flex items-center gap-3">
-                <div
-                  onClick={() => setAgreed(!agreed)}
-                  className={`w-5 h-5 rounded border-2 flex items-center justify-center cursor-pointer transition-all duration-200 shrink-0 ${agreed ? 'border-neutral-900 bg-neutral-900' : 'border-neutral-300'}`}
-                >
-                  {agreed && (
-                    <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  )}
-                </div>
-                <p className="text-xs text-neutral-600 tracking-wide">
-                  I agree to the{' '}
-                  <Link href="/terms" className="underline text-neutral-800 font-semibold">Terms</Link>,{' '}
-                  <Link href="/refund" className="underline text-neutral-800 font-semibold">Refund</Link>{' '}
-                  &{' '}
-                  <Link href="/privacy" className="underline text-neutral-800 font-semibold">Privacy Policy</Link>.
-                </p>
-              </div>
-              <div className="border-2 border-neutral-100 bg-neutral-50 rounded-2xl p-4 flex items-center justify-between">
-                <div>
-                  <p className="text-xs tracking-[0.15em] text-neutral-500 font-medium mb-1">INVESTMENT</p>
-                  <p className={`text-2xl font-black text-neutral-900 tracking-tight ${leagueSpartan.className}`}>₹{selectedSession.price.toLocaleString('en-IN')}</p>
-                </div>
-                <div className="text-right">
-                <p className={`text-2xl font-black text-neutral-900 tracking-tight ${leagueSpartan.className}`}>{selectedSession.minutes} <span className="text-sm font-bold">MIN</span></p>
-                </div>
-              </div>
-              {error && <p className="text-red-500 text-xs text-center tracking-wide">{error}</p>}
-            </div>
-            <div className="px-6 pb-6">
-              <button
-                disabled={!agreed || loading}
-                onClick={handleUnlockAccess}
-                className={`w-full py-3 rounded-xl font-bold text-sm tracking-[0.15em] flex items-center justify-center gap-2 transition-all duration-200 ${
-                  agreed && !loading
-                    ? 'bg-neutral-900 text-white hover:bg-neutral-800 hover:shadow-lg hover:scale-105 active:scale-95'
-                    : 'bg-neutral-200 text-neutral-400 cursor-not-allowed'
-                }`}
-              >
-                {loading ? 'PROCESSING...' : 'UNLOCK ACCESS'}
-                {!loading && <ChevronRight className="w-4 h-4" />}
-              </button>
-            </div>
-          </>
-        )}
+        </div>
       </div>
     </div>
   )
@@ -1336,7 +988,7 @@ function BookingSection({ selectedDate, setSelectedDate }) {
           </div>
         </div>
       </section>
-      <BookingModal selectedDate={selectedDate} onClose={() => setSelectedDate(null)} />
+      <SelectedModal selectedDate={selectedDate} onClose={() => setSelectedDate(null)} />
     </>
   )
 }
@@ -1525,7 +1177,7 @@ export default function AryanMethodPage() {
           onDateSelect={handleDateSelected}
         />
       )}
-      <BookingModal
+      <SlotModal
         selectedDate={selectedDate}
         onClose={() => setSelectedDate(null)}
       />

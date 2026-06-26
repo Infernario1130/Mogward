@@ -1,22 +1,20 @@
 import mongoose from 'mongoose'
 
 const BookingSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
-  customerName: {
+  name: {
     type: String,
     required: true,
+    trim: true,
   },
-  customerEmail: {
+  whatsapp: {
     type: String,
     required: true,
+    trim: true,
   },
-  customerPhone: {
+  instagram: {
     type: String,
     required: true,
+    trim: true,
   },
   date: {
     type: String,
@@ -24,33 +22,13 @@ const BookingSchema = new mongoose.Schema({
   },
   slot: {
     type: String,
-    enum: ['slot1', 'slot2' , 'slot3', 'slot4', 'slot5', 'slot6'],
+    enum: ['slot1', 'slot2', 'slot3', 'slot4', 'slot5', 'slot6'],
     required: true,
   },
-  sessionId: {
+  status: {
     type: String,
-    required: true,
-  },
-  duration: {
-    type: String,
-    required: true,
-  },
-  price: {
-    type: Number,
-    required: true,
-  },
-  paymentStatus: {
-    type: String,
-    enum: ['paid', 'failed'],
-    default: 'paid',
-  },
-  razorpayOrderId: {
-    type: String,
-    required: true,
-  },
-  razorpayPaymentId: {
-    type: String,
-    required: true,
+    enum: ['pending', 'accepted', 'rejected'],
+    default: 'pending',
   },
   createdAt: {
     type: Date,

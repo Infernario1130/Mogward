@@ -171,3 +171,29 @@ box-shadow: 0 0 18px rgba(148, 0, 211, 0.7), 0 0 36px rgba(148, 0, 211, 0.35);
 .animate-glow-pulse {
 animation: glow-pulse 2.4s ease-in-out infinite;
 }
+/* Progress bar breathing glow - feels alive while waiting on the user */
+@keyframes progress-breathe {
+  0%, 100% {
+box-shadow: 0 0 8px #9400D3, 0 0 16px #9400D3;
+opacity: 0.85;
+  }
+  50% {
+box-shadow: 0 0 14px #9400D3, 0 0 28px #9400D3;
+opacity: 1;
+  }
+}
+.animate-progress-breathe {
+animation: progress-breathe 1.8s ease-in-out infinite;
+}
+/* Progress bar shimmer sweep - simulates active data transfer */
+@keyframes progress-shimmer {
+  0% {
+transform: translateX(-100%);
+  }
+  100% {
+transform: translateX(100%);
+  }
+}
+.animate-progress-shimmer {
+animation: progress-shimmer 1.6s linear infinite;
+}
