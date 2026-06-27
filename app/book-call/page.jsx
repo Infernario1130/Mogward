@@ -1,3 +1,5 @@
+// book coaching-call typeform page
+
 "use client";
 
 import { ArrowLeft, Lock, User, Zap, Menu, X } from "lucide-react";
@@ -729,7 +731,7 @@ function FormInner({ date, slot }) {
   );
 }
 
-/* ── FULLSCREEN FORM PORTAL ── */
+/* ── FULLSCREEN FORM (true fullscreen takeover, not a dialog) ── */
 function FullscreenForm({ onClose, date, slot }) {
   useEffect(() => {
     const prev = document.body.style.overflow;
@@ -748,34 +750,30 @@ function FullscreenForm({ onClose, date, slot }) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.25 }}
-      className="fixed inset-0 z-[999] flex items-center justify-center p-4 sm:p-8"
-      style={{ backgroundColor: "rgba(0,0,0,0.85)", backdropFilter: "blur(20px)" }}
-      onClick={onClose}
+      className="fixed inset-0 z-[999] bg-black"
+      style={{
+        height: "100dvh",
+        paddingTop: "env(safe-area-inset-top)",
+        paddingBottom: "env(safe-area-inset-bottom)",
+      }}
     >
-      <motion.div
-        initial={{ opacity: 0, scale: 0.96 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.96 }}
-        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-        className="relative w-full max-w-xl max-h-[90vh] overflow-hidden rounded-3xl border border-neutral-700 bg-neutral-950 shadow-2xl shadow-[#9400D3]/10"
-        onClick={e => e.stopPropagation()}
+      <button
+        type="button"
+        onClick={onClose}
+        className="fixed top-5 right-5 z-10 flex items-center justify-center w-9 h-9 rounded-full border border-neutral-700 bg-neutral-900 text-neutral-500 hover:text-white hover:border-neutral-500 transition-colors"
+        style={{ top: "calc(env(safe-area-inset-top) + 1.25rem)" }}
       >
-        <button
-          type="button"
-          onClick={onClose}
-          className="absolute top-5 right-5 z-10 flex items-center justify-center w-9 h-9 rounded-full border border-neutral-700 bg-neutral-900 text-neutral-500 hover:text-white hover:border-neutral-500 transition-colors"
-        >
-          <X className="w-4 h-4" />
-        </button>
+        <X className="w-4 h-4" />
+      </button>
 
-        <div className="p-6 sm:p-10 h-full max-h-[90vh] overflow-y-auto">
-          <FormInner date={date} slot={slot} />
-        </div>
-      </motion.div>
+      <div className="h-full w-full overflow-y-auto px-5 sm:px-10 pt-20 pb-10 max-w-2xl mx-auto">
+        <FormInner date={date} slot={slot} />
+      </div>
     </motion.div>,
     document.body
   );
 }
+
 
 /* ── PAGE ── */
 function BookPageInner() {
