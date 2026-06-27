@@ -144,7 +144,7 @@ function buildEmail({ name, whatsapp, instagram, date, slot, bookingId, answers 
 async function sendEmailAsync(payload) {
   try {
     await resend.emails.send({
-      from: 'MOGWARD Applications <onboarding@resend.dev>',
+      from: 'MOGWARD Applications <ascend@mogward.com>',
       to: "hoodiewolf11@gmail.com",
       subject: `New Application — ${payload.name} — ${payload.date} — ${SLOT_TIMES[payload.slot]}`,
       html: buildEmail(payload),
@@ -156,7 +156,7 @@ async function sendEmailAsync(payload) {
   }
 }
 
-// ── Main handler ──
+// ── Main handler ─_
 export async function POST(request) {
   try {
 
