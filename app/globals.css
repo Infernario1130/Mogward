@@ -197,3 +197,49 @@ transform: translateX(100%);
 .animate-progress-shimmer {
 animation: progress-shimmer 1.6s linear infinite;
 }
+
+/* react-phone-number-input — dark theme override for the Mogward booking form */
+.phone-input-mogward {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.phone-input-mogward .PhoneInputCountry {
+  background: #171717;
+  border: 1px solid #404040;
+  border-radius: 0.75rem;
+  padding: 0 0.75rem;
+  height: 3.375rem;
+  margin-right: 0;
+}
+.phone-input-mogward .PhoneInputCountrySelect {
+  background: transparent;
+  color: white;
+  outline: none;
+}
+.phone-input-mogward .PhoneInputCountrySelectArrow {
+  color: white;
+  opacity: 0.8;
+}
+.phone-input-mogward .PhoneInputCountryIcon {
+  box-shadow: none;
+}
+.phone-input-mogward .PhoneInputInput {
+  flex: 1;
+  background: #171717;
+  border: 1px solid #404040;
+  border-radius: 0.75rem;
+  color: white;
+  padding: 0.875rem 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.phone-input-mogward .PhoneInputInput::placeholder {
+  color: #525252;
+}
+.phone-input-mogward .PhoneInputInput:focus {
+  border-color: #9400D3;
+  box-shadow: 0 0 0 2px rgba(148, 0, 211, 0.4);
+}

@@ -1,5 +1,3 @@
-// book coaching-call typeform page
-
 "use client";
 
 import { ArrowLeft, Lock, User, Zap, Menu, X } from "lucide-react";
@@ -10,6 +8,8 @@ import { League_Spartan } from "next/font/google";
 import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
 import { MAIN_PACKAGE } from "@/lib/products";
+import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 
 const leagueSpartan = League_Spartan({ subsets: ["latin"], weight: ["400","500","600","700","800","900"] });
 
@@ -50,6 +50,10 @@ function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/auth/me").then(r => r.json()).then(d => { if (d.success) setIsLoggedIn(true); }).catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -114,7 +118,7 @@ function Header() {
 
 const QUESTIONS = [
   { id: "name", type: "text", title: "What's your name?", subtext: "So I can make this feel less like a form and more like a conversation.", placeholder: "Your first name", inputType: "text", required: true },
-  { id: "whatsapp", type: "text", title: "Your WhatsApp number", subtext: "I'll only reach out if you're a good fit — this isn't a spam list.", placeholder: "+91 98765 43210", inputType: "tel", required: true },
+  { id: "whatsapp", type: "phone", title: "Your WhatsApp number", subtext: "I'll only reach out if you're a good fit — this isn't a spam list.", placeholder: "Enter your number", required: true },
   { id: "instagram", type: "text", title: "Your Instagram username", subtext: "Will help me connect with you through Instagram.", placeholder: "@username", inputType: "text", required: true },
   { id: "goal", type: "single", title: "What's your main goal right now?", subtext: "Pick the one that matters most to you today.", options: ["Fat loss","Muscle gain","Body recomposition (lose fat + gain muscle)","Strength (SBD)","Aesthetic physique + looksmax"], required: true },
   { id: "blockers", type: "multi", title: "What's currently stopping you from achieving this?", subtext: "Be honest — the more specific you are, the better I can help.", options: ["I don't have a plan that actually works for me","I don't know what to eat or how to track it","I start strong but always fall off","I have no idea how to improve my face / appearance","I've tried things — nothing sticks"], required: true },
@@ -381,11 +385,11 @@ function NotRightNowScreen({ name }) {
       </div>
 
       <div className="rounded-2xl border border-neutral-800 bg-neutral-900/40 p-5 flex items-center justify-between mb-4">
-  <span className={`text-3xl font-black text-white ${leagueSpartan.className}`}>₹{MAIN_PACKAGE.price}</span>
-  <span className="text-xs text-neutral-500 text-right max-w-[55%]">
-    was Rs{MAIN_PACKAGE.originalPrice} — saves Rs{MAIN_PACKAGE.originalPrice - MAIN_PACKAGE.price} vs buying individually
-  </span>
-</div>
+        <span className={`text-3xl font-black text-white ${leagueSpartan.className}`}>₹{MAIN_PACKAGE.price}</span>
+        <span className="text-xs text-neutral-500 text-right max-w-[55%]">
+          was Rs{MAIN_PACKAGE.originalPrice} — saves Rs{MAIN_PACKAGE.originalPrice - MAIN_PACKAGE.price} vs buying individually
+        </span>
+      </div>
 
       <button
         type="button"
@@ -428,6 +432,7 @@ function FormInner({ date, slot }) {
     if (!q.required) return true;
     switch (q.type) {
       case "text": return String(answers[q.id] || "").trim().length > 0;
+      case "phone": return !!answers.whatsapp && isValidPhoneNumber(answers.whatsapp);
       case "single": return !!answers[q.id];
       case "single-with-followup": return !!answers[q.id];
       case "multi": return (answers[q.id] || []).length > 0;
@@ -544,6 +549,24 @@ function FormInner({ date, slot }) {
               onKeyDown={e => { if (e.key === "Enter") goNext(); }}
             />
             <p className="mt-2 text-xs text-neutral-700 tracking-widest">Press Enter ↵</p>
+          </div>
+        )}
+
+        {q.type === "phone" && (
+          <div>
+            <PhoneInput
+              defaultCountry="IN"
+              international
+              value={answers.whatsapp}
+              onChange={(val) => setA("whatsapp", val || "")}
+              placeholder={q.placeholder}
+              className="phone-input-mogward"
+            />
+            {answers.whatsapp && !isValidPhoneNumber(answers.whatsapp) && (
+              <p className="mt-2 text-xs font-semibold text-red-500">
+                Enter a valid WhatsApp number.
+              </p>
+            )}
           </div>
         )}
 
@@ -759,7 +782,7 @@ function FullscreenForm({ onClose, date, slot }) {
       <button
         type="button"
         onClick={onClose}
-        className="fixed top-5 right-5 z-10 flex items-center justify-center w-9 h-9 rounded-full border border-neutral-700 bg-neutral-900 text-neutral-500 hover:text-white hover:border-neutral-500 transition-colors"
+        className="fixed right-5 z-10 flex items-center justify-center w-9 h-9 rounded-full border border-neutral-700 bg-neutral-900 text-neutral-500 hover:text-white hover:border-neutral-500 transition-colors"
         style={{ top: "calc(env(safe-area-inset-top) + 1.25rem)" }}
       >
         <X className="w-4 h-4" />
@@ -772,7 +795,6 @@ function FullscreenForm({ onClose, date, slot }) {
     document.body
   );
 }
-
 
 /* ── PAGE ── */
 function BookPageInner() {
