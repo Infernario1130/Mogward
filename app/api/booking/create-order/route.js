@@ -145,7 +145,7 @@ async function sendEmailAsync(payload) {
   try {
     await resend.emails.send({
       from: 'MOGWARD Applications <onboarding@resend.dev>',
-      to: "aryank0204@gmail.com",
+      to: "hoodiewolf11@gmail.com",
       subject: `New Application — ${payload.name} — ${payload.date} — ${SLOT_TIMES[payload.slot]}`,
       html: buildEmail(payload),
     })
