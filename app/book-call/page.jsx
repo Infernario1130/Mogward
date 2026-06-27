@@ -145,16 +145,21 @@ function ChoiceButton({ selected, onClick, children }) {
       type="button"
       onClick={onClick}
       className={
-        `text-left rounded-2xl border px-5 py-5 font-black tracking-tight transition-all duration-200 ${leagueSpartan.className} ` +
+        `w-full text-left rounded-full border px-6 py-4 font-bold tracking-tight transition-all duration-200 ${leagueSpartan.className} ` +
         (selected
           ? "border-[#9400D3] bg-[#9400D3]/10 text-white shadow-[0_0_24px_rgba(148,0,211,0.4)]"
-          : "border-neutral-700 bg-neutral-900/50 text-neutral-300 hover:border-neutral-500 hover:text-white hover:scale-[1.02]")
+          : "border-neutral-700 bg-neutral-900/50 text-neutral-300 hover:border-neutral-500 hover:text-white")
       }
     >
-      {selected && (
-        <span className="mb-3 block h-2 w-2 rounded-full" style={{ backgroundColor: ACCENT }} />
-      )}
-      <span className="text-base sm:text-lg leading-tight">{children}</span>
+      <span className="flex items-center gap-3">
+        <span
+          className={`block h-2 w-2 rounded-full flex-shrink-0 transition-all duration-200 ${
+            selected ? "" : "opacity-0"
+          }`}
+          style={{ backgroundColor: ACCENT }}
+        />
+        <span className="text-base sm:text-lg leading-tight">{children}</span>
+      </span>
     </button>
   );
 }
@@ -570,60 +575,60 @@ function FormInner({ date, slot }) {
           </div>
         )}
 
-        {q.type === "single" && (
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-3">
-              {q.options.map(opt => (
-                <ChoiceButton key={opt} selected={answers[q.id] === opt} onClick={() => handleSingleSelect(q.id, opt)}>
-                  {opt}
-                </ChoiceButton>
-              ))}
-            </div>
-            {q.id === "commitment" && answers.commitment === "Just exploring options" && (
-              <motion.p
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.35 }}
-                className="text-sm italic text-neutral-500"
-              >
-                That's okay — most people start here. The call usually changes that.
-              </motion.p>
-            )}
-          </div>
-        )}
+{q.type === "single" && (
+  <div className="space-y-4">
+    <div className="flex flex-col gap-3">
+      {q.options.map(opt => (
+        <ChoiceButton key={opt} selected={answers[q.id] === opt} onClick={() => handleSingleSelect(q.id, opt)}>
+          {opt}
+        </ChoiceButton>
+      ))}
+    </div>
+    {q.id === "commitment" && answers.commitment === "Just exploring options" && (
+      <motion.p
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.35 }}
+        className="text-sm italic text-neutral-500"
+      >
+        That's okay — most people start here. The call usually changes that.
+      </motion.p>
+    )}
+  </div>
+)}
 
-        {q.type === "single-with-followup" && (
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-3">
-              {q.options.map(opt => (
-                <ChoiceButton key={opt} selected={answers[q.id] === opt} onClick={() => setA(q.id, opt)}>
-                  {opt}
-                </ChoiceButton>
-              ))}
-            </div>
-            <AnimatePresence>
-              {answers[q.id] === q.followupOn && (
-                <motion.div
-                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.35 }}
-                >
-                  <label className="block pt-2">
-                    <span className="mb-2 block text-xs font-bold tracking-[0.2em] text-neutral-500">{q.followupLabel}</span>
-                    <input type="text" value={answers.dietDetail}
-                      onChange={e => setA("dietDetail", e.target.value)} className={inputCls} />
-                  </label>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        )}
+{q.type === "single-with-followup" && (
+  <div className="space-y-4">
+    <div className="flex flex-col gap-3">
+      {q.options.map(opt => (
+        <ChoiceButton key={opt} selected={answers[q.id] === opt} onClick={() => setA(q.id, opt)}>
+          {opt}
+        </ChoiceButton>
+      ))}
+    </div>
+    <AnimatePresence>
+      {answers[q.id] === q.followupOn && (
+        <motion.div
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.35 }}
+        >
+          <label className="block pt-2">
+            <span className="mb-2 block text-xs font-bold tracking-[0.2em] text-neutral-500">{q.followupLabel}</span>
+            <input type="text" value={answers.dietDetail}
+              onChange={e => setA("dietDetail", e.target.value)} className={inputCls} />
+          </label>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  </div>
+)}
 
-        {q.type === "multi" && (
-          <div className="grid grid-cols-2 gap-3">
-            {q.options.map(opt => (
-              <ChoiceButton key={opt} selected={(answers[q.id] || []).includes(opt)} onClick={() => toggleMulti(q.id, opt)}>
-                {opt}
-              </ChoiceButton>
-            ))}
-          </div>
-        )}
+{q.type === "multi" && (
+  <div className="flex flex-col gap-3">
+    {q.options.map(opt => (
+      <ChoiceButton key={opt} selected={(answers[q.id] || []).includes(opt)} onClick={() => toggleMulti(q.id, opt)}>
+        {opt}
+      </ChoiceButton>
+    ))}
+  </div>
+)}
 
         {q.type === "rating" && (
           <div>
