@@ -536,7 +536,6 @@ function FormInner({ date, slot }) {
         {q.type === "text" && (
           <div>
             <input
-              autoFocus
               type={q.inputType}
               value={answers[q.id]}
               onChange={e => setA(q.id, e.target.value)}
