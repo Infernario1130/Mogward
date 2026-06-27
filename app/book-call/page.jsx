@@ -420,7 +420,7 @@ function FormInner({ date, slot }) {
   const [submitError, setSubmitError] = useState("");
   const [answers, setAnswers] = useState({
     name: "", whatsapp: "", instagram: "",
-    goal: "", blockers: [], appearanceRating: 0,
+    goal: "", blockers: [], appearanceRating: 0, appearanceRatingTouched: false,
     faceConcerns: [], commitment: "", startWhen: "",
     trainingDays: "", diet: "", dietDetail: "",
     age: "", gender: "", city: "",
@@ -441,7 +441,7 @@ function FormInner({ date, slot }) {
       case "single": return !!answers[q.id];
       case "single-with-followup": return !!answers[q.id];
       case "multi": return (answers[q.id] || []).length > 0;
-      case "rating": return answers[q.id] > 0;
+      case "rating": return answers.appearanceRatingTouched === true;
       case "basics": return answers.age && answers.gender && answers.city.trim();
       case "stats": return answers.weight.trim() && answers.height.trim();
       default: return true;
@@ -575,86 +575,121 @@ function FormInner({ date, slot }) {
           </div>
         )}
 
-{q.type === "single" && (
-  <div className="space-y-4">
-    <div className="flex flex-col gap-3">
-      {q.options.map(opt => (
-        <ChoiceButton key={opt} selected={answers[q.id] === opt} onClick={() => handleSingleSelect(q.id, opt)}>
-          {opt}
-        </ChoiceButton>
-      ))}
-    </div>
-    {q.id === "commitment" && answers.commitment === "Just exploring options" && (
-      <motion.p
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.35 }}
-        className="text-sm italic text-neutral-500"
-      >
-        That's okay — most people start here. The call usually changes that.
-      </motion.p>
-    )}
-  </div>
-)}
-
-{q.type === "single-with-followup" && (
-  <div className="space-y-4">
-    <div className="flex flex-col gap-3">
-      {q.options.map(opt => (
-        <ChoiceButton key={opt} selected={answers[q.id] === opt} onClick={() => setA(q.id, opt)}>
-          {opt}
-        </ChoiceButton>
-      ))}
-    </div>
-    <AnimatePresence>
-      {answers[q.id] === q.followupOn && (
-        <motion.div
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.35 }}
-        >
-          <label className="block pt-2">
-            <span className="mb-2 block text-xs font-bold tracking-[0.2em] text-neutral-500">{q.followupLabel}</span>
-            <input type="text" value={answers.dietDetail}
-              onChange={e => setA("dietDetail", e.target.value)} className={inputCls} />
-          </label>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  </div>
-)}
-
-{q.type === "multi" && (
-  <div className="flex flex-col gap-3">
-    {q.options.map(opt => (
-      <ChoiceButton key={opt} selected={(answers[q.id] || []).includes(opt)} onClick={() => toggleMulti(q.id, opt)}>
-        {opt}
-      </ChoiceButton>
-    ))}
-  </div>
-)}
-
-        {q.type === "rating" && (
-          <div>
-            <div className="grid grid-cols-5 gap-2 sm:gap-3">
-              {[1,2,3,4,5].map(n => {
-                const sel = answers[q.id] === n;
-                return (
-                  <button
-                    key={n} type="button"
-                    onClick={() => handleSingleSelect(q.id, n)}
-                    className={`rounded-2xl py-8 font-black text-2xl transition-all duration-200 ${leagueSpartan.className} ` +
-                      (sel
-                        ? "text-white shadow-[0_0_24px_rgba(148,0,211,0.6)]"
-                        : "bg-neutral-900/50 text-neutral-400 border border-neutral-700 hover:border-neutral-500 hover:text-white hover:scale-[1.02]")}
-                    style={sel ? { backgroundColor: ACCENT } : {}}
-                  >
-                    {n}
-                  </button>
-                );
-              })}
+        {q.type === "single" && (
+          <div className="space-y-4">
+            <div className="flex flex-col gap-3">
+              {q.options.map(opt => (
+                <ChoiceButton key={opt} selected={answers[q.id] === opt} onClick={() => handleSingleSelect(q.id, opt)}>
+                  {opt}
+                </ChoiceButton>
+              ))}
             </div>
-            <div className="mt-3 flex justify-between text-[11px] font-bold tracking-widest text-neutral-600">
-              <span>VERY DISSATISFIED</span><span>VERY SATISFIED</span>
-            </div>
+            {q.id === "commitment" && answers.commitment === "Just exploring options" && (
+              <motion.p
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.35 }}
+                className="text-sm italic text-neutral-500"
+              >
+                That's okay — most people start here. The call usually changes that.
+              </motion.p>
+            )}
           </div>
         )}
+
+        {q.type === "single-with-followup" && (
+          <div className="space-y-4">
+            <div className="flex flex-col gap-3">
+              {q.options.map(opt => (
+                <ChoiceButton key={opt} selected={answers[q.id] === opt} onClick={() => setA(q.id, opt)}>
+                  {opt}
+                </ChoiceButton>
+              ))}
+            </div>
+            <AnimatePresence>
+              {answers[q.id] === q.followupOn && (
+                <motion.div
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.35 }}
+                >
+                  <label className="block pt-2">
+                    <span className="mb-2 block text-xs font-bold tracking-[0.2em] text-neutral-500">{q.followupLabel}</span>
+                    <input type="text" value={answers.dietDetail}
+                      onChange={e => setA("dietDetail", e.target.value)} className={inputCls} />
+                  </label>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        )}
+
+        {q.type === "multi" && (
+          <div className="flex flex-col gap-3">
+            {q.options.map(opt => (
+              <ChoiceButton key={opt} selected={(answers[q.id] || []).includes(opt)} onClick={() => toggleMulti(q.id, opt)}>
+                {opt}
+              </ChoiceButton>
+            ))}
+          </div>
+        )}
+
+{q.type === "rating" && (
+  <div className="pt-4">
+    {!answers.appearanceRatingTouched && (
+      <p className="text-xs font-bold tracking-[0.2em] text-neutral-600 mb-4">
+        DRAG THE SLIDER TO ANSWER
+      </p>
+    )}
+
+    <div className="relative mb-2">
+      <input
+        type="range"
+        min={1}
+        max={5}
+        step={0.01}
+        value={answers.appearanceRatingRaw ?? 3}
+        onChange={e => {
+          const raw = Number(e.target.value);
+          setAnswers(s => ({
+            ...s,
+            appearanceRatingRaw: raw,
+            appearanceRating: Math.round(raw),
+            appearanceRatingTouched: true,
+          }));
+        }}
+        className="w-full rating-slider"
+        style={{
+          background: answers.appearanceRatingTouched
+            ? `linear-gradient(to right, ${ACCENT} 0%, ${ACCENT} ${((answers.appearanceRatingRaw ?? 3) - 1) * 25}%, #292929 ${((answers.appearanceRatingRaw ?? 3) - 1) * 25}%, #292929 100%)`
+            : "#292929",
+        }}
+      />
+    </div>
+
+    <div className="flex justify-between mb-6">
+      {[1,2,3,4,5].map(n => (
+        <span
+          key={n}
+          className={`text-sm font-black transition-colors ${leagueSpartan.className} ${
+            answers.appearanceRatingTouched && answers.appearanceRating === n ? "text-white" : "text-neutral-600"
+          }`}
+        >
+          {n}
+        </span>
+      ))}
+    </div>
+
+    <div className="rounded-2xl py-6 text-center font-black text-3xl transition-all duration-200"
+      style={{ color: answers.appearanceRatingTouched ? ACCENT : "#525252" }}
+    >
+      {answers.appearanceRatingTouched ? answers.appearanceRating : "—"}
+      <span className="text-sm text-neutral-500 font-medium block mt-1">
+        {answers.appearanceRatingTouched ? "out of 5" : "not answered yet"}
+      </span>
+    </div>
+
+    <div className="mt-4 flex justify-between text-[11px] font-bold tracking-widest text-neutral-600">
+      <span>VERY DISSATISFIED</span><span>VERY SATISFIED</span>
+    </div>
+  </div>
+)}
 
         {q.type === "basics" && (
           <div className="space-y-5">
@@ -707,7 +742,7 @@ function FormInner({ date, slot }) {
     );
   };
 
-  const showNext = !isFinal && q.type !== "interstitial" && q.type !== "single" && q.type !== "rating";
+  const showNext = !isFinal && q.type !== "interstitial" && q.type !== "single";
 
   return (
     <div className="flex flex-col h-full">
