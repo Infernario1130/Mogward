@@ -122,19 +122,120 @@ const QUESTIONS = [
   { id: "name", type: "text", title: "WHAT'S YOUR NAME?", subtext: "So I can make this feel less like a form and more like a conversation.", placeholder: "Your first name", inputType: "text", required: true },
   { id: "whatsapp", type: "phone", title: "YOUR WHATSAPP NUMBER", subtext: "I'll only reach out if you're a good fit — this isn't a spam list.", placeholder: "Enter your number", required: true },
   { id: "instagram", type: "text", title: "YOUR INSTAGRAM USERNAME", subtext: "Will help me connect with you through Instagram.", placeholder: "@username", inputType: "text", required: true },
-  { id: "goal", type: "single", title: "WHAT'S YOUR MAIN GOAL NOW?", subtext: "Pick the one that matters most to you today.", options: ["Fat loss","Muscle gain","Body recomposition (lose fat + gain muscle)","Strength (SBD)","Aesthetic physique + looksmax"], required: true },
-  { id: "blockers", type: "multi", title: "WHAT'S CURRENTLY STOPPING YOU FROM ACHIEVING THIS?", subtext: "Be honest — the more specific you are, the better I can help.", options: ["I don't have a plan that actually works for me","I don't know what to eat or how to track it","I start strong but always fall off","I have no idea how to improve my face / appearance","I've tried things — nothing sticks"], required: true },
+  { id: "goal", type: "single", title: "WHAT'S YOUR MAIN GOAL NOW?", subtext: "Pick the one that matters most to you today.", options: ["FAT LOSS","MUSCLE GAIN","BODY COMPOSITION (LOSE FAT + GAIN MUSCLE)","STRENGTH (SBD)","AESTHETIC PHYSIQUE + LOOKSMAX"], required: true },
+  { id: "blockers", type: "multi", title: "WHAT'S CURRENTLY STOPPING YOU FROM ACHIEVING THIS?", subtext: "Be honest — the more specific you are, the better I can help.", options: ["I DON'T HAVE A PLAN THAT ACTUALLY WORKS FOR ME","I DON'T KNOW WHAT TO EAT OR HOW TO TRACK IT","I START STRONG BUT ALWAYS FALL OFF","I HAVE NO IDEA HOW TO IMPROVE MY FACE/APPEARANCE","I'VE TRIED THINGS — NOTHING STICKS"], required: true },
   { id: "appearanceRating", type: "rating", title: "HOW SATISFIED ARE YOU WITH YOUR APPEARANCE OVERALL?", subtext: "Be honest — this helps me understand where to focus first.", required: true },
-  { id: "faceConcerns", type: "multi", title: "WHAT PART OF THE FACE BOTHERS YOU MOST WHEN YOU LOOK IN THE MIRROR?", subtext: "Select all that apply.", options: ["Round Face / Bloating","No Structure / Face Fat ","Tanned Skin / Dark Complexion","Acne / Uneven Texture","Dark Circles / Tired Look"], required: true },
-  { id: "commitment", type: "single", title: "HOW COMMITTED ARE YOU TO IMPROVING BOTH PHYSIQUE AND APPEARANCE?", options: ["Just exploring options","Somewhat committed","Very committed","100% ready to start now"], required: true },
-  { id: "startWhen", type: "single", title: "IF ACCEPTED INTO THE PROGRAM, WHEN COULD YOU REALISTICALLY START?", subtext: "Presumes acceptance — answers tell us how serious the intent is.", options: ["ASAP","Within 1–2 weeks","Within a month","3–6 months from now","Just exploring"], required: true },
-  { id: "trainingDays", type: "single", title: "HOW MANY DAYS PER WEEK CAN YOU COMFORTABLY TRAIN?", subtext: "This helps me build a schedule around your life, not the other way around.", options: ["2 days","3 days","4 days","5 days","6 days"], required: true },
-  { id: "diet", type: "single-with-followup", title: "ARE YOU CURRENTLY FOLLOWING ANY DIET?", subtext: "Counting calories, macros, intuitive eating — anything counts.", options: ["Yes","No"], followupOn: "Yes", followupLabel: "What are you currently doing? (Brief description)", required: true },
-  { id: "basics", type: "basics", title: "AGE, GENDER AND LOCATION", subtext: "Quick basics — almost done with the data.", required: true },
-  { id: "stats", type: "stats", title: "CURRENT WEIGHT AND HEIGHT", subtext: "Accept both metric and imperial.", required: true },
-  { id: "experience", type: "single", title: "HOW LONG HAVE YOU BEEN TRAINING SERIOUSLY?", subtext: "No wrong answer — the program adapts to where you're starting from.", options: ["Never trained seriously","0–6 months","6–12 months","1–2 years","2+ years"], required: true },
-  { id: "interstitial", type: "interstitial" },
-  { id: "investment", type: "single", title: "ARE YOU FINANCIALLY READY TO INVEST IN COACHING IF ACCEPTED?", subtext: "Investment starts from Rs9,999.", options: ["Yes — I'm ready to invest in this","I need a few more details before deciding","Not right now, but I want to stay in the loop"], required: true },
+  { 
+    id: "faceConcerns",
+    type: "multi",
+    title: "WHAT PART OF THE FACE BOTHERS YOU MOST WHEN YOU LOOK IN THE MIRROR?",
+    subtext: "Select all that apply.",
+    options: [
+      "ROUND FACE / BLOATING",
+      "NO STRUCTURE / FACE FAT",
+      "TANNED SKIN / DARK COMPLEXION",
+      "ACNE / UNEVEN TEXTURE",
+      "DARK CIRCLES / TIRED LOOK"
+    ],
+    required: true
+  },
+  {
+    id: "commitment",
+    type: "single",
+    title: "HOW COMMITTED ARE YOU TO IMPROVING BOTH PHYSIQUE AND APPEARANCE?",
+    options: [
+      "JUST EXPLORING OPTIONS",
+      "SOMEWHAT COMMITTED",
+      "VERY COMMITTED",
+      "100% READY TO START NOW"
+    ],
+    required: true
+  },
+  {
+    id: "startWhen",
+    type: "single",
+    title: "IF ACCEPTED INTO THE PROGRAM, WHEN COULD YOU REALISTICALLY START?",
+    subtext: "Presumes acceptance — answers tell us how serious the intent is.",
+    options: [
+      "ASAP",
+      "WITHIN 1–2 WEEKS",
+      "WITHIN A MONTH",
+      "3–6 MONTHS FROM NOW",
+      "JUST EXPLORING"
+    ],
+    required: true
+  },
+  {
+    id: "trainingDays",
+    type: "single",
+    title: "HOW MANY DAYS PER WEEK CAN YOU COMFORTABLY TRAIN?",
+    subtext: "This helps me build a schedule around your life, not the other way around.",
+    options: [
+      "2 DAYS",
+      "3 DAYS",
+      "4 DAYS",
+      "5 DAYS",
+      "6 DAYS"
+    ],
+    required: true
+  },
+  {
+    id: "diet",
+    type: "single-with-followup",
+    title: "ARE YOU CURRENTLY FOLLOWING ANY DIET?",
+    subtext: "Counting calories, macros, intuitive eating — anything counts.",
+    options: [
+      "YES",
+      "NO"
+    ],
+    followupOn: "YES",
+    followupLabel: "What are you currently doing? (Brief description)",
+    required: true
+  },
+  {
+    id: "basics",
+    type: "basics",
+    title: "AGE, GENDER AND LOCATION",
+    subtext: "Quick basics — almost done with the data.",
+    required: true
+  },
+  {
+    id: "stats",
+    type: "stats",
+    title: "CURRENT WEIGHT AND HEIGHT",
+    subtext: "Accept both metric and imperial.",
+    required: true
+  },
+  {
+    id: "experience",
+    type: "single",
+    title: "HOW LONG HAVE YOU BEEN TRAINING SERIOUSLY?",
+    subtext: "No wrong answer — the program adapts to where you're starting from.",
+    options: [
+      "NEVER TRAINED SERIOUSLY",
+      "0–6 MONTHS",
+      "6–12 MONTHS",
+      "1–2 YEARS",
+      "2+ YEARS"
+    ],
+    required: true
+  },
+  {
+    id: "interstitial",
+    type: "interstitial"
+  },
+  {
+    id: "investment",
+    type: "single",
+    title: "ARE YOU FINANCIALLY READY TO INVEST IN COACHING IF ACCEPTED?",
+    subtext: "Investment starts from Rs9,999.",
+    options: [
+      "YES — I'M READY TO INVEST IN THIS",
+      "I NEED A FEW MORE DETAILS BEFORE DECIDING",
+      "NOT RIGHT NOW, BUT I WANT TO STAY IN THE LOOP"
+    ],
+    required: true
+  },
 ];
 
 const TOTAL_STEPS = QUESTIONS.length + 1;

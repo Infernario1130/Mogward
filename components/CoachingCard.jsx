@@ -3,11 +3,11 @@ import React, { useState, useEffect } from "react";
 const FACE_IMAGE_URL = "/images/mogward-face.png";
 
 const FEATURES = [
-  "FULL MOGWARD PROTOCOL ACCESS",
-  "EVERY SYSTEM PERSONALIZED",
-  "DAILY CHECK-INS, EVERY WEEK",
-  "FULL LOOKSMAXX & LIFESTYLE GUIDANCE",
-  "RESULTS OR YOU DON'T PAY FOR IT",
+  "PERSONALISED TRAINING PROGRAM",
+  "PERSONALISED DIET PLAN",
+  "GUIDANCE ON IMPROVING FACIAL FEATURES",
+  "DAILY CHECK-IN VIDEO CALLS",
+  "24/7 AVAILABILITY",
 ];
 
 // Pricing config: only India gets a special price, everyone else (including
@@ -285,11 +285,6 @@ function MobileLayout({ onBookCall, pricing }) {
       <FeatureList />
       <RefundBadge style={{ width: "100%", marginBottom: "2rem", marginTop: "1.5rem" }} />
       <div style={{ textAlign: "right", marginBottom: "1.25rem" }}>
-        <p style={{ fontSize: "12px", letterSpacing: "0.18em", color: "rgba(255,255,255,0.7)", fontWeight: 500, margin: 0 }}>STARTING FROM</p>
-        <p style={{ color: "white", margin: 0 }}>
-          <span style={{ fontSize: "clamp(40px, 10vw, 52px)", fontWeight: 900, lineHeight: 1, letterSpacing: "-0.02em" }}>{pricing.symbol}{pricing.amount}</span>
-          <span style={{ fontSize: "14px", letterSpacing: "0.1em", color: "rgba(255,255,255,0.8)" }}>/MONTH</span>
-        </p>
       </div>
       <BookButton onBookCall={onBookCall} />
     </div>
@@ -335,11 +330,7 @@ function DesktopLayout({ onBookCall, pricing }) {
               background: "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))",
               border: "1px solid rgba(255,255,255,0.08)",
             }}>
-              <p style={{ fontSize: "11px", letterSpacing: "0.18em", color: "rgba(255,255,255,0.7)", fontWeight: 500, textAlign: "right", margin: "0 0 4px" }}>STARTING FROM</p>
-              <p style={{ color: "white", textAlign: "right", margin: "0 0 12px" }}>
-                <span style={{ fontSize: "clamp(32px, 3vw, 44px)", fontWeight: 900, lineHeight: 1, letterSpacing: "-0.02em" }}>{pricing.symbol}{pricing.amount}</span>
-                <span style={{ fontSize: "13px", letterSpacing: "0.1em", color: "rgba(255,255,255,0.8)" }}> /MONTH</span>
-              </p>
+             
               <BookButton compact onBookCall={onBookCall} />
             </div>
           </div>
