@@ -199,7 +199,7 @@ function WatermarkBackground({ anchor = 'center' }) {
   )
 }
 
-function HeroSection({ selectedItem, setSelectedItem, setIsDetailOpen }) {
+function HeroSection({ selectedItem, setSelectedItem, setIsDetailOpen, onBookCall }) {
   return (
     <section className="relative min-h-screen pt-32 pb-20 overflow-hidden">
       <PulsingGlow />
@@ -212,6 +212,14 @@ function HeroSection({ selectedItem, setSelectedItem, setIsDetailOpen }) {
             ))}
           </h1>
         </div>
+      </div>
+
+      {/* Break out of the max-w-4xl wrapper so CoachingCard gets full width on desktop */}
+      <div className="relative z-10 w-full mb-12">
+        <CoachingCard onBookCall={onBookCall} />
+      </div>
+
+      <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
         <p className="text-muted-foreground font-medium text-sm max-w-3xs mx-auto mb-12">
           {SITE_CONFIG.heroSubtitle}
         </p>
@@ -244,9 +252,13 @@ function MainPackageCard({ selectedItem, setSelectedItem, setIsDetailOpen }) {
   const [detailsOpen, setDetailsOpen] = useState(false)
   const handleSelect = (e) => {
     e.stopPropagation()
-    if (isSelected) return
+    if (isSelected) {
+      setSelectedItem([])   // deselect → empty, triggers "Book a Free Call"
+      return
+    }
     setSelectedItem([{ type: 'main', id: MAIN_PACKAGE.id, price: MAIN_PACKAGE.price }])
   }
+
   const handleOpenDetails = () => {
     setDetailsOpen(true)
     setIsDetailOpen(true)
@@ -487,9 +499,7 @@ function ProductCard({ product, selectedItem, setSelectedItem, setIsDetailOpen }
       if (allSelected) {
         return [{ type: 'main', id: MAIN_PACKAGE.id, price: MAIN_PACKAGE.price }]
       }
-      return newItems.length === 0
-        ? [{ type: 'main', id: MAIN_PACKAGE.id, price: MAIN_PACKAGE.price }]
-        : newItems
+      return newItems   // ← no more fallback to main when newItems.length === 0
     })
   }
 
@@ -1154,12 +1164,13 @@ function Footer() {
   )
 }
 
-function StickyBottomBar({ selectedItem, setSelectedItem, selectedDate, isDetailOpen, calendarOpen }) {
+function StickyBottomBar({ selectedItem, setSelectedItem, selectedDate, isDetailOpen, calendarOpen, onBookCall }) {
   const [agreed, setAgreed] = useState(false)
   const [isUnlocking, setIsUnlocking] = useState(false)
   const total = selectedItem.reduce((sum, i) => sum + i.price, 0)
   const showBestValue = selectedItem.some(i => i.type === 'product') && !selectedItem.some(i => i.type === 'main')
   const router = useRouter()
+  const hasSelection = selectedItem.length > 0
 
   const handleUpgrade = () => {
     setSelectedItem(prev => prev.filter(i => i.type !== 'product').concat({ type: 'main', id: MAIN_PACKAGE.id, price: MAIN_PACKAGE.price }))
@@ -1187,65 +1198,102 @@ function StickyBottomBar({ selectedItem, setSelectedItem, selectedDate, isDetail
   }
 
   return (
-    <div className={`fixed bottom-0 left-0 right-0 z-50 bg-background transition-all duration-300 ${selectedDate || isDetailOpen || calendarOpen ? 'hidden' : ''}`}>
-      <div className="max-w-[480px] mx-auto px-5 pb-4 pt-2">
-        {showBestValue && (
-          <div className="bg-neutral-900 rounded-xl mb-3 cursor-pointer shadow-[0_2px_16px_-4px_rgba(0,0,0,0.2)] transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-[0_4px_24px_-4px_rgba(148,0,211,0.4)] hover:bg-neutral-800">
-            <div className="px-5 py-2.5">
-              <div className="flex items-center justify-between gap-4">
-                <div className="min-w-0">
-                  <p className="text-xs tracking-[0.2em] text-[#9400D3] font-semibold">BEST VALUE</p>
-                  <p className="text-sm text-white">Get the Full Bundle – Lifetime Access</p>
+    <>
+      <style>{`
+        @keyframes sticky-glow-pulse {
+          0%, 100% {
+            box-shadow: 0 0 25px rgba(192,90,235,0.45), inset 0 0 10px rgba(192,90,235,0.12);
+          }
+          50% {
+            box-shadow: 0 0 45px rgba(192,90,235,0.75), inset 0 0 20px rgba(192,90,235,0.25);
+          }
+        }
+        .sticky-book-btn {
+          background-color: #000000;
+          color: #ffffff;
+          border: 1.5px solid rgb(192,90,235);
+          animation: sticky-glow-pulse 2.5s ease-in-out infinite;
+          transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+        .sticky-book-btn:hover {
+          background-color: #1a1a1a;
+          transform: scale(1.02);
+        }
+        .sticky-book-btn:active {
+          transform: scale(0.98);
+        }
+      `}</style>
+      <div className={`fixed bottom-0 left-0 right-0 z-50 bg-background transition-all duration-300 ${selectedDate || isDetailOpen || calendarOpen ? 'hidden' : ''}`}>
+        <div className="max-w-[480px] mx-auto px-5 pb-4 pt-2">
+          {!hasSelection ? (
+            <button
+              onClick={onBookCall}
+              className="sticky-book-btn w-full py-3 rounded-lg font-bold text-xs tracking-[0.15em]"
+            >
+              BOOK A FREE CALL
+            </button>
+          ) : (
+            <>
+              {showBestValue && (
+                <div className="bg-neutral-900 rounded-xl mb-3 cursor-pointer shadow-[0_2px_16px_-4px_rgba(0,0,0,0.2)] transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-[0_4px_24px_-4px_rgba(148,0,211,0.4)] hover:bg-neutral-800">
+                  <div className="px-5 py-2.5">
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="min-w-0">
+                        <p className="text-xs tracking-[0.2em] text-[#9400D3] font-semibold">BEST VALUE</p>
+                        <p className="text-sm text-white">Get the Full Bundle – Lifetime Access</p>
+                      </div>
+                      <button onClick={handleUpgrade} className="bg-[#9400D3] text-white px-4 py-1.5 rounded-full text-xs font-bold tracking-[0.15em] transition-all duration-200 hover:scale-105 active:scale-95 shrink-0">
+                        UPGRADE
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <button onClick={handleUpgrade} className="bg-[#9400D3] text-white px-4 py-1.5 rounded-full text-xs font-bold tracking-[0.15em] transition-all duration-200 hover:scale-105 active:scale-95 shrink-0">
-                  UPGRADE
+              )}
+              <div>
+                <div className="flex items-center justify-between gap-4 mb-3">
+                  <div>
+                    <p className="text-xs tracking-[0.2em] text-muted-foreground font-medium">TOTAL INVESTMENT</p>
+                    <p className={`text-3xl font-black leading-tight tracking-tight ${leagueSpartan.className}`}>₹{total}</p>
+                  </div>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <div
+                      onClick={() => setAgreed(!agreed)}
+                      className={`w-3.5 h-3.5 rounded-full border-[1.5px] flex items-center justify-center transition-all duration-200 shrink-0 ${
+                        agreed ? 'border-foreground bg-foreground' : 'border-muted-foreground/30 hover:border-muted-foreground/50'
+                      }`}
+                    >
+                      {agreed && <div className="w-1 h-1 rounded-full bg-background" />}
+                    </div>
+                    <span className="text-xs text-muted-foreground">
+                      I agree to <Link href="#" className="text-foreground hover:underline">Terms</Link> & <Link href="#" className="text-foreground hover:underline">Refunds</Link>
+                    </span>
+                  </label>
+                </div>
+                <button
+                  disabled={!agreed || isUnlocking}
+                  onClick={handleUnlock}
+                  className={`w-full py-3 rounded-lg font-semibold text-xs tracking-[0.15em] flex items-center justify-center gap-2 transition-all duration-200 ${
+                    agreed
+                      ? isUnlocking
+                        ? 'bg-neutral-700 text-white scale-[0.98]'
+                        : 'bg-foreground text-background hover:bg-foreground/90 active:bg-foreground/80 active:scale-[0.98]'
+                      : 'bg-neutral-200 dark:bg-neutral-800 text-muted-foreground/50 cursor-not-allowed'
+                  }`}
+                >
+                  {isUnlocking ? 'CHECKING...' : 'UNLOCK ACCESS'}
+                  <Lock className="w-3.5 h-3.5" />
                 </button>
               </div>
-            </div>
-          </div>
-        )}
-        <div>
-          <div className="flex items-center justify-between gap-4 mb-3">
-            <div>
-              <p className="text-xs tracking-[0.2em] text-muted-foreground font-medium">TOTAL INVESTMENT</p>
-              <p className={`text-3xl font-black leading-tight tracking-tight ${leagueSpartan.className}`}>₹{total}</p>
-            </div>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <div
-                onClick={() => setAgreed(!agreed)}
-                className={`w-3.5 h-3.5 rounded-full border-[1.5px] flex items-center justify-center transition-all duration-200 shrink-0 ${
-                  agreed ? 'border-foreground bg-foreground' : 'border-muted-foreground/30 hover:border-muted-foreground/50'
-                }`}
-              >
-                {agreed && <div className="w-1 h-1 rounded-full bg-background" />}
-              </div>
-              <span className="text-xs text-muted-foreground">
-                I agree to <Link href="#" className="text-foreground hover:underline">Terms</Link> & <Link href="#" className="text-foreground hover:underline">Refunds</Link>
-              </span>
-            </label>
-          </div>
-          <button
-            disabled={!agreed || isUnlocking}
-            onClick={handleUnlock}
-            className={`w-full py-3 rounded-lg font-semibold text-xs tracking-[0.15em] flex items-center justify-center gap-2 transition-all duration-200 ${
-              agreed
-                ? isUnlocking
-                  ? 'bg-neutral-700 text-white scale-[0.98]'
-                  : 'bg-foreground text-background hover:bg-foreground/90 active:bg-foreground/80 active:scale-[0.98]'
-                : 'bg-neutral-200 dark:bg-neutral-800 text-muted-foreground/50 cursor-not-allowed'
-            }`}
-          >
-            {isUnlocking ? 'CHECKING...' : 'UNLOCK ACCESS'}
-            <Lock className="w-3.5 h-3.5" />
-          </button>
+            </>
+          )}
         </div>
       </div>
-    </div>
+    </>
   )
 }
 
 export default function AryanMethodPage() {
-  const [selectedItem, setSelectedItem] = useState([{ type: 'main', id: MAIN_PACKAGE.id, price: MAIN_PACKAGE.price }])
+  const [selectedItem, setSelectedItem] = useState([])
   const [selectedDate, setSelectedDate] = useState(null)
   const [isDetailOpen, setIsDetailOpen] = useState(false)
   const [calendarOpen, setCalendarOpen] = useState(false)
@@ -1258,17 +1306,29 @@ export default function AryanMethodPage() {
   return (
     <div className="min-h-screen bg-background pb-32">
       <Header isDetailOpen={isDetailOpen} />
-      <HeroSection selectedItem={selectedItem} setSelectedItem={setSelectedItem} setIsDetailOpen={setIsDetailOpen} />
-      <ProductsSection selectedItem={selectedItem} setSelectedItem={setSelectedItem} setIsDetailOpen={setIsDetailOpen} />
-      <CoachingCard onBookCall={() => setCalendarOpen(true)} />
-      <Footer />
-      <StickyBottomBar
+      <HeroSection
         selectedItem={selectedItem}
         setSelectedItem={setSelectedItem}
-        selectedDate={selectedDate}
-        isDetailOpen={isDetailOpen}
-        calendarOpen={calendarOpen}
+        setIsDetailOpen={setIsDetailOpen}
+        onBookCall={() => setCalendarOpen(true)}
       />
+        <ProductsSection selectedItem={selectedItem} setSelectedItem={setSelectedItem} setIsDetailOpen={setIsDetailOpen} />
+      <Footer />
+      <StickyBottomBar
+  selectedItem={selectedItem}
+  setSelectedItem={setSelectedItem}
+  selectedDate={selectedDate}
+  isDetailOpen={isDetailOpen}
+  calendarOpen={calendarOpen}
+  onBookCall={() => setCalendarOpen(true)}
+/><StickyBottomBar
+  selectedItem={selectedItem}
+  setSelectedItem={setSelectedItem}
+  selectedDate={selectedDate}
+  isDetailOpen={isDetailOpen}
+  calendarOpen={calendarOpen}
+  onBookCall={() => setCalendarOpen(true)}
+/>
       {calendarOpen && (
         <CalendarModal
           onClose={() => setCalendarOpen(false)}
