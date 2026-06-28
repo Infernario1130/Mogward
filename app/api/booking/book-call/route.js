@@ -163,7 +163,7 @@ export async function POST(request) {
     try {
       await resend.emails.send({
         from: 'MOGWARD <ascend@mogward.com>',
-        to: "infernario11@gmail.com", //user.email
+        to: user.email , //user.email
         subject: 'Your Call is Confirmed',
         html: buildUserConfirmationEmail({
           name: user.name,
