@@ -4,7 +4,7 @@
 
 import { ArrowLeft, Lock, User, Zap, Menu, X } from "lucide-react";
 import Link from "next/link";
-import { useState, useEffect, useMemo, Suspense } from "react";
+import { useState, useEffect, useMemo, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { League_Spartan } from "next/font/google";
 import { motion, AnimatePresence } from "framer-motion";
@@ -416,6 +416,9 @@ function NotRightNowScreen({ name }) {
 }
 
 function FormInner({ date, slot }) {
+  const [sessionId] = useState(() => crypto.randomUUID());
+  const partialSavedRef = useRef(false);
+
   const [step, setStep] = useState(0);
   const [nextGlow, setNextGlow] = useState(false);
   const [submitStatus, setSubmitStatus] = useState("idle"); // idle | submitting | success | error
@@ -472,6 +475,32 @@ function FormInner({ date, slot }) {
     });
   };
 
+  // ── Fire the partial save once, the moment the user crosses Q5 ──
+  // By the time step === 5, questions 0–4 (name, whatsapp, instagram, goal,
+  // blockers) are all answered — that's the minimum useful lead. This does
+  // NOT lock the date+slot — only a fully completed, payment-ready
+  // submission does that (handled server-side).
+  useEffect(() => {
+    if (step < 5 || partialSavedRef.current) return;
+    partialSavedRef.current = true;
+
+    fetch("/api/booking/save-progress", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        sessionId,
+        name: answers.name,
+        whatsapp: answers.whatsapp,
+        instagram: answers.instagram,
+        date,
+        slot,
+        goal: answers.goal,
+        blockers: answers.blockers,
+      }),
+    }).catch(err => console.error("Partial save failed:", err));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step]);
+
   const submitApplication = async () => {
     setSubmitStatus("submitting");
     setSubmitError("");
@@ -480,6 +509,7 @@ function FormInner({ date, slot }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          sessionId,
           name: answers.name,
           whatsapp: answers.whatsapp,
           instagram: answers.instagram,
@@ -516,10 +546,12 @@ function FormInner({ date, slot }) {
     }
   };
 
-  // Fire submission only for the two "qualified" paths, once, on reaching the final step.
+  // Fire submission on reaching the final step, for ALL outcomes — including
+  // "Not right now" (saved server-side as formStatus: 'declined_budget',
+  // no email sent, no slot lock). The NotRightNowScreen upsell below is purely
+  // what the person SEES; it no longer skips saving their data.
   useEffect(() => {
     if (!isFinal) return;
-    if (answers.investment === NOT_NOW) return; // handled by NotRightNowScreen / bundle upsell flow
     if (submitStatus !== "idle") return; // guard against double-fire on re-render
     submitApplication();
     // eslint-disable-next-line react-hooks/exhaustive-deps
