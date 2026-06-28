@@ -1,3 +1,5 @@
+// for coaching call check
+
 import { NextResponse } from 'next/server'
 import connectDB from '@/lib/mongodb'
 import Booking from '@/models/Booking'

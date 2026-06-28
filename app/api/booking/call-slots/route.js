@@ -1,3 +1,5 @@
+// for protocol slot check
+
 import { NextResponse } from 'next/server'
 import connectDB from '@/lib/mongodb'
 import CallBooking from '@/models/CallBooking'

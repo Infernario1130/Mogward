@@ -162,7 +162,7 @@ export async function POST(request) {
     // ── Send emails (don't block the response on failure) ──
     try {
       await resend.emails.send({
-        from: 'MOGWARD <onboarding@resend.dev>',
+        from: 'MOGWARD <ascend@mogward.com>',
         to: "infernario11@gmail.com", //user.email
         subject: 'Your Call is Confirmed',
         html: buildUserConfirmationEmail({
