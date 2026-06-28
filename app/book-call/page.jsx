@@ -120,21 +120,21 @@ function Header() {
 
 const QUESTIONS = [
   { id: "name", type: "text", title: "WHAT'S YOUR NAME?", subtext: "So I can make this feel less like a form and more like a conversation.", placeholder: "Your first name", inputType: "text", required: true },
-  { id: "whatsapp", type: "phone", title: "Your WhatsApp number", subtext: "I'll only reach out if you're a good fit — this isn't a spam list.", placeholder: "Enter your number", required: true },
-  { id: "instagram", type: "text", title: "Your Instagram username", subtext: "Will help me connect with you through Instagram.", placeholder: "@username", inputType: "text", required: true },
-  { id: "goal", type: "single", title: "What's your main goal right now?", subtext: "Pick the one that matters most to you today.", options: ["Fat loss","Muscle gain","Body recomposition (lose fat + gain muscle)","Strength (SBD)","Aesthetic physique + looksmax"], required: true },
-  { id: "blockers", type: "multi", title: "What's currently stopping you from achieving this?", subtext: "Be honest — the more specific you are, the better I can help.", options: ["I don't have a plan that actually works for me","I don't know what to eat or how to track it","I start strong but always fall off","I have no idea how to improve my face / appearance","I've tried things — nothing sticks"], required: true },
-  { id: "appearanceRating", type: "rating", title: "How satisfied are you with your appearance overall?", subtext: "Be honest — this helps me understand where to focus first.", required: true },
-  { id: "faceConcerns", type: "multi", title: "What part of your face bothers you most when you look in the mirror?", subtext: "Select all that apply.", options: ["Round Face / Bloating","No Structure / Face Fat ","Tanned Skin / Dark Complexion","Acne / Uneven Texture","Dark Circles / Tired Look"], required: true },
-  { id: "commitment", type: "single", title: "How committed are you to improving BOTH physique and appearance?", options: ["Just exploring options","Somewhat committed","Very committed","100% ready to start now"], required: true },
-  { id: "startWhen", type: "single", title: "If accepted into the program, when could you realistically start?", subtext: "Presumes acceptance — answers tell us how serious the intent is.", options: ["ASAP","Within 1–2 weeks","Within a month","3–6 months from now","Just exploring"], required: true },
-  { id: "trainingDays", type: "single", title: "How many days per week can you comfortably train?", subtext: "This helps me build a schedule around your life, not the other way around.", options: ["2 days","3 days","4 days","5 days","6 days"], required: true },
-  { id: "diet", type: "single-with-followup", title: "Are you currently following any diet?", subtext: "Counting calories, macros, intuitive eating — anything counts.", options: ["Yes","No"], followupOn: "Yes", followupLabel: "What are you currently doing? (Brief description)", required: true },
-  { id: "basics", type: "basics", title: "Age, Gender & Location", subtext: "Quick basics — almost done with the data.", required: true },
-  { id: "stats", type: "stats", title: "Current weight & height", subtext: "Accept both metric and imperial.", required: true },
-  { id: "experience", type: "single", title: "How long have you been training seriously?", subtext: "No wrong answer — the program adapts to where you're starting from.", options: ["Never trained seriously","0–6 months","6–12 months","1–2 years","2+ years"], required: true },
+  { id: "whatsapp", type: "phone", title: "YOUR WHATSAPP NUMBER", subtext: "I'll only reach out if you're a good fit — this isn't a spam list.", placeholder: "Enter your number", required: true },
+  { id: "instagram", type: "text", title: "YOUR INSTAGRAM USERNAME", subtext: "Will help me connect with you through Instagram.", placeholder: "@username", inputType: "text", required: true },
+  { id: "goal", type: "single", title: "WHAT'S YOUR MAIN GOAL NOW?", subtext: "Pick the one that matters most to you today.", options: ["Fat loss","Muscle gain","Body recomposition (lose fat + gain muscle)","Strength (SBD)","Aesthetic physique + looksmax"], required: true },
+  { id: "blockers", type: "multi", title: "WHAT'S CURRENTLY STOPPING YOU FROM ACHIEVING THIS?", subtext: "Be honest — the more specific you are, the better I can help.", options: ["I don't have a plan that actually works for me","I don't know what to eat or how to track it","I start strong but always fall off","I have no idea how to improve my face / appearance","I've tried things — nothing sticks"], required: true },
+  { id: "appearanceRating", type: "rating", title: "HOW SATISFIED ARE YOU WITH YOUR APPEARANCE OVERALL?", subtext: "Be honest — this helps me understand where to focus first.", required: true },
+  { id: "faceConcerns", type: "multi", title: "WHAT PART OF THE FACE BOTHERS YOU MOST WHEN YOU LOOK IN THE MIRROR?", subtext: "Select all that apply.", options: ["Round Face / Bloating","No Structure / Face Fat ","Tanned Skin / Dark Complexion","Acne / Uneven Texture","Dark Circles / Tired Look"], required: true },
+  { id: "commitment", type: "single", title: "HOW COMMITTED ARE YOU TO IMPROVING BOTH PHYSIQUE AND APPEARANCE?", options: ["Just exploring options","Somewhat committed","Very committed","100% ready to start now"], required: true },
+  { id: "startWhen", type: "single", title: "IF ACCEPTED INTO THE PROGRAM, WHEN COULD YOU REALISTICALLY START?", subtext: "Presumes acceptance — answers tell us how serious the intent is.", options: ["ASAP","Within 1–2 weeks","Within a month","3–6 months from now","Just exploring"], required: true },
+  { id: "trainingDays", type: "single", title: "HOW MANY DAYS PER WEEK CAN YOU COMFORTABLY TRAIN?", subtext: "This helps me build a schedule around your life, not the other way around.", options: ["2 days","3 days","4 days","5 days","6 days"], required: true },
+  { id: "diet", type: "single-with-followup", title: "ARE YOU CURRENTLY FOLLOWING ANY DIET?", subtext: "Counting calories, macros, intuitive eating — anything counts.", options: ["Yes","No"], followupOn: "Yes", followupLabel: "What are you currently doing? (Brief description)", required: true },
+  { id: "basics", type: "basics", title: "AGE, GENDER AND LOCATION", subtext: "Quick basics — almost done with the data.", required: true },
+  { id: "stats", type: "stats", title: "CURRENT WEIGHT AND HEIGHT", subtext: "Accept both metric and imperial.", required: true },
+  { id: "experience", type: "single", title: "HOW LONG HAVE YOU BEEN TRAINING SERIOUSLY?", subtext: "No wrong answer — the program adapts to where you're starting from.", options: ["Never trained seriously","0–6 months","6–12 months","1–2 years","2+ years"], required: true },
   { id: "interstitial", type: "interstitial" },
-  { id: "investment", type: "single", title: "Are you financially ready to invest in coaching if accepted?", subtext: "Investment starts from Rs9,999.", options: ["Yes — I'm ready to invest in this","I need a few more details before deciding","Not right now, but I want to stay in the loop"], required: true },
+  { id: "investment", type: "single", title: "ARE YOU FINANCIALLY READY TO INVEST IN COACHING IF ACCEPTED?", subtext: "Investment starts from Rs9,999.", options: ["Yes — I'm ready to invest in this","I need a few more details before deciding","Not right now, but I want to stay in the loop"], required: true },
 ];
 
 const TOTAL_STEPS = QUESTIONS.length + 1;
@@ -901,7 +901,7 @@ function BookPageInner() {
                 <span className={`text-xs font-medium tracking-widest text-neutral-600 ${leagueSpartan.className}`}>15 QUESTIONS</span>
               </div>
               <h2 className={`text-3xl font-black text-white leading-[0.9] tracking-tight mb-4 ${leagueSpartan.className}`}>
-                Tell us about<br />yourself.
+                TELL US ABOUT<br />YOURSELF.
               </h2>
               <p className="text-sm text-neutral-500 mb-8 leading-relaxed">
                 Takes about 3 minutes. One question at a time. We use your answers to prep the call so every minute counts.

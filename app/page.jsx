@@ -799,9 +799,47 @@ function CalendarModal({ onClose, onDateSelect }) {
   )
 }
 
+const SLOT_DEFINITIONS = [
+  { id: 'slot1', name: 'SLOT 1', time: '9:00 AM - 9:30 AM',   hour: 9,  minute: 0 },
+  { id: 'slot2', name: 'SLOT 2', time: '11:00 AM - 11:30 AM', hour: 11, minute: 0 },
+  { id: 'slot3', name: 'SLOT 3', time: '1:00 PM - 1:30 PM',   hour: 13, minute: 0 },
+  { id: 'slot4', name: 'SLOT 4', time: '3:00 PM - 3:30 PM',   hour: 15, minute: 0 },
+  { id: 'slot5', name: 'SLOT 5', time: '5:00 PM - 5:30 PM',   hour: 17, minute: 0 },
+  { id: 'slot6', name: 'SLOT 6', time: '7:00 PM - 7:30 PM',   hour: 19, minute: 0 },
+]
+
 function SlotModal({ selectedDate, onClose }) {
   const [selectedSlot, setSelectedSlot] = useState(null)
+  const [bookedSlots, setBookedSlots] = useState([])
+  const [loadingSlots, setLoadingSlots] = useState(false)
   const router = useRouter()
+
+  const dateForBackend = selectedDate
+    ? selectedDate.toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })
+    : null
+
+  useEffect(() => {
+    if (!selectedDate) return
+    let isMounted = true
+    setSelectedSlot(null)
+    setLoadingSlots(true)
+    setBookedSlots([])
+
+    fetch(`/api/booking/slots?date=${encodeURIComponent(dateForBackend)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!isMounted) return
+        if (data.success) {
+          setBookedSlots(data.bookedSlots || [])
+        }
+      })
+      .catch(err => {
+        console.error('Failed to fetch booked slots:', err)
+      })
+      .finally(() => { if (isMounted) setLoadingSlots(false) })
+
+    return () => { isMounted = false }
+  }, [selectedDate, dateForBackend])
 
   if (!selectedDate) return null
 
@@ -809,18 +847,33 @@ function SlotModal({ selectedDate, onClose }) {
     year: 'numeric', month: 'long', day: 'numeric'
   }).toUpperCase()
 
-  const dateForBackend = selectedDate.toLocaleDateString('en-IN', {
-    year: 'numeric', month: 'long', day: 'numeric'
+  // ── Time-based slot status (only relevant when selectedDate is today) ──
+  const now = new Date()
+  const isToday =
+    selectedDate.getFullYear() === now.getFullYear() &&
+    selectedDate.getMonth() === now.getMonth() &&
+    selectedDate.getDate() === now.getDate()
+
+  // Build each slot's actual start Date for today, so we can compare against "now".
+  const slotsWithTimeStatus = SLOT_DEFINITIONS.map(slot => {
+    const slotStart = new Date(
+      selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(),
+      slot.hour, slot.minute
+    )
+    const isPast = isToday && slotStart.getTime() <= now.getTime()
+    return { ...slot, isPast }
   })
 
-  const slots = [
-    { id: 'slot1', name: 'SLOT 1', time: '9:00 AM - 9:30 AM' },
-    { id: 'slot2', name: 'SLOT 2', time: '11:00 AM - 11:30 AM' },
-    { id: 'slot3', name: 'SLOT 3', time: '1:00 PM - 1:30 PM' },
-    { id: 'slot4', name: 'SLOT 4', time: '3:00 PM - 3:30 PM' },
-    { id: 'slot5', name: 'SLOT 5', time: '5:00 PM - 5:30 PM' },
-    { id: 'slot6', name: 'SLOT 6', time: '7:00 PM - 7:30 PM' },
-  ]
+  // Buffer rule: when booking for today, the next slot that hasn't passed yet
+  // is held back as a buffer — shown as unavailable like it's booked, even
+  // though it technically isn't, so nobody can lock in a call minutes away.
+  let bufferSlotId = null
+  if (isToday) {
+    const nextUpcoming = slotsWithTimeStatus.find(
+      s => !s.isPast && !bookedSlots.includes(s.id)
+    )
+    if (nextUpcoming) bufferSlotId = nextUpcoming.id
+  }
 
   const handleConfirm = () => {
     if (!selectedSlot) return
@@ -847,28 +900,73 @@ function SlotModal({ selectedDate, onClose }) {
         <div className="h-px bg-neutral-900 mx-6" />
 
         <div className="px-6 pt-6 pb-4 space-y-3">
-          <p className="text-xs font-bold tracking-[0.15em] text-neutral-500">SCHEDULING WINDOW</p>
+          <p className="text-xs font-bold tracking-[0.15em] text-neutral-500">
+            {loadingSlots ? 'CHECKING AVAILABILITY…' : 'SCHEDULING WINDOW'}
+          </p>
         </div>
         <div className="px-6 pb-6">
           <div className="grid grid-cols-2 gap-4">
-            {slots.map(slot => (
-              <button
-                key={slot.id}
-                onClick={() => setSelectedSlot(slot.id)}
-                className={`text-left p-5 rounded-2xl transition-all duration-300 ${
-                  selectedSlot === slot.id
-                    ? 'border-2 border-[#9400D3] bg-white shadow-[0_0_20px_rgba(148,0,211,0.5),inset_0_0_12px_rgba(148,0,211,0.08)]'
-                    : 'border-2 border-neutral-200 bg-white hover:border-[#9400D3] hover:shadow-[0_0_14px_rgba(148,0,211,0.25)]'
-                }`}
-              >
-                <p className={`font-black text-sm tracking-tight ${selectedSlot === slot.id ? 'text-[#9400D3]' : 'text-neutral-800'} ${leagueSpartan.className}`}>
-                  {slot.name}
-                </p>
-                <p className={`text-xs mt-2 ${selectedSlot === slot.id ? 'text-[#9400D3]/70' : 'text-neutral-400'}`}>
-                  {slot.time}
-                </p>
-              </button>
-            ))}
+            {slotsWithTimeStatus.map(slot => {
+              const isBooked = bookedSlots.includes(slot.id)
+              const isBuffer = bufferSlotId === slot.id
+              const isSelected = selectedSlot === slot.id
+
+              // Already passed today — grayed out, distinct from "booked"
+              if (slot.isPast) {
+                return (
+                  <div
+                    key={slot.id}
+                    className="text-left p-5 rounded-2xl border-2 border-neutral-200 bg-neutral-100 cursor-not-allowed opacity-60"
+                  >
+                    <p className={`font-black text-sm tracking-tight text-neutral-400 ${leagueSpartan.className}`}>
+                      {slot.name}
+                    </p>
+                    <p className="text-xs mt-2 font-bold tracking-[0.1em] text-neutral-400">
+                      TIME PASSED
+                    </p>
+                  </div>
+                )
+              }
+
+              // Genuinely booked, or held back as the buffer slot — both shown
+              // identically as "BOOKED" so the buffer isn't distinguishable
+              // (and therefore can't be reasoned around) from outside.
+              if (isBooked || isBuffer) {
+                return (
+                  <div
+                    key={slot.id}
+                    className="text-left p-5 rounded-2xl border-2 border-red-500/60 bg-red-50 cursor-not-allowed opacity-80"
+                  >
+                    <p className={`font-black text-sm tracking-tight text-red-500 ${leagueSpartan.className}`}>
+                      {slot.name}
+                    </p>
+                    <p className="text-xs mt-2 font-bold tracking-[0.1em] text-red-500">
+                      BOOKED
+                    </p>
+                  </div>
+                )
+              }
+
+              return (
+                <button
+                  key={slot.id}
+                  disabled={loadingSlots}
+                  onClick={() => setSelectedSlot(slot.id)}
+                  className={`text-left p-5 rounded-2xl transition-all duration-300 ${
+                    isSelected
+                      ? 'border-2 border-[#9400D3] bg-white shadow-[0_0_20px_rgba(148,0,211,0.5),inset_0_0_12px_rgba(148,0,211,0.08)]'
+                      : 'border-2 border-neutral-200 bg-white hover:border-[#9400D3] hover:shadow-[0_0_14px_rgba(148,0,211,0.25)]'
+                  } ${loadingSlots ? 'opacity-50 cursor-wait' : ''}`}
+                >
+                  <p className={`font-black text-sm tracking-tight ${isSelected ? 'text-[#9400D3]' : 'text-neutral-800'} ${leagueSpartan.className}`}>
+                    {slot.name}
+                  </p>
+                  <p className={`text-xs mt-2 ${isSelected ? 'text-[#9400D3]/70' : 'text-neutral-400'}`}>
+                    {slot.time}
+                  </p>
+                </button>
+              )
+            })}
           </div>
         </div>
         <div className="px-6 pb-8">

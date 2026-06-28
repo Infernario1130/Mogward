@@ -16,12 +16,12 @@ const SITE = {
 };
 
 const SLOTS = [
-  { id: 'slot1', name: 'SLOT 1', time: '10:00 AM - 10:30 AM' },
-  { id: 'slot2', name: 'SLOT 2', time: '12:00 AM - 12:30 AM' },
-  { id: 'slot3', name: 'SLOT 3', time: '2:00 PM - 2:30 PM' },
-  { id: 'slot4', name: 'SLOT 4', time: '4:00 PM - 4:30 PM' },
-  { id: 'slot5', name: 'SLOT 5', time: '6:00 PM - 6:30 PM' },
-  { id: 'slot6', name: 'SLOT 6', time: '8:00 PM - 8:30 PM' },
+  { id: 'slot1', name: 'SLOT 1', time: '10:00 AM - 10:30 AM', hour: 10, minute: 0 },
+  { id: 'slot2', name: 'SLOT 2', time: '12:00 PM - 12:30 PM',  hour: 12, minute: 0 },
+  { id: 'slot3', name: 'SLOT 3', time: '2:00 PM - 2:30 PM',   hour: 14, minute: 0 },
+  { id: 'slot4', name: 'SLOT 4', time: '4:00 PM - 4:30 PM',   hour: 16, minute: 0 },
+  { id: 'slot5', name: 'SLOT 5', time: '6:00 PM - 6:30 PM',   hour: 18, minute: 0 },
+  { id: 'slot6', name: 'SLOT 6', time: '8:00 PM - 8:30 PM',   hour: 20, minute: 0 },
 ]
 
 function WatermarkBackground() {
@@ -192,6 +192,8 @@ function CallBookingModal({ open, onClose, creditsRemaining, onBooked }) {
   const [selectedSlot, setSelectedSlot] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [bookedSlots, setBookedSlots] = useState([])
+  const [loadingSlots, setLoadingSlots] = useState(false)
 
   useEffect(() => {
     if (!open) return
@@ -199,6 +201,7 @@ function CallBookingModal({ open, onClose, creditsRemaining, onBooked }) {
     setSelectedDate(null)
     setSelectedSlot(null)
     setError('')
+    setBookedSlots([])
   }, [open])
 
   useEffect(() => {
@@ -211,6 +214,29 @@ function CallBookingModal({ open, onClose, creditsRemaining, onBooked }) {
       document.body.style.overflow = ''
     }
   }, [open, onClose])
+
+  const dateForBackend = selectedDate
+    ? selectedDate.toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })
+    : ''
+
+  // ── Fetch booked slots whenever we land on the slot view for a date ──
+  useEffect(() => {
+    if (view !== 'slot' || !selectedDate) return
+    let isMounted = true
+    setLoadingSlots(true)
+    setBookedSlots([])
+
+    fetch(`/api/booking/call-slots?date=${encodeURIComponent(dateForBackend)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!isMounted) return
+        if (data.success) setBookedSlots(data.bookedSlots || [])
+      })
+      .catch(err => console.error('Failed to fetch booked slots:', err))
+      .finally(() => { if (isMounted) setLoadingSlots(false) })
+
+    return () => { isMounted = false }
+  }, [view, selectedDate, dateForBackend])
 
   if (!open) return null
 
@@ -244,15 +270,41 @@ function CallBookingModal({ open, onClose, creditsRemaining, onBooked }) {
 
   const handleDateSelect = (day) => {
     setSelectedDate(new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day))
+    setSelectedSlot(null)
     setView('slot')
   }
 
   const dateStr = selectedDate
     ? selectedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }).toUpperCase()
     : ''
-  const dateForBackend = selectedDate
-    ? selectedDate.toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })
-    : ''
+
+  // ── Time-based slot status (only relevant when selectedDate is today) ──
+  const now = new Date()
+  const isSelectedToday = selectedDate &&
+    selectedDate.getFullYear() === now.getFullYear() &&
+    selectedDate.getMonth() === now.getMonth() &&
+    selectedDate.getDate() === now.getDate()
+
+  const slotsWithTimeStatus = selectedDate
+    ? SLOTS.map(slot => {
+        const slotStart = new Date(
+          selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(),
+          slot.hour, slot.minute
+        )
+        const isPast = isSelectedToday && slotStart.getTime() <= now.getTime()
+        return { ...slot, isPast }
+      })
+    : SLOTS.map(slot => ({ ...slot, isPast: false }))
+
+  // Buffer rule: when booking for today, the next slot that hasn't passed
+  // yet is held back and shown as unavailable like it's booked.
+  let bufferSlotId = null
+  if (isSelectedToday) {
+    const nextUpcoming = slotsWithTimeStatus.find(
+      s => !s.isPast && !bookedSlots.includes(s.id)
+    )
+    if (nextUpcoming) bufferSlotId = nextUpcoming.id
+  }
 
   const handleConfirmBooking = async () => {
     if (!selectedSlot) return
@@ -378,28 +430,69 @@ function CallBookingModal({ open, onClose, creditsRemaining, onBooked }) {
                 <ChevronLeft className="w-4 h-4" />
                 BACK TO CALENDAR
               </button>
-              <p className="text-xs font-bold tracking-[0.15em] text-neutral-500">SCHEDULING WINDOW</p>
+              <p className="text-xs font-bold tracking-[0.15em] text-neutral-500">
+                {loadingSlots ? 'CHECKING AVAILABILITY…' : 'SCHEDULING WINDOW'}
+              </p>
             </div>
             <div className="px-6 pb-6">
               <div className="grid grid-cols-2 gap-4">
-                {SLOTS.map(slot => (
-                  <button
-                    key={slot.id}
-                    onClick={() => setSelectedSlot(slot.id)}
-                    className={`text-left p-5 rounded-2xl transition-all duration-300 ${
-                      selectedSlot === slot.id
-                        ? 'border-2 border-[#9400D3] bg-white shadow-[0_0_20px_rgba(148,0,211,0.5),inset_0_0_12px_rgba(148,0,211,0.08)]'
-                        : 'border-2 border-neutral-200 bg-white hover:border-[#9400D3] hover:shadow-[0_0_14px_rgba(148,0,211,0.25)]'
-                    }`}
-                  >
-                    <p className={`font-black text-sm tracking-tight ${selectedSlot === slot.id ? 'text-[#9400D3]' : 'text-neutral-800'} ${leagueSpartan.className}`}>
-                      {slot.name}
-                    </p>
-                    <p className={`text-xs mt-2 ${selectedSlot === slot.id ? 'text-[#9400D3]/70' : 'text-neutral-400'}`}>
-                      {slot.time}
-                    </p>
-                  </button>
-                ))}
+                {slotsWithTimeStatus.map(slot => {
+                  const isBooked = bookedSlots.includes(slot.id)
+                  const isBuffer = bufferSlotId === slot.id
+                  const isSelected = selectedSlot === slot.id
+
+                  if (slot.isPast) {
+                    return (
+                      <div
+                        key={slot.id}
+                        className="text-left p-5 rounded-2xl border-2 border-neutral-200 bg-neutral-100 cursor-not-allowed opacity-60"
+                      >
+                        <p className={`font-black text-sm tracking-tight text-neutral-400 ${leagueSpartan.className}`}>
+                          {slot.name}
+                        </p>
+                        <p className="text-xs mt-2 font-bold tracking-[0.1em] text-neutral-400">
+                          TIME PASSED
+                        </p>
+                      </div>
+                    )
+                  }
+
+                  if (isBooked || isBuffer) {
+                    return (
+                      <div
+                        key={slot.id}
+                        className="text-left p-5 rounded-2xl border-2 border-red-500/60 bg-red-50 cursor-not-allowed opacity-80"
+                      >
+                        <p className={`font-black text-sm tracking-tight text-red-500 ${leagueSpartan.className}`}>
+                          {slot.name}
+                        </p>
+                        <p className="text-xs mt-2 font-bold tracking-[0.1em] text-red-500">
+                          BOOKED
+                        </p>
+                      </div>
+                    )
+                  }
+
+                  return (
+                    <button
+                      key={slot.id}
+                      disabled={loadingSlots}
+                      onClick={() => setSelectedSlot(slot.id)}
+                      className={`text-left p-5 rounded-2xl transition-all duration-300 ${
+                        isSelected
+                          ? 'border-2 border-[#9400D3] bg-white shadow-[0_0_20px_rgba(148,0,211,0.5),inset_0_0_12px_rgba(148,0,211,0.08)]'
+                          : 'border-2 border-neutral-200 bg-white hover:border-[#9400D3] hover:shadow-[0_0_14px_rgba(148,0,211,0.25)]'
+                      } ${loadingSlots ? 'opacity-50 cursor-wait' : ''}`}
+                    >
+                      <p className={`font-black text-sm tracking-tight ${isSelected ? 'text-[#9400D3]' : 'text-neutral-800'} ${leagueSpartan.className}`}>
+                        {slot.name}
+                      </p>
+                      <p className={`text-xs mt-2 ${isSelected ? 'text-[#9400D3]/70' : 'text-neutral-400'}`}>
+                        {slot.time}
+                      </p>
+                    </button>
+                  )
+                })}
               </div>
               {error && <p className="text-red-500 text-xs text-center tracking-wide mt-4">{error}</p>}
             </div>

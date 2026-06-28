@@ -36,6 +36,11 @@ const BookingSchema = new mongoose.Schema({
   },
 })
 
-const Booking = mongoose.models.Booking || mongoose.model('Booking', BookingSchema)
+// Unique on date+slot — this is the actual source of truth that prevents two
+// people booking the same slot. The app-level check in create-order is just
+// for a fast, friendly error message; this index is what closes the race
+// condition when two requests land at the same time.
+BookingSchema.index({ date: 1, slot: 1 }, { unique: true })
 
+const Booking = mongoose.models.Booking || mongoose.model('Booking', BookingSchema)
 export default Booking

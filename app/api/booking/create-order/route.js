@@ -145,18 +145,16 @@ async function sendEmailAsync(payload) {
   try {
     await resend.emails.send({
       from: 'MOGWARD Applications <ascend@mogward.com>',
-      to: "aryank0204@gmail.com",
+      to: "hoodiewolf11@gmail.com",
       subject: `New Application — ${payload.name} — ${payload.date} — ${SLOT_TIMES[payload.slot]}`,
       html: buildEmail(payload),
     })
   } catch (err) {
-    // Log but don't crash — user already got success response
-    // In production you'd push this to a logging service (e.g. Sentry, Logtail)
     console.error('[MOGWARD] Resend email failed for booking:', payload.bookingId, err?.message)
   }
 }
 
-// ── Main handler ─_
+// ── Main handler ──
 export async function POST(request) {
   try {
 
@@ -222,17 +220,35 @@ export async function POST(request) {
     // ── Connect DB ──
     await connectDB()
 
-    // ── Duplicate check — same WhatsApp + same date + same slot ──
-    const existing = await Booking.findOne({ whatsapp, date, slot })
+    // ── Duplicate check — same date + same slot, regardless of who's booking ──
+    // (Slots are a shared resource — one slot can only ever belong to one person,
+    // not "one person per slot per date" like the old check implied.)
+    const existing = await Booking.findOne({ date, slot })
     if (existing) {
       return NextResponse.json(
-        { success: false, message: 'You have already booked this slot. Check your WhatsApp for details.' },
+        { success: false, message: 'This slot has just been booked by someone else. Please pick another.' },
         { status: 409 }
       )
     }
 
     // ── Save to DB ──
-    const booking = await Booking.create({ name, whatsapp, instagram, date, slot })
+    // The findOne check above is a fast-path for the common case, but it cannot
+    // fully prevent two simultaneous requests from both passing it before either
+    // writes. The unique index on {date, slot} in the Booking schema is the real
+    // guard — if two requests race, the DB itself rejects the second insert with
+    // a duplicate-key error (code 11000), which we catch below.
+    let booking
+    try {
+      booking = await Booking.create({ name, whatsapp, instagram, date, slot })
+    } catch (err) {
+      if (err?.code === 11000) {
+        return NextResponse.json(
+          { success: false, message: 'This slot has just been booked by someone else. Please pick another.' },
+          { status: 409 }
+        )
+      }
+      throw err
+    }
 
     // ── Send email async (non-blocking) ──
     sendEmailAsync({

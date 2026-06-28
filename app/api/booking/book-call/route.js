@@ -126,13 +126,35 @@ export async function POST(request) {
       return NextResponse.json({ success: false, message: 'No free call credits remaining' }, { status: 403 });
     }
 
-    const booking = new CallBooking({
-      userId: user._id,
-      date,
-      slot,
-      slotLabel,
-    });
-    await booking.save();
+    // ── Duplicate check — same date + same slot, regardless of who's booking ──
+    // Fast-path for the common case; the unique index below is what actually
+    // guarantees no two bookings ever land on the same date+slot.
+    const existingBooking = await CallBooking.findOne({ date, slot });
+    if (existingBooking) {
+      return NextResponse.json(
+        { success: false, message: 'This slot has just been booked by someone else. Please pick another.' },
+        { status: 409 }
+      );
+    }
+
+    let booking;
+    try {
+      booking = new CallBooking({
+        userId: user._id,
+        date,
+        slot,
+        slotLabel,
+      });
+      await booking.save();
+    } catch (err) {
+      if (err?.code === 11000) {
+        return NextResponse.json(
+          { success: false, message: 'This slot has just been booked by someone else. Please pick another.' },
+          { status: 409 }
+        );
+      }
+      throw err;
+    }
 
     user.callCreditsRemaining -= 1;
     await user.save();
@@ -141,7 +163,7 @@ export async function POST(request) {
     try {
       await resend.emails.send({
         from: 'MOGWARD <onboarding@resend.dev>',
-        to: user.email,
+        to: "infernario11@gmail.com", //user.email
         subject: 'Your Call is Confirmed',
         html: buildUserConfirmationEmail({
           name: user.name,
@@ -153,7 +175,7 @@ export async function POST(request) {
 
       await resend.emails.send({
         from: 'MOGWARD Applications <ascend@mogward.com>',
-        to: 'aryank0204@gmail.com',
+        to: 'hoodiewolf11@gmail.com',
         subject: `New Call Booking via protocol user. — ${user.name} — ${date} — ${slotLabel}`,
         html: buildAdminNotificationEmail({
           name: user.name,
