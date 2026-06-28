@@ -140,7 +140,7 @@ function buildEmail({ name, whatsapp, instagram, date, slot, bookingId, answers 
     </div>`
 }
 
-// ── Send email async — does not block response ──
+
 async function sendEmailAsync(payload) {
   try {
     await resend.emails.send({
@@ -154,7 +154,7 @@ async function sendEmailAsync(payload) {
   }
 }
 
-// ── Main handler ──
+// ── Main handler ──__
 export async function POST(request) {
   try {
 
@@ -251,7 +251,7 @@ export async function POST(request) {
     }
 
     // ── Send email async (non-blocking) ──
-    sendEmailAsync({
+    await sendEmailAsync({
       name,
       whatsapp,
       instagram,
