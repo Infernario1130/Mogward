@@ -1,5 +1,6 @@
 import { Playfair_Display, Inter, League_Spartan } from 'next/font/google'
 import { GoogleAnalytics } from '@next/third-parties/google'
+import ClarityProvider from './components/ClarityProvider'
 import './globals.css'
 import Script from 'next/script'
 
@@ -33,7 +34,10 @@ export default function RootLayout({ children }) {
       className={`${playfair.variable} ${inter.variable} ${leagueSpartan.variable}`}
     >
       <body className="font-sans antialiased bg-background">
+        <ClarityProvider />
+
         {children}
+
         <Script src="https://checkout.razorpay.com/v1/checkout.js" />
       </body>
 
