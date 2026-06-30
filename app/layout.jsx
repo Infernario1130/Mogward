@@ -1,6 +1,6 @@
 import { Playfair_Display, Inter, League_Spartan } from 'next/font/google'
 import { GoogleAnalytics } from '@next/third-parties/google'
-import ClarityProvider from './components/ClarityProvider'
+import ClarityProvider from '../components/ClarityProvider'
 import './globals.css'
 import Script from 'next/script'
 
