@@ -15,7 +15,7 @@ for (const key of REQUIRED_ENV) {
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 const VALID_SLOTS = ['slot1', 'slot2', 'slot3', 'slot4', 'slot5', 'slot6']
-const NOT_NOW = 'Not right now, but I want to stay in the loop'
+const NOT_NOW = 'NOT RIGHT NOW, BUT I WANT TO STAY IN THE LOOP'
 
 const SLOT_TIMES = {
   slot1: '9:00 AM - 9:30 AM',

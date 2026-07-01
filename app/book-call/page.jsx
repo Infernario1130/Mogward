@@ -18,7 +18,7 @@ const leagueSpartan = League_Spartan({ subsets: ["latin"], weight: ["400","500",
 const SITE_CONFIG = { brandName: "MOGWARD", brandInitials: "M" };
 const ACCENT = "#9400D3";
 const VALID_SLOTS = ["slot1", "slot2", "slot3", "slot4", "slot5", "slot6"];
-const NOT_NOW = "Not right now, but I want to stay in the loop";
+const NOT_NOW = "NOT RIGHT NOW, BUT I WANT TO STAY IN THE LOOP";
 
 function PulsingGlow() {
   return (
