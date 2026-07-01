@@ -68,6 +68,7 @@ export function useInfiniteTrack({
     const viewportCenter = window.innerWidth / 2;
     // snap to item 0 of the middle copy (copy index 2)
     // item index = 2 * count
+    //done
     const i = 2 * count;
     proxy.x = viewportCenter - (i * stride + pairWidth / 2);
     updateVisuals(proxy.x);
