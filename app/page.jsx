@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import { League_Spartan } from 'next/font/google'
 import { PRODUCTS, MAIN_PACKAGE } from '@/lib/products'
 import CoachingCard from "../components/CoachingCard.jsx"
+import { PremiumGallery } from "../components/PremiumGallery/PremiumGallery.jsx";
 import { createPortal } from 'react-dom'
 
 const leagueSpartan = League_Spartan({ subsets: ['latin'], weight: ['400','500','600','700','800','900'] })
@@ -42,6 +43,16 @@ const SESSION_OPTIONS = [
     badge: 'PRIORITY COMMS',
   },
 ]
+
+const pairs = [
+  [{ image: "/images/1.png" }, { image: "/images/2.png" }],
+  [{ image: "/images/3.png" }, { image: "/images/4.png" }],
+  [{ image: "/images/5.png" }, { image: "/images/6.png" }],
+  [{ image: "/images/7.png" }, { image: "/images/8.png" }],
+  [{ image: "/images/9.png" }, { image: "/images/10.png" }],
+  [{ image: "/images/11.png" }, { image: "/images/12.png" }],
+  [{ image: "/images/13.png" }, { image: "/images/14.png" }],
+];
 
 function PulsingGlow() {
   return (
@@ -218,6 +229,11 @@ function HeroSection({ selectedItem, setSelectedItem, setIsDetailOpen, onBookCal
       <div className="relative z-10 w-full mb-12">
         <CoachingCard onBookCall={onBookCall} />
       </div>
+
+      <div className="relative z-10 w-full mb-12">
+        <PremiumGallery pairs={pairs} />
+      </div>
+
 
       <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
         <p className="text-muted-foreground font-medium text-sm max-w-3xs mx-auto mb-12">
