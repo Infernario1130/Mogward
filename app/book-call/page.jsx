@@ -2,7 +2,7 @@
 
 "use client";
 
-import { ArrowLeft, Lock, User, Zap, Menu, X } from "lucide-react";
+import { ArrowLeft, Lock, User, Zap, Menu, X, Dumbbell, UtensilsCrossed, Video, MessageCircle, Smile, PhoneCall, Sparkles, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect, useMemo, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -317,46 +317,87 @@ function Interstitial({ onNext }) {
   };
 
   const rows = [
-    ["Custom training program","Built around your body type, strength baseline, and exact goals. Not a template. Not a PPL from YouTube. Every exercise, set, and progression rule is specific to you."],
-    ["Custom diet plan","Built around what you actually eat, your schedule, and your food availability. No chicken-and-rice nonsense unless that's genuinely your preference. A system that fits your life, not the other way around."],
-    ["Daily 15-minute video check-ins — mandatory","Every single day. This is the accountability layer that makes everything else stick. Most programs give you a plan and disappear. This one doesn't. You show up, I show up."],
-    ["24/7 WhatsApp access","Questions, adjustments, bad days, breakthroughs. You won't be waiting 3 days for a reply. Direct line, always on."],
-    ["Full facial aesthetics guidance","Jawline, skin, structure — applied specifically to your face. The Frame Protocol and Skin Protocol, personalised. Most coaches ignore this entirely. This program doesn't."],
-    ["Weekly structured progress calls","Beyond the daily check-ins — a dedicated weekly call to review metrics, adjust the plan, and map the next 7 days with precision."],
-    ["Complete looksmax & lifestyle guidance","Hair, posture, style, confidence, grooming — the full picture. Because a transformation isn't just what you lift or what you eat."],
-    ["Results guarantee","100% refund + 20% extra if you haven't hit the results we agreed on at onboarding by the 60-day checkpoint. The condition: you show up every day as instructed. If you do, the risk is entirely mine."],
+    { icon: Dumbbell, name: "CUSTOM TRAINING PROGRAM", desc: "Built around your body type, strength baseline, and exact goals. Not a template. Not a PPL from YouTube. Every exercise, set, and progression rule is specific to you." },
+    { icon: UtensilsCrossed, name: "CUSTOM DIET PLAN", desc: "Built around what you actually eat, your schedule, and your food availability. No chicken-and-rice nonsense unless that's genuinely your preference. A system that fits your life, not the other way around." },
+    { icon: Video, name: "DAILY 15 MINUTE VIDEO CHECK-INS MANDATORY", desc: "Every single day. This is the accountability layer that makes everything else stick. Most programs give you a plan and disappear. This one doesn't. You show up, I show up." },
+    { icon: MessageCircle, name: "24/7 WHATSAPP ACCESS", desc: "Questions, adjustments, bad days, breakthroughs. You won't be waiting 3 days for a reply. Direct line, always on." },
+    { icon: Smile, name: "FULL FACIAL AESTHETICS GUIDANCE", desc: "Jawline, skin, structure — applied specifically to your face. The Frame Protocol and Skin Protocol, personalised. Most coaches ignore this entirely. This program doesn't." },
+    { icon: PhoneCall, name: "WEEKLY STRUCTURED PROGRESS CALLS", desc: "Beyond the daily check-ins — a dedicated weekly call to review metrics, adjust the plan, and map the next 7 days with precision." },
+    { icon: Sparkles, name: "COMPLETE LOOKSMAX & LIFESTYLE GUIDANCE", desc: "Hair, posture, style, confidence, grooming — the full picture. Because a transformation isn't just what you lift or what you eat." },
   ];
+  
+  const guarantee = { icon: ShieldCheck, name: "RESULTS GUARANTEE", desc: "100% refund + 20% extra if you haven't hit the results we agreed on at onboarding by the 60-day checkpoint. The condition: you show up every day as instructed. If you do, the risk is entirely mine." };
 
   return (
     <div className="space-y-6">
       <div>
-        <p className={`text-xs font-extrabold tracking-[0.3em] mb-2 ${leagueSpartan.className}`} style={{ color: ACCENT }}>
-          THIS IS WHAT YOU'RE APPLYING FOR
-        </p>
-        <h3 className={`text-3xl sm:text-4xl font-black text-white leading-[0.9] tracking-tight ${leagueSpartan.className}`}>
-          A full-system<br />transformation program.
-        </h3>
-        <p className="mt-3 text-sm text-neutral-500 leading-relaxed">
-          Not a generic plan. Not auto-generated advice. Built around you, tracked daily, and backed by a guarantee most coaches won't touch.
-        </p>
-      </div>
+  <p className={`text-xs font-extrabold tracking-[0.3em] mb-2 ${leagueSpartan.className}`} style={{ color: ACCENT }}>
+    THIS IS WHAT YOU'RE APPLYING FOR
+  </p>
+  <h3 className={`text-3xl sm:text-4xl font-black text-white leading-[0.9] tracking-tight ${leagueSpartan.className}`}>
+    A full-system<br /><span style={{ color: ACCENT }}>transformation</span> program.
+  </h3>
+  <p className="mt-3 text-sm text-neutral-500 leading-relaxed">
+    Not a generic plan. Not auto-generated advice. Built around you, tracked daily, and backed by a guarantee most coaches won't touch.
+  </p>
+</div>
 
       <div>
-        <p className={`text-xs font-extrabold tracking-[0.3em] mb-3 ${leagueSpartan.className}`} style={{ color: ACCENT }}>WHAT'S INCLUDED</p>
-        <div className="divide-y divide-neutral-800 rounded-2xl border border-neutral-800 overflow-hidden">
-          {rows.map(([label, desc]) => (
-            <div key={label} className="grid grid-cols-1 gap-1 p-4 sm:grid-cols-[160px_1fr] sm:gap-6 bg-neutral-900/40">
-              <div className={`text-sm font-bold ${leagueSpartan.className}`} style={{ color: ACCENT }}>{label}</div>
-              <div className="text-sm text-neutral-400 leading-relaxed">{desc}</div>
-            </div>
-          ))}
-        </div>
-      </div>
+  <p className={`text-xs font-extrabold tracking-[0.3em] mb-3 ${leagueSpartan.className}`} style={{ color: ACCENT }}>WHAT'S INCLUDED</p>
+  <div className="flex flex-col gap-3">
+  {rows.map(({ icon: Icon, name, desc }) => (
+  <div
+    key={name}
+    className="rounded-2xl p-5 border-l-4"
+    style={{
+      backgroundColor: "rgba(148,0,211,0.15)",
+      border: "1px solid rgba(148,0,211,0.3)",
+      borderLeftColor: ACCENT,
+      borderLeftWidth: "4px",
+    }}
+  >
+    <div className="flex items-center justify-between mb-2">
+      <h4 className={`text-base font-bold ${leagueSpartan.className}`} style={{ color: ACCENT }}>{name}</h4>
+      <Icon className="w-5 h-5 flex-shrink-0 ml-3" style={{ color: ACCENT }} />
+    </div>
+    <p className="text-sm text-neutral-400 leading-relaxed">{desc}</p>
+  </div>
+))}
+    {/* Guarantee — highlighted */}
+<div
+  className="rounded-2xl p-5 border-l-4"
+  style={{
+    backgroundColor: "rgba(148,0,211,0.15)",
+    border: "1px solid rgba(148,0,211,0.3)",
+    borderLeftColor: ACCENT,
+    borderLeftWidth: "4px",
+    boxShadow: `0 0 24px rgba(148,0,211,0.45)`,
+  }}
+>
+  <div className="flex items-center justify-between mb-2">
+    <h4 className={`text-base font-bold ${leagueSpartan.className}`} style={{ color: ACCENT }}>{guarantee.name}</h4>
+    <guarantee.icon className="w-5 h-5 flex-shrink-0 ml-3" style={{ color: ACCENT }} />
+  </div>
+  <p className="text-sm text-neutral-400 leading-relaxed">{guarantee.desc}</p>
+</div>
+  </div>
+</div>
 
-      <div>
-        <p className={`text-xs font-extrabold tracking-[0.3em] mb-2 ${leagueSpartan.className}`} style={{ color: ACCENT }}>THE INVESTMENT</p>
-        <p className="text-sm text-neutral-500">Investment starts from Rs9,999. Spots are limited. Not everyone who applies is accepted.</p>
-      </div>
+<div>
+  <p className={`text-xs font-extrabold tracking-[0.3em] mb-3 ${leagueSpartan.className}`} style={{ color: ACCENT }}>THE INVESTMENT</p>
+  <div className="relative rounded-2xl border border-neutral-800 bg-neutral-900/40 p-6">
+    <span
+      className={`absolute top-4 right-4 rounded-full px-3 py-1 text-[10px] font-black tracking-widest text-white ${leagueSpartan.className}`}
+      style={{ backgroundColor: `${ACCENT}30`, color: ACCENT }}
+    >
+      LIMITED SPOTS
+    </span>
+    <p className={`text-4xl font-black text-white tracking-tight mb-3 ${leagueSpartan.className}`}>₹9,999</p>
+    <p className="text-sm text-neutral-500 leading-relaxed">
+      Investment starts from Rs9,999. Spots are limited. Not everyone who applies is accepted.
+    </p>
+  </div>
+</div> 
 
       <div className="rounded-2xl p-5 text-center" style={{ backgroundColor: ACCENT }}>
         <p className={`font-black text-white text-lg tracking-tight leading-tight ${leagueSpartan.className}`}>
@@ -434,11 +475,11 @@ function FinalScreen({ name, status, error, onRetry }) {
 }
 
 const BUNDLE_PROTOCOLS = [
-  { name: "Frame Protocol", desc: "The complete facial aesthetics system. Fat loss hierarchy, mewing, de-bloating, nose breathing, and skincare — in the exact order that produces visible results." },
-  { name: "Skin Protocol", desc: "Full CTP skincare framework. Concern-to-ingredient mapping for acne, pigmentation, texture, and dullness. Built for men who've never had a routine." },
-  { name: "Diet Protocol", desc: "The two-number system. Calories and protein — nothing else. A 1-week process to find your real maintenance, then a deficit that actually holds." },
-  { name: "Training Protocol", desc: "Hypertrophy science applied. Full programmes for 2–6 training days, any equipment. Set targets, frequency guidelines, and progression rules — not a generic split." },
-  { name: "1:1 Assessment Call (x2 included)", desc: "Full 30-min assessment covering all four protocols. Plus a progress check call minimum 1 week later. Direct access — the same calls bundle buyers get." },
+  { name: "FRAME PROTOCOL", desc: "The complete facial aesthetics system. Fat loss hierarchy, mewing, de-bloating, nose breathing, and skincare — in the exact order that produces visible results." },
+  { name: "SKIN PROTOCOL", desc: "Full CTP skincare framework. Concern-to-ingredient mapping for acne, pigmentation, texture, and dullness. Built for men who've never had a routine." },
+  { name: "DIET PROTOCOL", desc: "The two-number system. Calories and protein — nothing else. A 1-week process to find your real maintenance, then a deficit that actually holds." },
+  { name: "TRAINING PROTOCOL", desc: "Hypertrophy science applied. Full programmes for 2–6 training days, any equipment. Set targets, frequency guidelines, and progression rules — not a generic split." },
+  { name: "1:1 ASSESSMENT CALL (x2 included)", desc: "Full 30-min assessment covering all four protocols. Plus a progress check call minimum 1 week later. Direct access — the same calls bundle buyers get." },
 ];
 
 function NotRightNowScreen({ name }) {
@@ -471,7 +512,7 @@ function NotRightNowScreen({ name }) {
         NOT READY FOR 1:1? THAT'S FINE.
       </p>
       <h2 className={`text-3xl sm:text-4xl font-black text-white leading-[0.9] tracking-tight mb-6 ${leagueSpartan.className}`}>
-        The system is<br />still yours.
+        THE SYSTEM IS<br />STILL YOURS.
       </h2>
       <p className="text-sm text-neutral-400 leading-relaxed mb-2">
         The 1:1 program is built for people who want to move fast with daily accountability. But every protocol inside it — training, diet, facial aesthetics, skincare — is available right now, as a self-guided system.
@@ -494,8 +535,8 @@ function NotRightNowScreen({ name }) {
 
       <div className="rounded-2xl border border-neutral-800 bg-neutral-900/40 p-5 flex items-center justify-between mb-4">
         <span className={`text-3xl font-black text-white ${leagueSpartan.className}`}>₹{MAIN_PACKAGE.price}</span>
-        <span className="text-xs text-neutral-500 text-right max-w-[55%]">
-          was Rs{MAIN_PACKAGE.originalPrice} — saves Rs{MAIN_PACKAGE.originalPrice - MAIN_PACKAGE.price} vs buying individually
+        <span className="text-md text-neutral-500 text-right max-w-[55%]">
+          was ₹{MAIN_PACKAGE.originalPrice} — saves ₹{MAIN_PACKAGE.originalPrice - MAIN_PACKAGE.price} vs buying individually
         </span>
       </div>
 
