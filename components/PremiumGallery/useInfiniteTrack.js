@@ -8,6 +8,7 @@ export function useInfiniteTrack({
   totalCopies = 5,
   dragMultiplier = 1,
   momentumMultiplier = 200,
+  onActiveIndexChange,
 }) {
   const containerRef = useRef(null);
   const itemsRef = useRef([]);
@@ -19,6 +20,8 @@ export function useInfiniteTrack({
   const velocityRef = useRef(0);
   const lastTimeRef = useRef(0);
   const lastXRef = useRef(0);
+
+  const activeIndexRef = useRef(-1);
   
   const containerWidth = count * stride;
 
@@ -28,11 +31,19 @@ export function useInfiniteTrack({
     containerRef.current.style.transform = `translate3d(${x}px, 0, 0)`;
     
     const viewportCenter = window.innerWidth / 2;
+
+    let minDist = Infinity;
+    let minIndex = 0;
     
     itemsRef.current.forEach((el, i) => {
       if (!el) return;
       const itemCenter = x + i * stride + pairWidth / 2;
       const dist = Math.abs(itemCenter - viewportCenter);
+
+      if (dist < minDist) {
+        minDist = dist;
+        minIndex = i;
+      }
       
       const maxDist = stride;
       const progress = Math.min(dist / maxDist, 1); 
@@ -44,7 +55,13 @@ export function useInfiniteTrack({
       el.style.opacity = opacity.toString();
       el.style.zIndex = progress < 0.5 ? '30' : '10';
     });
-  }, [pairWidth, stride]);
+
+    const activePairIndex = ((minIndex % count) + count) % count;
+    if (activePairIndex !== activeIndexRef.current) {
+      activeIndexRef.current = activePairIndex;
+      onActiveIndexChange?.(activePairIndex);
+    }
+  }, [pairWidth, stride, count, onActiveIndexChange]);
 
   const wrapXIfNeeded = useCallback(() => {
     const viewportCenter = window.innerWidth / 2;
@@ -66,9 +83,6 @@ export function useInfiniteTrack({
 
   useEffect(() => {
     const viewportCenter = window.innerWidth / 2;
-    // snap to item 0 of the middle copy (copy index 2)
-    // item index = 2 * count
-    //done
     const i = 2 * count;
     proxy.x = viewportCenter - (i * stride + pairWidth / 2);
     updateVisuals(proxy.x);

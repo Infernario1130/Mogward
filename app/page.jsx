@@ -45,13 +45,65 @@ const SESSION_OPTIONS = [
 ]
 
 const pairs = [
-  [{ image: "/images/1.png" }, { image: "/images/2.png" }],
-  [{ image: "/images/3.png" }, { image: "/images/4.png" }],
-  [{ image: "/images/5.png" }, { image: "/images/6.png" }],
-  [{ image: "/images/7.png" }, { image: "/images/8.png" }],
-  [{ image: "/images/9.png" }, { image: "/images/10.png" }],
-  [{ image: "/images/11.png" }, { image: "/images/12.png" }],
-  [{ image: "/images/13.png" }, { image: "/images/14.png" }],
+  {
+    images: ["/images/1.png", "/images/2.png"],
+    name: "ARYAN,21",
+    founderCard: 1,
+    tags: "Full Muscle Rebuild · 45 Days",
+    stats: "64KG → 69KG · 45 DAYS",
+    quote: "Lost 3 years of progress in 3 months. Built it all back in 45 days. This is why the system exists."
+  },
+  {
+    images: ["/images/3.png", "/images/4.png"],
+    name: "RAVEESH, 42",
+    tags: "Fat Loss · Confidence",
+    stats: "77KG → 70KG · 2 MONTHS",
+    quote: `7kg down in 2 months. Started with no training experience — now runs
+           his own programme. Walks into every room differently.`
+  },
+  {
+    images: ["/images/5.png", "/images/6.png"],
+    name: "LAKSHAY, 19",
+    tags: "Recomposition · Lean Aesthetic ",
+    stats: "69KG → 65KG · 2 MONTHs",
+    quote: `4kg down, visibly more muscle. The lean aesthetic look most guys
+           spend years chasing — built in 60 days.`
+  },
+  {
+    images: ["/images/7.png", "/images/8.png"],
+    name: "RISHU, 17",
+    tags: "Muscle Gain · Lean Aesthetic",
+    stats: "69KG → 78KG · 6 MONTHS",
+    quote: `Came in at 17 with zero structure to his training. Left with 9kg of
+           muscle, a physique that turns heads, and a programme he actually
+           understands.`
+  },
+  {
+    images: ["/images/9.png", "/images/10.png"],
+    name: "ROSHNI,19",
+    tags: "Fat Loss · Toned",
+    stats: "62KG → 54KG · 1 MONTH",
+    quote: `8kg down in 30 days. Came in wanting to feel confident in her own
+           skin left with the body and the routine to keep it.`
+  },
+  {
+    images: ["/images/11.png", "/images/12.png"],
+    name: "VIVEK, 33",
+    tags: "Fat Loss · Strength · Masculine Structure",
+    stats: "96KG → 86KG · 45 DAYS",
+    quote: `10kg of fat gone in 45 days — and got stronger doing it. Benches
+           3 plates, squats 180kg, pulls 200kg. The body changed. The numbers
+           went up.`
+  },
+  {
+    images: ["/images/13.png", "/images/14.png"],
+    name: "DIVJOT, 19",
+    tags: "Recomposition · Lean Bulk · Strength",
+    stats: "59kg → 58kg · 1 month",
+    quote: `The scale barely moved. His body completely changed. Lost fat, built
+           muscle, and went from struggling with weights to full-stacking
+           machines — in 30 days.`
+  },
 ];
 
 function PulsingGlow() {
@@ -230,8 +282,8 @@ function HeroSection({ selectedItem, setSelectedItem, setIsDetailOpen, onBookCal
         <CoachingCard onBookCall={onBookCall} />
       </div>
 
-      <div className="relative z-10 w-full mb-12">
-        <PremiumGallery pairs={pairs} />
+      <div className="relative z-10 w-full mb-12 bg-black">
+      <PremiumGallery pairs={pairs} eyebrow="RESULTS" heading="Real clients. Real numbers." />
       </div>
 
 
